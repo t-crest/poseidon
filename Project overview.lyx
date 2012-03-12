@@ -95,7 +95,7 @@ The time slots in the period
 \end_layout
 
 \begin_layout Subsection*
-Mathematical Model Topologi
+Mathematical Model Topology
 \end_layout
 
 \begin_layout Subsection*
@@ -103,7 +103,7 @@ Initial solution/Input format
 \end_layout
 
 \begin_layout Subsection*
-Neighbourhood/(Cross over/mutation)
+Neighborhood/(Cross over/mutation)
 \end_layout
 
 \begin_layout Standard
@@ -139,7 +139,7 @@ Mapping processes -> tiles
 \end_layout
 
 \begin_layout Subsection*
-Metaheuristics
+Meta-heuristics
 \end_layout
 
 \begin_layout Itemize
