@@ -121,20 +121,50 @@ To maintain hard real time properties of the system, communication must
 \end_layout
 
 \begin_layout Standard
+The schedule is periodic, and thus for performance reasons (Bandwidth and
+ latency) it is important to have a schedule as short as possible.
+ We want to optimize for shortest schedule, for a given use-case.
+\end_layout
+
+\begin_layout Standard
 In Real time systems communication channels must be decoupled, this decoupling
  can be hand
+\end_layout
+
+\begin_layout Standard
+Tile concept, each tile processor executes one task.
 \end_layout
 
 \begin_layout Section
 Metaheuristics
 \end_layout
 
+\begin_layout Standard
+Evolutionary algorithms
+\end_layout
+
 \begin_layout Section
 Neighbourhoods/Operators
 \end_layout
 
+\begin_layout Itemize
+Swap the mapping of routes to links.
+\end_layout
+
+\begin_layout Itemize
+Permute the route between two end nodes of a communication channel.
+\end_layout
+
+\begin_layout Itemize
+
+\end_layout
+
 \begin_layout Section
 Implementation language
+\end_layout
+
+\begin_layout Standard
+C++
 \end_layout
 
 \end_body
