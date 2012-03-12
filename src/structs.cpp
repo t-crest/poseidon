@@ -1,2 +1,3 @@
 #include <cstdio>
 
+struct
