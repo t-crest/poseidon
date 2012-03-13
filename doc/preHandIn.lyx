@@ -84,17 +84,46 @@ Problem outline
 \end_layout
 
 \begin_layout Standard
-Current trends in computing points towards multicore architectures, where
- communication is of great importance.
+In this project we want to implement a Meta Heuristic for scheduling communicati
+on in a Real time Multi-Processor System-on-Chip (MPSoC), the MPSoCs we
+ will be targeting for this project are MPSoCs with a Network-on-Chip as
+ interconnect.
+ 
 \end_layout
 
 \begin_layout Standard
-Network-on-Chip is a good candidate for solving the communication problem
- in multicore systems.
+A NoC is build of routers and links, one router for each processing tile.
+ The routers can be connected in many different topologies, the most common
+ structure is in a grid like fashion.
+ One possible NoC topology is a double-torus, a figure of this layout can
+ be seen in figure 
+\series bold
+something
+\series default
+.
 \end_layout
 
-\begin_layout Itemize
-What is network on chip?
+\begin_layout Standard
+In Real time systems, analyzability is the all important factor to evaluate
+ the Worst-Case Execution Time (WCET).
+ To get analyzability in the NoC interconnect we require decoupling of communica
+tion channels.
+ That is the communication on one communication channel can not be affected
+ by communication on another communication channel.
+\end_layout
+
+\begin_layout Standard
+We want to The T-Crest project
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+http://www.t-crest.org/
+\end_layout
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Itemize
@@ -134,10 +163,49 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+Double-torus.
+ Take up space.
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_nice"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
 	filename figures/double-torus.pdf
 	lyxscale 20
-	scale 50
+	scale 35
 
 \end_inset
 
@@ -148,7 +216,50 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-fadhka
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_not-nice"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Double-torus.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_nice"
+
+\end_inset
+
+ Nice graph representation.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_not-nice"
+
+\end_inset
+
+ Layout representation of the double-torus to minimize longest links distance.
 \end_layout
 
 \end_inset
