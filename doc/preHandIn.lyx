@@ -61,21 +61,21 @@
 
 \begin_layout Title
 Pre-Hand-In
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Title
 42137 Optimization using Metaheuristics
 \end_layout
 
 \begin_layout Author
-Rasmus Bo Sørensen - s072080
-\end_layout
-
-\begin_layout Author
 Jaspur Højgaard - s072069
-\end_layout
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Author
+Rasmus Bo Sørensen - s072080
+\begin_inset Newline newline
+\end_inset
+
 Mark Ruvald Pedersen - s072095
 \end_layout
 
@@ -127,8 +127,78 @@ The schedule is periodic, and thus for performance reasons (Bandwidth and
 \end_layout
 
 \begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/double-torus.pdf
+	lyxscale 20
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+fadhka
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 In Real time systems communication channels must be decoupled, this decoupling
  can be hand
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/Tile-Details.pdf
+	lyxscale 30
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+adffd
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -153,10 +223,6 @@ Swap the mapping of routes to links.
 
 \begin_layout Itemize
 Permute the route between two end nodes of a communication channel.
-\end_layout
-
-\begin_layout Itemize
-
 \end_layout
 
 \begin_layout Section
