@@ -96,11 +96,33 @@ A NoC is build of routers and links, one router for each processing tile.
  The routers can be connected in many different topologies, the most common
  structure is in a grid like fashion.
  One possible NoC topology is a double-torus, a figure of this layout can
- be seen in figure 
-\series bold
-something
-\series default
+ be seen in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_nice"
+
+\end_inset
+
 .
+ In this figure some of the links are very long, and when implemented in
+ hardware this becomes infeasible.
+ Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_not-nice"
+
+\end_inset
+
+ is an example of how the double torus can be layout, with a minimum average
+ link length.
 \end_layout
 
 \begin_layout Standard
