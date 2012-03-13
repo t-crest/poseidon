@@ -79,6 +79,10 @@ Rasmus Bo Sørensen - s072080
 Mark Ruvald Pedersen - s072095
 \end_layout
 
+\begin_layout Standard
+Implementation language: C++11.
+\end_layout
+
 \begin_layout Section
 Problem outline
 \end_layout
@@ -326,7 +330,42 @@ Tile concept, each tile processor executes one task.
 Metaheuristics
 \end_layout
 
+\begin_layout Standard
+Our scheduling problem is large and combinatorial in nature with dependencies
+ and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any instant.
+ Another is that packets always arrives in the same order as they were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all routes
+ should be a shortest route.
+ Due to the Manhattan-like layout of tiles, this shortest path routing is
+ simple.
+ Always taking the shortest route will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Subsection
+Neighborhood and operators
+\end_layout
+
+\begin_layout Standard
+Imagining a compact schedule where most links are already occupied, small
+ changes like swapping individual links will in most cases lead to infeasible
+ schedules.
+ Instead we consider removing entire routes and rebuilding them.
+\end_layout
+
 \begin_layout Itemize
+Reroute half of an existing route.
+\end_layout
+
+\begin_layout Standard
+We propose
+\end_layout
+
+\begin_layout Standard
 Large Neighborhood Search: Destroy and rebuild part of solution with greedy
  algorithm.
 \end_layout
@@ -336,37 +375,11 @@ Greedy Randomized Adaptive Search Procedure: Generates greedy initial
 \end_layout
 
 \begin_layout Itemize
-We expect GRAPS to perform well, lack of direction in 
+We expect GRASP to perform well, lack of direction in 
 \end_layout
 
 \begin_layout Standard
 Simulated annealing
-\end_layout
-
-\begin_layout Section
-Neighborhoods/Operators
-\end_layout
-
-\begin_layout Standard
-Swapping individual links and mappings, are likely to cause concflicts and
- infeasble schedules.
- Instead we consider removing entire routes, and rebuilding them.
-\end_layout
-
-\begin_layout Itemize
-Swap the mapping of routes to links.
-\end_layout
-
-\begin_layout Itemize
-Permute the route between two end nodes of a communication channel.
-\end_layout
-
-\begin_layout Section
-Implementation language
-\end_layout
-
-\begin_layout Standard
-C++
 \end_layout
 
 \end_body
