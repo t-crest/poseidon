@@ -170,8 +170,14 @@ status open
 
 \begin_layout Plain Layout
 \align center
-Double-torus.
- Take up space.
+\begin_inset Graphics
+	filename figures/simple-double-torus.pdf
+	lyxscale 20
+	scale 35
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
