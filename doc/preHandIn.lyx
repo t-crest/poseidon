@@ -9,10 +9,10 @@
 \language_package default
 \inputencoding auto
 \fontencoding global
-\font_roman default
+\font_roman lmodern
 \font_sans default
 \font_typewriter default
-\font_default_family default
+\font_default_family rmdefault
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
@@ -25,6 +25,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -86,14 +87,105 @@ Problem outline
 \begin_layout Standard
 In this project we want to implement a Meta Heuristic for scheduling communicati
 on in a Real time Multi-Processor System-on-Chip (MPSoC), the MPSoCs we
- will be targeting for this project are MPSoCs with a Network-on-Chip as
- interconnect.
- 
+ will be targeting for this project are MPSoCs with a Network-on-Chip (NoC)
+ as interconnect.
+ This general purpose Real time MPSoC is part of the T-Crest project
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+http://www.t-crest.org/
+\end_layout
+
+\end_inset
+
+ supported by the European union.
 \end_layout
 
 \begin_layout Standard
-A NoC is build of routers and links, one router for each processing tile.
- The routers can be connected in many different topologies, the most common
+In Real time systems performance depends purely on the Worst-Case Execution
+ Time (WCET), therefore the analyzability of the system is very important
+ to get a good performance.
+ A NoC is built of tiles consisting of a processor, a router and links to
+ neighboring tiles.
+ A sample sketch of a Tile can be seen in figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Tile-concept"
+
+\end_inset
+
+.
+ In a Real time MPSoC each tile processor executes one task to keep the
+ timing analysis simple and get a lower WCET.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/Tile-Details.pdf
+	lyxscale 30
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Tile-concept"
+
+\end_inset
+
+The Tile contains a processor, a Network Interface(NI), A local instruction
+ and data cache, and possibly some I/O.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To create an analyzable NoC interconnect it is required to decouple communicatio
+n in separate channels.
+ A communication channel is a point-to-point connection from one Tile to
+ another, this point-to-point connection can route packets on different
+ paths.
+ A path is a series of links, on which the packet travels to reach the end
+ point of the connection.
+ Two communication channels can not affect each other.
+ To decouple communication channels, the traffic in the network can be scheduled
+ statically at compile time.
+ Generating this routing schedule is a hard problem to solve.
+ The schedule is periodic, and thus for performance reasons (Bandwidth and
+ latency) it is important to have a schedule as short as possible.
+ We want to optimize for shortest schedule, for a given use-case.
+\end_layout
+
+\begin_layout Standard
+The routers can be connected in many different topologies, the most common
  structure is in a grid like fashion.
  One possible NoC topology is a double-torus, a figure of this layout can
  be seen in figure
@@ -123,58 +215,6 @@ reference "fig:Double-torus_not-nice"
 
  is an example of how the double torus can be layout, with a minimum average
  link length.
-\end_layout
-
-\begin_layout Standard
-In Real time systems, analyzability is the all important factor to evaluate
- the Worst-Case Execution Time (WCET).
- To get analyzability in the NoC interconnect we require decoupling of communica
-tion channels.
- That is the communication on one communication channel can not be affected
- by communication on another communication channel.
-\end_layout
-
-\begin_layout Standard
-The T-Crest project
-\begin_inset Foot
-status open
-
-\begin_layout Plain Layout
-http://www.t-crest.org/
-\end_layout
-
-\end_inset
-
- European union.
-\end_layout
-
-\begin_layout Itemize
-Why is real time systems important for ...
- something with aircrafts.
- Decoupling of communication channels in the system.
-\end_layout
-
-\begin_layout Itemize
-In the majority of on chip networks nowadays, communication between different
- pairs of nodes are coupled, due to routing and buffering in the network.
- To decouple communications channels the traffic in the network can be scheduled
- statically at compile time.
-\end_layout
-
-\begin_layout Itemize
-Generating this kind of schedule is a hard problem to solve, we would like
- to optimize the generation of this static schedule.
-\end_layout
-
-\begin_layout Standard
-To maintain hard real time properties of the system, communication must
- be statically scheduled.
-\end_layout
-
-\begin_layout Standard
-The schedule is periodic, and thus for performance reasons (Bandwidth and
- latency) it is important to have a schedule as short as possible.
- We want to optimize for shortest schedule, for a given use-case.
 \end_layout
 
 \begin_layout Standard
@@ -270,7 +310,7 @@ name "fig:Double-torus_not-nice"
 Double-torus.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "fig:Double-torus_nice"
 
 \end_inset
@@ -278,7 +318,7 @@ reference "fig:Double-torus_nice"
  Nice graph representation.
  
 \begin_inset CommandInset ref
-LatexCommand ref
+LatexCommand eqref
 reference "fig:Double-torus_not-nice"
 
 \end_inset
@@ -294,50 +334,6 @@ reference "fig:Double-torus_not-nice"
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-In Real time systems communication channels must be decoupled, this decoupling
- can be hand
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-\begin_inset Graphics
-	filename figures/Tile-Details.pdf
-	lyxscale 30
-	scale 60
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-adffd
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Tile concept, each tile processor executes one task.
 \end_layout
 
 \begin_layout Section
