@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #LyX 2.0 created this file. For more info see http://www.lyx.org/
 \lyxformat 413
 \begin_document
@@ -371,3 +372,391 @@ C++
 
 \end_body
 \end_document
+=======
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Pre-Hand-In
+\begin_inset Newline newline
+\end_inset
+
+42137 Optimization using Metaheuristics
+\end_layout
+
+\begin_layout Author
+Jaspur Højgaard - s072069
+\begin_inset Newline newline
+\end_inset
+
+Rasmus Bo Sørensen - s072080
+\begin_inset Newline newline
+\end_inset
+
+Mark Ruvald Pedersen - s072095
+\end_layout
+
+\begin_layout Standard
+Implementation language: C++11.
+\end_layout
+
+\begin_layout Section
+Problem outline
+\end_layout
+
+\begin_layout Standard
+In this project we want to implement a Meta Heuristic for scheduling communicati
+on in a Real time Multi-Processor System-on-Chip (MPSoC), the MPSoCs we
+ will be targeting for this project are MPSoCs with a Network-on-Chip as
+ interconnect.
+ 
+\end_layout
+
+\begin_layout Standard
+A NoC is build of routers and links, one router for each processing tile.
+ The routers can be connected in many different topologies, the most common
+ structure is in a grid like fashion.
+ One possible NoC topology is a double-torus, a figure of this layout can
+ be seen in figure 
+\series bold
+something
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+In Real time systems, analyzability is the all important factor to evaluate
+ the Worst-Case Execution Time (WCET).
+ To get analyzability in the NoC interconnect we require decoupling of communica
+tion channels.
+ That is the communication on one communication channel can not be affected
+ by communication on another communication channel.
+\end_layout
+
+\begin_layout Standard
+We want to The T-Crest project
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+http://www.t-crest.org/
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+Why is real time systems important for ...
+ something with aircrafts.
+ Decoupling of communication channels in the system.
+\end_layout
+
+\begin_layout Itemize
+In the majority of on chip networks nowadays, communication between different
+ pairs of nodes are coupled, due to routing and buffering in the network.
+ To decouple communications channels the traffic in the network can be scheduled
+ statically at compile time.
+\end_layout
+
+\begin_layout Itemize
+Generating this kind of schedule is a hard problem to solve, we would like
+ to optimize the generation of this static schedule.
+\end_layout
+
+\begin_layout Standard
+To maintain hard real time properties of the system, communication must
+ be statically scheduled.
+\end_layout
+
+\begin_layout Standard
+The schedule is periodic, and thus for performance reasons (Bandwidth and
+ latency) it is important to have a schedule as short as possible.
+ We want to optimize for shortest schedule, for a given use-case.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/simple-double-torus.pdf
+	lyxscale 20
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_nice"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/double-torus.pdf
+	lyxscale 20
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_not-nice"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Double-torus.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_nice"
+
+\end_inset
+
+ Nice graph representation.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_not-nice"
+
+\end_inset
+
+ Layout representation of the double-torus to minimize longest links distance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In Real time systems communication channels must be decoupled, this decoupling
+ can be hand
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/Tile-Details.pdf
+	lyxscale 30
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+adffd
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Tile concept, each tile processor executes one task.
+\end_layout
+
+\begin_layout Section
+Metaheuristics
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is large and combinatorial in nature with dependencies
+ and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any instant.
+ Another is that packets always arrives in the same order as they were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all routes
+ should be a shortest route.
+ Due to the Manhattan-like layout of tiles, this shortest path routing is
+ simple.
+ Always taking the shortest route will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Subsection
+Neighborhood and operators
+\end_layout
+
+\begin_layout Standard
+Imagining a compact schedule where most links are already occupied, small
+ changes like swapping individual links will in most cases lead to infeasible
+ schedules.
+ Instead we consider removing entire routes and rebuilding them.
+\end_layout
+
+\begin_layout Itemize
+Reroute half of an existing route.
+\end_layout
+
+\begin_layout Standard
+We propose
+\end_layout
+
+\begin_layout Standard
+Large Neighborhood Search: Destroy and rebuild part of solution with greedy
+ algorithm.
+\end_layout
+
+\begin_layout Itemize
+Greedy Randomized Adaptive Search Procedure: Generates greedy initial 
+\end_layout
+
+\begin_layout Itemize
+We expect GRASP to perform well, lack of direction in 
+\end_layout
+
+\begin_layout Standard
+Simulated annealing
+\end_layout
+
+\end_body
+\end_document
+>>>>>>> 845156c7120f6c60fea6401e89e7cb877cab9f42
