@@ -345,17 +345,17 @@ Metaheuristics
 \end_layout
 
 \begin_layout Standard
-Our scheduling problem is large and combinatorial in nature with dependencies
- and constraints.
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
  A natural constraint is that any directed link can only transfer a single
- packet at any instant.
+ packet at any timeslot.
  Another is that packets always arrives in the same order as they were sent.
  To avoid excessive feasibility-checking of the schedule due this in-order
- requirement of packets, we make the simplifying decision that all routes
- should be a shortest route.
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
  Due to the Manhattan-like layout of tiles, this shortest path routing is
  simple.
- Always taking the shortest route will automatically guarantee causality
+ Always taking the shortest path will automatically guarantee causality
  of received packets.
  
 \end_layout
@@ -365,36 +365,55 @@ Neighborhood and operators
 \end_layout
 
 \begin_layout Standard
-Imagining a compact schedule where most links are already occupied, small
- changes like swapping individual links will in most cases lead to infeasible
+The problem consists of a collection of paths to be scheduled onto the NoC.
+ We consider the neighborhood of one feasible solution, to be all other
+ feasible solutions where 
+\begin_inset Formula $k$
+\end_inset
+
+ paths are permuted.
+ A permutation of a path could be patching a part of it (local changes,
+ eg.
+ swapping individual links), or rerouting it in a randomized greedy fashion.
+\end_layout
+
+\begin_layout Standard
+Imagine a compact schedule where most links are already occupied, we expect
+ small changes like swapping individual links to result in a lot of infeasible
  schedules.
- Instead we consider removing entire routes and rebuilding them.
- It is also possible to reroute part of an existing route.
+ Instead we consider removing entire paths and rebuilding them: Patching
+ an existing path versus rerouting it, the rerouting-approach will obviously
+ be a superset, as the patching-approach makes only locally limited changes.
+ This greatly increases our neighborhood and increases our chances of the
+ new path being feasible.
+ It is also possible to reroute part of an existing path.
+\end_layout
+
+\begin_layout Standard
+If no permutation leads to a feasible path -- other than the original --
+ the neighborhood could include moving the starting timeslot.
 \end_layout
 
 \begin_layout Subsection
-Metaheuristic propositions
+Proposed metaheuristics
 \end_layout
 
 \begin_layout Standard
-We expect the following two metaheuristics to yield the best results:
+We expect the following two metaheuristics to yield good results:
 \end_layout
 
 \begin_layout Itemize
-Large Neighborhood Search (LNS): Destroy and rebuild part of solution with
- greedy algorithm.
+Large Neighborhood Search (LNS): Choose initial solution.
+ Destroy and rebuild part of current solution.
+ This is exactly what we described above.
+ 
 \end_layout
 
 \begin_layout Itemize
-Greedy Randomized Adaptive Search Procedure: Generates greedy initial 
-\end_layout
-
-\begin_layout Itemize
-We expect GRASP to perform well, in 
-\end_layout
-
-\begin_layout Standard
-lack of direction
+Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy initial
+ solution.
+ Destroy and rebuild part of solution.
+ Start over.
 \end_layout
 
 \begin_layout Standard
