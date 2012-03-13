@@ -139,12 +139,31 @@ Tile concept, each tile processor executes one task.
 Metaheuristics
 \end_layout
 
+\begin_layout Itemize
+Large Neighborhood Search: Destroy and rebuild part of solution with greedy
+ algorithm.
+\end_layout
+
+\begin_layout Itemize
+Greedy Randomized Adaptive Search Procedure: Generates greedy initial 
+\end_layout
+
+\begin_layout Itemize
+We expect GRAPS to perform well, lack of direction in 
+\end_layout
+
 \begin_layout Standard
-Evolutionary algorithms
+Simulated annealing
 \end_layout
 
 \begin_layout Section
-Neighbourhoods/Operators
+Neighborhoods/Operators
+\end_layout
+
+\begin_layout Standard
+Swapping individual links and mappings, are likely to cause concflicts and
+ infeasble schedules.
+ Instead we consider removing entire routes, and rebuilding them.
 \end_layout
 
 \begin_layout Itemize
