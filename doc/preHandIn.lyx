@@ -347,10 +347,7 @@ Imagining a compact schedule where most links are already occupied, small
  changes like swapping individual links will in most cases lead to infeasible
  schedules.
  Instead we consider removing entire routes and rebuilding them.
-\end_layout
-
-\begin_layout Itemize
-Reroute half of an existing route.
+ It is also possible to reroute part of an existing route.
 \end_layout
 
 \begin_layout Subsection
@@ -358,12 +355,12 @@ Metaheuristic propositions
 \end_layout
 
 \begin_layout Standard
-We propose
+We expect the following two metaheuristics to yield the best results:
 \end_layout
 
-\begin_layout Standard
-Large Neighborhood Search: Destroy and rebuild part of solution with greedy
- algorithm.
+\begin_layout Itemize
+Large Neighborhood Search (LNS): Destroy and rebuild part of solution with
+ greedy algorithm.
 \end_layout
 
 \begin_layout Itemize
@@ -371,11 +368,16 @@ Greedy Randomized Adaptive Search Procedure: Generates greedy initial
 \end_layout
 
 \begin_layout Itemize
-We expect GRASP to perform well, lack of direction in 
+We expect GRASP to perform well, in 
 \end_layout
 
 \begin_layout Standard
-Simulated annealing
+lack of direction
+\end_layout
+
+\begin_layout Standard
+Finally, we can implement Simulated Annealing -- since it is simple and
+ can provide a frame of reference.
 \end_layout
 
 \end_body
