@@ -388,6 +388,16 @@ Imagine a compact schedule where most links are already occupied, we expect
 \begin_layout Standard
 If no permutation leads to a feasible path -- other than the original --
  the neighborhood could include moving the starting timeslot.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Fix
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
