@@ -1,3 +1,6 @@
+## Most of these rules are taken from https://github.com/github/gitignore 
+
+
 ##############
 # Backup files
 *~

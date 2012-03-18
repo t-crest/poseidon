@@ -27,7 +27,7 @@
 \paperfontsize default
 \spacing single
 \use_hyperref false
-\papersize default
+\papersize a4paper
 \use_geometry false
 \use_amsmath 1
 \use_esint 1
@@ -43,6 +43,13 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\headheight 1cm
+\headsep 3cm
+\footskip 1cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -65,6 +72,8 @@ Pre-Hand-In
 \begin_inset Newline newline
 \end_inset
 
+
+\noun on
 42137 Optimization using Metaheuristics
 \end_layout
 
@@ -85,30 +94,45 @@ Problem outline
 \end_layout
 
 \begin_layout Standard
-In this project we want to implement a Meta Heuristic for scheduling communicati
-on in a Real time Multi-Processor System-on-Chip (MPSoC), the MPSoCs we
- will be targeting for this project are MPSoCs with a Network-on-Chip (NoC)
- as interconnect.
- This general purpose Real time MPSoC is part of the T-Crest project
+In this project we are to implement a meta heuristic for scheduling communicatio
+n in a real-time Multi-Processor System-on-Chip (MPSoC).
+ The MPSoCs we will be targeting for this project, are MPSoCs with a Network-on-
+Chip (NoC) as interconnect.
+ This general-purpose real-time MPSoC is part of the 
+\family sans
+T-Crest
+\family default
+ project
 \begin_inset Foot
-status open
+status collapsed
 
 \begin_layout Plain Layout
-http://www.t-crest.org/
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.t-crest.org/"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
 
- supported by the European union.
+ funded by the European Union.
 \end_layout
 
 \begin_layout Standard
-In Real time systems performance depends purely on the Worst-Case Execution
- Time (WCET), therefore the analyzability of the system is very important
- to get a good performance.
- A NoC is built of tiles consisting of a processor, a router and links to
- neighboring tiles.
- A sample sketch of a Tile can be seen in figure
+In real-time systems, performance depends purely on the Worst-Case Execution
+ Time (WCET) -- therefore the analyzability of the system is very important
+ to obtain good performance.
+ A NoC is built of 
+\emph on
+tiles
+\emph default
+ consisting of a processor, a router and links to neighboring tiles.
+ A sample sketch of a tile can be seen in Figure
 \begin_inset space ~
 \end_inset
 
@@ -120,8 +144,8 @@ reference "fig:Tile-concept"
 \end_inset
 
 .
- In a Real time MPSoC each tile processor executes one task to keep the
- timing analysis simple and get a lower WCET.
+ In a real-time MPSoC, each tile processor executes one task to keep the
+ timing analysis simple and get a lower WCET bound.
 \end_layout
 
 \begin_layout Standard
@@ -153,8 +177,8 @@ name "fig:Tile-concept"
 
 \end_inset
 
-The Tile contains a processor, a Network Interface(NI), A local instruction
- and data cache, and possibly some I/O.
+A tile contains a processor, a Network Interface (NI), a local instruction
+ and data cache and possibly some I/O.
 \end_layout
 
 \end_inset
@@ -168,27 +192,26 @@ The Tile contains a processor, a Network Interface(NI), A local instruction
 \end_layout
 
 \begin_layout Standard
-To create an analyzable NoC interconnect it is required to decouple communicatio
-n in separate channels.
- A communication channel is a point-to-point connection from one Tile to
- another, this point-to-point connection can route packets on different
+A communication channel is a point-to-point connection from one tile to
+ another, this point-to-point connection can route packets along different
  paths.
- A path is a series of links, on which the packet travels to reach the end
- point of the connection.
- Two communication channels can not affect each other.
+ A path is the sequence of links, on which the packet travels to reach the
+ end point of the connection.
+ Two communication channels can not affect each other -- they are decoupled.
+ Decoupling is required to make the NoC-interconnect analyzable.
  To decouple communication channels, the traffic in the network can be scheduled
  statically at compile time.
  Generating this routing schedule is a hard problem to solve.
- The schedule is periodic, and thus for performance reasons (Bandwidth and
- latency) it is important to have a schedule as short as possible.
- We want to optimize for shortest schedule, for a given use-case.
+ The schedule is periodic, and thus for performance reasons (bandwidth and
+ latency) it is important to have the schedule as short as possible.
+ Given use-case, we therefore want to optimize towards the shortest schedule.
 \end_layout
 
 \begin_layout Standard
-The routers can be connected in many different topologies, the most common
- structure is in a grid like fashion.
- One possible NoC topology is a double-torus, a figure of this layout can
- be seen in figure
+Routers can be connected in many different topologies, the most common structure
+ is in a grid-like fashion.
+ One possible NoC topology is a double-torus, an example of this layout
+ is seen in Figure
 \begin_inset space ~
 \end_inset
 
@@ -200,8 +223,8 @@ reference "fig:Double-torus_nice"
 \end_inset
 
 .
- In this figure some of the links are very long, and when implemented in
- hardware this becomes infeasible.
+ In this figure, some of the links are very long which does not scale well
+ in hardware implementations.
  Figure
 \begin_inset space ~
 \end_inset
@@ -213,7 +236,7 @@ reference "fig:Double-torus_not-nice"
 
 \end_inset
 
- is an example of how the double torus can be layout, with a minimum average
+ is an example of how the double-torus can be laid out, with a minimum average
  link length.
 \end_layout
 
@@ -252,7 +275,7 @@ name "fig:Double-torus_nice"
 
 \end_inset
 
-
+Nice graph representation.
 \end_layout
 
 \end_inset
@@ -290,7 +313,7 @@ name "fig:Double-torus_not-nice"
 
 \end_inset
 
-
+Minimized longest-link distance.
 \end_layout
 
 \end_inset
@@ -307,23 +330,7 @@ name "fig:Double-torus_not-nice"
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Double-torus.
- 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "fig:Double-torus_nice"
-
-\end_inset
-
- Nice graph representation.
- 
-\begin_inset CommandInset ref
-LatexCommand eqref
-reference "fig:Double-torus_not-nice"
-
-\end_inset
-
- Layout representation of the double-torus to minimize longest links distance.
+Two double-torus graphs, only differing in layout.
 \end_layout
 
 \end_inset
@@ -345,12 +352,11 @@ Our scheduling problem is large and combinatorial in nature with both dependenci
 es and constraints.
  A natural constraint is that any directed link can only transfer a single
  packet at any timeslot.
- Another is that packets always arrives in the same order as they were sent.
+ Another is that packets must arrive in the same order as they were sent.
  To avoid excessive feasibility-checking of the schedule due this in-order
  requirement of packets, we make the simplifying decision that all paths
  should be a shortest path.
- Due to the Manhattan-like layout of tiles, this shortest path routing is
- simple.
+ Due to the regularity of the graph, this shortest path routing is simple.
  Always taking the shortest path will automatically guarantee causality
  of received packets.
  
@@ -380,24 +386,22 @@ Imagine a compact schedule where most links are already occupied, we expect
  Instead we consider removing entire paths and rebuilding them: Patching
  an existing path versus rerouting it, the rerouting-approach will obviously
  be a superset, as the patching-approach makes only locally limited changes.
- This greatly increases our neighborhood and increases our chances of the
- new path being feasible.
+ The rerouting-approach greatly increases our neighborhood and increases
+ our chances of finding a new and feasible path.
  It is also possible to reroute part of an existing path.
 \end_layout
 
 \begin_layout Standard
-If no permutation leads to a feasible path -- other than the original --
- the neighborhood could include moving the starting timeslot.
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Fix
-\end_layout
-
+We can use the above approach to 
+\begin_inset Quotes eld
 \end_inset
 
+make room
+\begin_inset Quotes erd
+\end_inset
 
+ in the schedule such that the latest-finishing path may be moved to an
+ earlier starting timeslot -- thus reducing the overall schedule period.
 \end_layout
 
 \begin_layout Subsection
@@ -419,7 +423,7 @@ Large Neighborhood Search (LNS): Choose initial solution.
 Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy initial
  solution.
  Destroy and rebuild part of solution.
- Start over.
+ Start over with new initial solution.
 \end_layout
 
 \begin_layout Standard
