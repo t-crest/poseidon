@@ -39,6 +39,8 @@ Session.vim
 
 ##############
 # NetBeans
+src/.dep.inc
+src/nbproject/
 nbproject/private/
 build/
 nbbuild/
