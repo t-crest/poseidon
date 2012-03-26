@@ -16,13 +16,12 @@ using std::map;
 using std::array;
 using std::vector;
 
-//typedef int channel_t;
 typedef uint timeslot;
 typedef uint coord;
 typedef std::pair<coord, coord> router_id;
 enum port_id {N, S, E, W, L, __NUM_PORTS};
 
-class port;
+class port_t;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -35,57 +34,99 @@ struct channel {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class link_t {
+class schedule {
 private:
-	map<timeslot, channel*> local_schedule;
-	port *src;
-	port *dest;
+	map<timeslot, channel*> table;
 public:
-	link_t(port* _src, port* _dest);
-	
-	bool available(timeslot t); // True if nothing has been scheduled onto this at time t
+	bool available(timeslot t); 
 	channel* get(timeslot t);
 	timeslot max_time();
-	void add(channel *c, timeslot t); // Schedule c onto this link at time t
+	void add(channel *c, timeslot t); 
 	void remove(timeslot t);
-	void remove(channel *c);
+	void remove(channel *c);	
 };
-
-typedef boost::optional<link_t> mlink;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class port {
+class port_out_t; // forward decl
+class port_in_t;  // forward decl
+
+class link_t {
 private:
-	mlink output;
-	mlink input;
+	port_out_t *source;
+	port_in_t *sink;
+	schedule local_schedule;
 public:
-	mlink& out();
-	mlink& in();
+	link_t(port_out_t& _source, port_in_t& _sink);
+	port_out_t* from();
+	port_in_t* to();
+};
+
+//typedef boost::optional<link_t> mlink; // maybe link
+
+////////////////////////////////////////////////////////////////////////////////
+
+class router_t; // forward decl
+
+class port_t {
+private:
+	router_t* parent;
+	boost::optional<link_t*> l;
+public:
+	port_t(router_t* _router);
+	virtual ~port_t() = 0;
+	router_t* parent_router() const;
+	void add_link(link_t *l);
+	link_t* link();
+	bool has_link();
+};
+
+class port_out_t : public port_t {
+public:
+	port_out_t(router_t* _router);
+};
+
+class port_in_t : public port_t {
+public:
+	port_in_t(router_t* _router);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class router {
+class router_t {
+private:
+	typedef std::array<port_in_t, __NUM_PORTS> port_in_array; 
+	typedef std::array<port_out_t, __NUM_PORTS> port_out_array; 
+	port_in_array ports_in; // always 5 ports (but they might have no links connected)
+	port_out_array ports_out; // always 5 ports (but they might have no links connected)
+	router_id address;
 //	bool dual_ported;
-	typedef std::array<port, __NUM_PORTS> port_array; // 5 ports
-	port_array ports; // A router has output-ports
 public:
-	port& getport(port_id p);
+	router_t(router_id _address);
+	router_id addr() const;
+	port_in_t& in(port_id p);
+	port_out_t& out(port_id p);
+private:
+	static port_in_array init_inputs(router_t *This);
+	static port_out_array init_outputs(router_t *This);
 };
 
-typedef boost::optional<router> mrouter;
+typedef boost::optional<router_t> mrouter; // maybe router
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class network {
+class network_t {
 	matrix<mrouter> routers;
 	class specification {
 		vector<channel> channels;
 	};
 public:
-	network(uint rows, uint cols);
-	mrouter& router(router_id r);
+	network_t(uint rows, uint cols);
+	uint rows() const;
+	uint cols() const;
+	bool has(router_id r);
+	void add(router_id r);
+	router_t& router(router_id r);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

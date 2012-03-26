@@ -6,7 +6,8 @@
 #include <cmath>
 #include <set>
 
-#define debugf(x)	{std::cout << __FILE__ << ":" << __LINE__ << ":\t " #x " = '" << (x) << "'" << std::endl;}
+#define warning(pred, x)	{if (pred) {std::cerr << "Warning at " __FILE__ << ":" << __LINE__ << ":\t " << (x) << std::endl;}}
+#define debugf(x)			{std::cout << __FILE__ << ":" << __LINE__ << ":\t " #x " = '" << (x) << "'" << std::endl;}
 
 typedef unsigned int uint;
 
