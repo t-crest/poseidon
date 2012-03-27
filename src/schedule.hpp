@@ -69,6 +69,8 @@ public:
 	link_t(port_out_t& _source, port_in_t& _sink);
 };
 
+std::ostream& operator<<(std::ostream& stream, const link_t& rhs);
+
 ////////////////////////////////////////////////////////////////////////////////
 
 class router_t; // forward decl
@@ -80,23 +82,26 @@ private:
 	friend class link_t;	// Allow link_t to call add_link(), despite it being private
 	
 public:
+	const port_id corner;	// World corner
 	router_t& parent;		// A port always belongs to router, and this can't be changed
 
-	port_t(router_t& _router);
+	port_t(router_t& _router, port_id _corner);
 	virtual ~port_t() = 0; // Disallow instances of port_t
-	link_t* link();
+	link_t& link();
 	bool has_link();
 };
 
 class port_out_t : public port_t {
 public:
-	port_out_t(router_t& _router);
+	port_out_t(router_t& _router, port_id _corner);
 };
 
 class port_in_t : public port_t {
 public:
-	port_in_t(router_t& _router);
+	port_in_t(router_t& _router, port_id _corner);
 };
+
+std::ostream& operator<<(std::ostream& stream, const port_t& rhs);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +120,7 @@ public:
 private:
 	template <typename T> 
 	static std::array<T, __NUM_PORTS> init(router_t *This) {
-		std::array<T, __NUM_PORTS> ret = {T(*This),T(*This),T(*This),T(*This),T(*This)};
+		std::array<T, __NUM_PORTS> ret = {T(*This,N),T(*This,S),T(*This,E),T(*This,W),T(*This,L)};
 		return ret;
 	}
 };

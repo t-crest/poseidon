@@ -78,24 +78,35 @@ link_t::link_t(port_out_t& _source, port_in_t& _sink)
 	this->sink.add_link(this);
 }
 
+std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
+	stream << rhs.source << "-->" << rhs.sink;
+	return stream;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
-port_t::port_t(router_t& _parent) : l(NULL), parent(_parent) {}
+port_t::port_t(router_t& _parent, port_id _corner) : l(NULL), parent(_parent), corner(_corner) {}
 port_t::~port_t() {}
 void port_t::add_link(link_t *l) {
 	ensure(this->l==NULL, "Port already has a link connected");
 	this->l = l; // now it's connected, but it shouldn't have been before
 }
-link_t* port_t::link() {
+link_t& port_t::link() {
 	assert(this->l);
-	return this->l;
+	return *(this->l);
 }
 bool port_t::has_link() {
 	return (this->l != NULL);
 }
 
-port_out_t::port_out_t(router_t& _router) : port_t(_router) {}
-port_in_t::port_in_t(router_t& _router) : port_t(_router) {}
+std::ostream& operator<<(std::ostream& stream, const port_t& rhs) {
+	routerport_id rp_id = {rhs.parent.address, rhs.corner};
+	stream << rp_id;
+	return stream;
+}
+
+port_out_t::port_out_t(router_t& _router, port_id _corner) : port_t(_router, _corner) {}
+port_in_t::port_in_t(router_t& _router, port_id _corner) : port_t(_router, _corner) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 
