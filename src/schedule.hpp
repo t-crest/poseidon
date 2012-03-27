@@ -14,6 +14,7 @@
 
 using std::pair;
 using std::map;
+using std::set;
 using std::array;
 using std::vector;
 
@@ -131,6 +132,7 @@ private:
 
 class network_t {
 	matrix<router_t*> routers;
+	set<link_t*> link_ts;
 	class specification {
 		vector<channel> channels;
 	};
@@ -142,6 +144,7 @@ public:
 	link_t* add(port_out_t& source, port_in_t& sink);
 	router_t* add(router_id r);
 	router_t* router(router_id r);
+	const set<link_t*>& links() const;
 };
 
 ////////////////////////////////////////////////////////////////////////////////

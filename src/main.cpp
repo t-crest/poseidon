@@ -17,15 +17,20 @@ int main(int argc, char* argv[])
 	parser p("test.xml");
 	network_t& n = *(p.n);
 	
-	for (int x = 0; x < n.cols(); x++) 
-	for (int y = 0; y < n.rows(); y++) 
-		if (!n.has({x,y})) continue;
-		else
-			for (int p = 0; p < __NUM_PORTS; p++) {
-				auto oport = n.router({x,y})->out((port_id)p);
-				if (oport.has_link())
-					cout << oport.link() << endl;
-			}
+	for_each(n.links(), [](link_t *l){
+		debugf(*l);
+	});
+			
+			
+//	for (int x = 0; x < n.cols(); x++) 
+//	for (int y = 0; y < n.rows(); y++) 
+//		if (!n.has({x,y})) continue;
+//		else
+//			for (int p = 0; p < __NUM_PORTS; p++) {
+//				auto oport = n.router({x,y})->out((port_id)p);
+//				if (oport.has_link())
+//					cout << oport.link() << endl;
+//			}
 
 	return 0;
 }

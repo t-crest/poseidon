@@ -88,7 +88,7 @@ std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
 port_t::port_t(router_t& _parent, port_id _corner) : l(NULL), parent(_parent), corner(_corner) {}
 port_t::~port_t() {}
 void port_t::add_link(link_t *l) {
-	ensure(this->l==NULL, "Port already has a link connected");
+	ensure(this->l==NULL, "Port " << *this << " already has a link connected: " << *(this->l));
 	this->l = l; // now it's connected, but it shouldn't have been before
 }
 link_t& port_t::link() {
@@ -147,6 +147,7 @@ bool network_t::has(router_id r) {
 
 link_t* network_t::add(port_out_t& source, port_in_t& sink) {
 	link_t *l = new link_t(source, sink);
+	this->link_ts.insert(l);
 	return l;
 }
 
@@ -161,6 +162,10 @@ router_t* network_t::add(router_id r) {
 
 router_t* network_t::router(router_id r) {
 	return this->routers(r);
+}
+
+const set<link_t*>& network_t::links() const {
+	return this->link_ts;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
