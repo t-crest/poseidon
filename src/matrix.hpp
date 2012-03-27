@@ -16,7 +16,8 @@ class matrix {
 public:
 
 	matrix(uint _row, uint _col)
-	: row(_row), col(_col) {
+	:	row(_row), col(_col) 
+	{
 		assert(this->row > 0);
 		assert(this->col > 0);
 		data.resize(this->row * this->col);

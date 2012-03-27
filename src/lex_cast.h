@@ -10,6 +10,23 @@
 #include <array>
 #include <boost/optional/optional.hpp>
 
+namespace lex_cast_helpers {
+	void consume(std::istream& stream, const std::set<char>& items);
+}
+
+template <typename A, typename B>
+std::istream& operator>>(std::istream& stream, std::pair<A,B>& p)
+{
+	using lex_cast_helpers::consume;
+	
+	consume(stream, std::set<char>({' ', '('}));
+	stream >> p.first;
+	stream.ignore(1,',');
+	stream >> p.second;	
+	consume(stream, std::set<char>({' ', ')'}));
+	
+	return stream; 
+}
 
 template <typename A, typename B>
 std::ostream& operator<<(std::ostream& stream, const std::pair<A,B>& p)

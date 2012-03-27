@@ -2,6 +2,34 @@
 
 
 
+std::ostream& operator<<(std::ostream& stream, const port_id& rhs) {
+	static const std::map<port_id, char> m = {{N,'N'},{S,'S'},{E,'E'},{W,'W'},{L,'L'}};
+	stream << m.at(rhs);
+	return stream;
+}
+
+std::istream& operator>>(std::istream& stream, port_id& rhs) {
+	static const std::map<char,port_id> m = {{'N',N},{'S',S},{'E',E},{'W',W},{'L',L}};
+	char c;
+	stream >> c;
+	rhs = m.at(c);
+	return stream;
+}
+
+std::ostream& operator<<(std::ostream& stream, const routerport_id& rhs) {
+	stream << rhs.first << rhs.second;
+	return stream;
+}
+
+std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
+	stream >> rhs.first >> rhs.second;
+	return stream;
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
 /** Returns true if nothing has been scheduled at timeslot t */
 bool schedule::available(timeslot t) {
 	return ! util::contains(this->table, t);
@@ -39,55 +67,53 @@ void schedule::remove(channel *c)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-link_t::link_t(port_out_t& _source, port_in_t& _sink) : source(&_source), sink(&_sink) {
-	const bool loop = (this->source->parent_router() == this->sink->parent_router());
-	debugf(this->source->parent_router());
-	debugf(this->sink->parent_router());
-	warning(loop, "Self-loop detected on link")
+link_t::link_t(port_out_t& _source, port_in_t& _sink) 
+:	source(_source), sink(_sink) 
+{
+	const bool loop = (&this->source.parent == &this->sink.parent);
+	warn_if(loop, "Self-loop detected on link");
+	
+	// Update the ports themselves, that they are infact connect to this link
+	this->source.add_link(this);
+	this->sink.add_link(this);
 }
-port_out_t* link_t::from() {return this->source;}
-port_in_t* link_t::to() {return this->sink;}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-port_t::port_t(router_t* _parent) : parent(_parent) {}
-port_t::~port_t() { }
-router_t* port_t::parent_router() const {
-	return this->parent;
-}
+port_t::port_t(router_t& _parent) : l(NULL), parent(_parent) {}
+port_t::~port_t() {}
 void port_t::add_link(link_t *l) {
-	this->l = l;
+	ensure(this->l==NULL, "Port already has a link connected");
+	this->l = l; // now it's connected, but it shouldn't have been before
 }
 link_t* port_t::link() {
-	return *(this->l);
+	assert(this->l);
+	return this->l;
 }
 bool port_t::has_link() {
-	return this->l.is_initialized();
+	return (this->l != NULL);
 }
 
-port_out_t::port_out_t(router_t* _router) : port_t(_router) {}
-port_in_t::port_in_t(router_t* _router) : port_t(_router) {}
+port_out_t::port_out_t(router_t& _router) : port_t(_router) {}
+port_in_t::port_in_t(router_t& _router) : port_t(_router) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 router_t::router_t(router_id _address) 
-:	address(_address), ports_in(init_inputs(this)), ports_out(init_outputs(this))
+:	address(_address), ports_in(init<port_in_t>(this)), ports_out(init<port_out_t>(this))
 {
-	debugf(this);
-	assert(this->in(N).parent_router() == this);
-	assert(this->in(S).parent_router() == this);
-	assert(this->in(E).parent_router() == this);
-	assert(this->in(W).parent_router() == this);
-	assert(this->in(L).parent_router() == this);
+	assert(&this->in(N).parent == this);
+	assert(&this->in(S).parent == this);
+	assert(&this->in(E).parent == this);
+	assert(&this->in(W).parent == this);
+	assert(&this->in(L).parent == this);
 
-	assert(this->out(N).parent_router() == this);
-	assert(this->out(S).parent_router() == this);
-	assert(this->out(E).parent_router() == this);
-	assert(this->out(W).parent_router() == this);
-	assert(this->out(L).parent_router() == this);
+	assert(&this->out(N).parent == this);
+	assert(&this->out(S).parent == this);
+	assert(&this->out(E).parent == this);
+	assert(&this->out(W).parent == this);
+	assert(&this->out(L).parent == this);
 }
-
-router_id router_t::addr() const {return this->address;}
 
 port_out_t& router_t::out(port_id p) {
 	return this->ports_out[p];
@@ -95,16 +121,6 @@ port_out_t& router_t::out(port_id p) {
 
 port_in_t& router_t::in(port_id p) {
 	return this->ports_in[p];
-}
-
-router_t::port_in_array router_t::init_inputs(router_t *This) {
-	port_in_array ret = {port_in_t(This),port_in_t(This),port_in_t(This),port_in_t(This),port_in_t(This)};
-	return ret;
-}
-
-router_t::port_out_array router_t::init_outputs(router_t *This) {
-	port_out_array ret = {port_out_t(This),port_out_t(This),port_out_t(This),port_out_t(This),port_out_t(This)};
-	return ret;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,17 +131,25 @@ uint network_t::rows() const {return this->routers.rows();}
 uint network_t::cols() const {return this->routers.cols();}
 
 bool network_t::has(router_id r) {
-	return this->routers(r).is_initialized();
+	return (this->routers(r) != NULL);
 }
 
-void network_t::add(router_id r) {
-	debugf(&(this->routers(r)));
-	this->routers(r) = router_t(r); //XXX assignment operator
-	debugf(&(this->routers(r)));
+link_t* network_t::add(port_out_t& source, port_in_t& sink) {
+	link_t *l = new link_t(source, sink);
+	return l;
 }
 
-router_t& network_t::router(router_id r) {
-	return *(this->routers(r));
+router_t* network_t::add(router_id r) {
+	if (this->routers(r) == NULL) { // create only new router if it didn't exist before
+		this->routers(r) = new router_t(r);
+		assert(this->router(r) == &this->router(r)->out(N).parent);
+		assert(this->router(r) == &this->router(r)->out(L).parent);
+	}
+	return this->routers(r);
+}
+
+router_t* network_t::router(router_id r) {
+	return this->routers(r);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -6,7 +6,8 @@
 #include <cmath>
 #include <set>
 
-#define warning(pred, x)	{if (pred) {std::cerr << "Warning at " __FILE__ << ":" << __LINE__ << ":\t " << (x) << std::endl;}}
+#define ensure(pred, x)		{if (!(pred))	{std::cerr << "Error:  \t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl; abort();}}
+#define warn_if(pred, x)	{if ((pred))	{std::cerr << "Warning:\t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl;}}
 #define debugf(x)			{std::cout << __FILE__ << ":" << __LINE__ << ":\t " #x " = '" << (x) << "'" << std::endl;}
 
 typedef unsigned int uint;
