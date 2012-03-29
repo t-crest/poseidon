@@ -19,10 +19,14 @@ using std::array;
 using std::vector;
 
 typedef uint timeslot;
-typedef uint coord;
+typedef int coord;
 typedef std::pair<coord, coord> router_id;
 enum port_id {N, S, E, W, L, __NUM_PORTS};
 typedef std::pair<router_id, port_id> routerport_id;
+
+
+router_id operator-(const router_id& lhs, const router_id& rhs);
+router_id abs(const router_id& arg);
 
 std::ostream& operator<<(std::ostream& stream, const port_id& rhs);
 std::istream& operator>>(std::istream& stream, port_id& rhs);

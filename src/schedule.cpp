@@ -1,6 +1,15 @@
 #include "schedule.hpp"
 
 
+router_id operator-(const router_id& lhs, const router_id& rhs) {
+	router_id ret = {lhs.first-rhs.first, lhs.second-rhs.second};
+	return ret;
+}
+
+router_id abs(const router_id& arg) {
+	router_id ret = {abs(arg.first), abs(arg.second)};
+	return ret;
+}
 
 std::ostream& operator<<(std::ostream& stream, const port_id& rhs) {
 	static const std::map<port_id, char> m = {{N,'N'},{S,'S'},{E,'E'},{W,'W'},{L,'L'}};
@@ -152,6 +161,9 @@ link_t* network_t::add(port_out_t& source, port_in_t& sink) {
 }
 
 router_t* network_t::add(router_id r) {
+	ensure(0 <= r.first && r.first <= this->cols()-1, "Tried to add router " << r << " outside network");
+	ensure(0 <= r.second && r.second <= this->rows()-1, "Tried to add router " << r << " outside network");
+
 	if (this->routers(r) == NULL) { // create only new router if it didn't exist before
 		this->routers(r) = new router_t(r);
 		assert(this->router(r) == &this->router(r)->out(N).parent);

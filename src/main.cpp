@@ -1,9 +1,13 @@
+#include "draw.hpp"
+#include "svg.h"
 #include "parser.hpp"
 #include "higher_order.h"
 #include "lex_cast.h"
 #include "util.hpp"
 #include "matrix.hpp"
 #include "schedule.hpp"
+#include "file.hpp"
+#include "draw.hpp"
 #include <array>
 #include <iostream>
 #include <cstdlib>
@@ -12,16 +16,24 @@
 using namespace std;
 
 
+
 int main(int argc, char* argv[]) 
 {
 	parser p("test.xml");
 	network_t& n = *(p.n);
+	draw d(n);
 	
-	for_each(n.links(), [](link_t *l){
-		debugf(*l);
-	});
-			
-			
+	snts::file f("network.svg", fstream::out);
+	f << d.root.toString() << "\n";
+	
+	
+	
+	
+//	for_each(n.links(), [](link_t *l){
+//		debugf(*l);
+//	});
+	
+	
 //	for (int x = 0; x < n.cols(); x++) 
 //	for (int y = 0; y < n.rows(); y++) 
 //		if (!n.has({x,y})) continue;

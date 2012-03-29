@@ -39,14 +39,39 @@ parser::parser(string file)
 
 void parser::parse_arbitary(xml_node& graph) {
 	for (EACH_TAG(node_itr, "link", graph)) { 
-		const routerport_id source = get_attr<routerport_id>(node_itr, "source");
-		const routerport_id sink = get_attr<routerport_id>(node_itr, "sink");
+		const router_id r1 = get_attr<router_id>(node_itr, "source");
+		const router_id r2 = get_attr<router_id>(node_itr, "sink");
 		
-//		debugf(source);
-//		debugf(sink);
+		const router_id absdiff = abs(r1 - r2); // element-wise abs
+		const bool same_row = (absdiff.second == 0); // equal y coords
+		const bool same_col = (absdiff.first == 0); // equal x coords
 
-		const router_id r1 = source.first;	const router_id r2 = sink.first;
-		const port_id p1 = source.second;	const port_id p2 = sink.second;
+		ensure(same_col | same_row, "Router " << r1 << " and " << r2 << " must be in same row or column");
+		assert(same_col ^ same_row && "Can not be in same row and col at the same time");
+
+		const int dist = util::max(absdiff.first, absdiff.second);
+		const bool short_link = (dist == 1);
+		const bool long_link  = (dist == (same_row ? n->rows():n->cols())-1) & !short_link;
+		assert(short_link ^ long_link);
+
+		debugf(short_link);
+		debugf(long_link);
+		
+		port_id p1, p2;
+		if (same_col) {
+			assert(r1.second != r2.second && "Same coordinates");
+			const bool r1_above_r2 = (r1.second < r2.second);
+			const bool choose = r1_above_r2 ^ long_link; // change direction if long_link
+			p1 = (choose ? S : N);
+			p2 = (choose ? N : S);
+		}
+		if (same_row) {
+			assert(r1.first != r2.first && "Same coordinates");
+			const bool r1_left_of_r2 = (r1.first < r2.first);
+			const bool choose = r1_left_of_r2 ^ long_link; // change direction if long_link
+			p1 = (choose ? E : W);
+			p2 = (choose ? W : E);
+		}
 		
 		n->add(n->add(r1)->out(p1), n->add(r2)->in(p2)); // add routers r1 and r2, and the link between them
 	}

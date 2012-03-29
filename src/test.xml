@@ -2,8 +2,9 @@
 
 <topology width="3" height="3">
 	<graph type="arbitary">
-		<link source="(1,2)E" sink="(2,2)N"/>
-		<link source="(1,1)E" sink="(2,2)N"/>
+		<link source="(0,2)" sink="(2,2)"/>
+		<link source="(1,2)" sink="(2,2)"/>
+		<!--link source="(0,0)" sink="(2,2)"/-->
 	</graph>
 
 	<!-- 
