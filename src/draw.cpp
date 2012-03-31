@@ -87,54 +87,25 @@ std::pair<int,int> draw::coords(const port_t& p) {
 element draw::link(link_t *l) {
 	std::pair<int,int> p1 = coords(l->source);
 	std::pair<int,int> p2 = coords(l->sink);
-
-	if (!l->wrapped) {
-		return this->arrow(p1.first,p1.second, p2.first,p2.second);
+	
+	
+	
+	
+	if (! l->wrapped) {
+		return this->arrow_straight(p1.first,p1.second, p2.first,p2.second);
 	} else {
-		return this->curve_arrow(p1.first, p1.second, p2.first, p2.second);
-		
-//		const bool same_row = (p1.second == p2.second);
-//		if (same_row) {
-//			if (p1.first < p2.first) 
-//				return arrow_rightwards(p1.first, p1.second, p2.first);
-//			else
-//				return arrow_leftwards(p1.first, p1.second, p2.first);
-//		}
-		
+		return this->arrow_wrapped(p1.first, p1.second, p2.first, p2.second);
 	}
 }
 
-
-element draw::arrow_rightwards(float x1, float y, float x2){
-	debugf("right");
-	
-	element g = element().Tag("g")
-//		.Set("transform","translate("+::lex_cast<string>(x2)+","+::lex_cast<string>(y)+")")
-//		.AddChild(this->curve_arrow(x1,x2)
-	;
-	
-	return g;
-}
-
-element draw::arrow_leftwards(float x1, float y, float x2){
-	debugf("left");
-
-	element g = element().Tag("g")
-//		.Set("transform","translate("+::lex_cast<string>(x2)+","+::lex_cast<string>(y)+") scale(-1,1)")
-//		.AddChild(this->curve_arrow(x1,x2)
-	;
-	
-	return g;
-}
-
-
 string draw::arrow_head(const double offset_angle) 
 {
-	const double a = 45;
+	const double a = 25;	// half-angle of head
+	const double len = 3.0;	// side-length of head
+
 	const double angle1 = 180-a + offset_angle;
 	const double angle2 = angle1 + 2*a;
 
-	const double len = 5.0;
 	static double pi = std::atan(1.0)*4.0;
 	static double deg2rad = pi/180.0;
 
@@ -152,88 +123,10 @@ string draw::arrow_head(const double offset_angle)
 		% (x2-x1) % (y2-y1)
 		% -x2 % -y2
 	);
-	
-	
-//	return boost::str( boost::format(
-//		"l -%1%,-%2% "	// The arrow head starts here...
-//		"l %3%,%2% "	// ...
-//		"l -%3%,%2% "	// ...
-//		"l %1%,-%2% "	// ...
-//	) % w /*head width*/ % l /*head length*/ % m /*miter joint*/);
 }
 
-
-element draw::curve_arrow(float x1, float y1, float x2, float y2) 
+element draw::arrow_straight(const float x1, const float y1, const float x2, const float y2) 
 {
-	const int stub = 3;
-	const int a = 15;
-	const int b = 20;
-
-	const bool same_row = (x1 == x2);
-	const bool same_col = (y1 == y2);
-	assert(same_row ^ same_col && "Arbitary positions not allowed, must be in either same row or col");
-	
-	return element().Tag("path")
-		.Set("style", "fill:none")
-		.Set("stroke", "#000000")
-		.Set("stroke-linejoin", "round")
-		.Set("stroke-linecap", "round")
-		.Set("d",	
-			boost::str( boost::format(
-				"m %1%,%2%  " // x1,y1, always start in p1
-
-				"l %3%,%4%  " 
-				"c %5%,%6% %7%,%8% %9%,%10%  "
-				"l %11%,%12%  "
-				"c %13%,%14% %15%,%16% %17%,%18%  "
-				"l %3%,%4%  "
-			
-				"%19%  "
-			
-			)	% x1 % y1 // 1 2
-		
-				% ((y1==y2) * ((x1 < x2) ? -stub : stub))	// 3
-				% ((x1==x2) * ((y1 < y2) ? -stub : stub))	// 4
-			
-				% ((y1==y2) * ((x1 < x2) ? -a : a))			// 5
-				% ((x1==x2) * ((y1 < y2) ? -a : a))			// 6
-				% ((y1==y2) * ((x1 < x2) ? -a : a) | (x1==x2) * (-b)) // 7
-				% ((x1==x2) * ((y1 < y2) ? -a : a) | (y1==y2) * (-b)) // 8
-				% ((x1==x2) * (-b))							// 9
-				% ((y1==y2) * (-b))							// 10
-
-				% (x2-x1 + 2*(y1==y2) * ((x1 < x2) ? stub : -stub)) // 11
-				% (y2-y1 + 2*(x1==x2) * ((y1 < y2) ? stub : -stub)) // 12
-
-				% ((y1==y2) * ((x1 < x2) ? a : -a))			// 13
-				% ((x1==x2) * ((y1 < y2) ? a : -a))			// 14
-				% ((y1==y2) * ((x1 < x2) ? a : -a) | (x1==x2) * (b)) // 15
-				% ((x1==x2) * ((y1 < y2) ? a : -a) | (y1==y2) * (b)) // 16
-				% ((x1==x2) * (b))							// 17
-				% ((y1==y2) * (b))							// 18
-			
-				% this->arrow_head(  (y1==y2) *180* (x2>x1)  |   -(x1==x2)*(90 + 180*(y2<y1))     )
-			
-			));
-
-//				"l %4%,0 "
-//				"c 15,0 15,-20 0,-20 "
-//				"l -%5%,0  "
-//				"c -15,0 -15,20 0,20 "
-//				"l %4%,0 "
-//
-//				"l -%4%,0 "
-//				"c -15,0 -15,-20 0,-20 "
-//				"l %5%,0 "
-//				"c 15,0 15,20 0,20 "
-//			)	% 5 /*head width*/ % 2.5 /*head length*/ % 1 /*miter joint*/
-//				% linestub % (x2-x1+2*linestub) /*longline*/)
-}
-
-
-
-
-element draw::arrow(float x1, float y1, float x2, float y2) {
 	static const float pi = std::atan(1.0)*4.0;
 	static const float rad2deg = 180.0/pi;
 	
@@ -251,17 +144,107 @@ element draw::arrow(float x1, float y1, float x2, float y2) {
 	element g = element().Tag("g")
 		.Set("transform","translate("+::lex_cast<string>(x1)+","+::lex_cast<string>(y1)+") rotate("+::lex_cast<string>(angle)+")")
 		.AddChild(element().Tag("path")
-			.Set("style", "fill").Set("stroke", "#000000")
-			.Set("d",	boost::str( boost::format(
-							"M 0,0 "		// always origo
-							"L %4%,0 "		// length of the arrow
-							"l -%1%,-%2% "	// The arrow head starts here...
-							"l %3%,%2% "	// ...
-							"l -%3%,%2% "	// ...
-							"l %1%,-%2% "	// ...
-						) % 5 /*head width*/ % 2.5 /*head length*/ % 1 /*miter joint*/ % length)
+		.Set("style", "fill")
+		.Set("stroke", "#000000")
+		.Set("stroke-linejoin", "round")
+		.Set("stroke-linecap", "round")
+		.Set("d",	
+			boost::str( boost::format(
+				"M 0,0 "		// always origo
+				"L %1%,0 "		// length of the arrow
+				"%2% "
+				) % length % this->arrow_head(0))
 			));
 
 	return g;
+}
+
+element draw::arrow_wrapped(const float x1, const float y1, const float x2, const float y2) 
+{
+	const int stub = 3;	// the small straight line which touches the node
+	const int r = 10;	// "radius" of bezier curve (appoximately a circle)
+	const int w = -28;	// width of curve
+
+	const bool same_row = (x1==x2);
+	const bool same_col = (y1==y2);
+	assert(same_row ^ same_col && "Arbitary positions not allowed, must be in either same row or col");
+	
+	const auto s1 = (same_col * ((x1 < x2) ? -stub : stub));
+	const auto s2 = (same_row * ((y1 < y2) ? -stub : stub));
+	
+	const auto c1 = (same_col * ((x1 < x2) ? -r : r));
+	const auto c2 = (same_row * ((y1 < y2) ? -r : r));
+	const auto c3 = (same_col * ((x1 < x2) ? -r : r) | same_row * (-w));
+	const auto c4 = (same_row * ((y1 < y2) ? -r : r) | same_col * (-w));
+	const auto c5 = (same_row * (-w));
+	const auto c6 = (same_col * (-w));
+	
+	
+	return element().Tag("path")
+		.Set("style", "fill")
+		.Set("stroke", "#000000")
+		.Set("stroke-linejoin", "round")
+		.Set("stroke-linecap", "round")
+		.Set("d",	
+			boost::str( boost::format(
+				"m %1%,%2%  " // x1,y1, always start in p1
+
+				"l %3%,%4%  " 
+				"c %5%,%6% %7%,%8% %9%,%10%  "
+				"l %11%,%12%  "
+				"c %13%,%14% %15%,%16% %17%,%18%  "
+				"l %3%,%4%  "
+			
+				"%19%  "
+
+				"l %20%,%21%  "
+				"c %22%,%23% %24%,%25% %26%,%27%  "
+				"l %28%,%29%  "
+				"c %30%,%31% %32%,%33% %34%,%35%  "
+			)	% x1	// 1
+				% y1	// 2
+		
+				% s1	// 3
+				% s2	// 4
+			
+				% c1	// 5
+				% c2	// 6
+				% c3	// 7
+				% c4	// 8
+				% c5	// 9
+				% c6	// 10
+
+				% (x2-x1 - 2*s1) // 11
+				% (y2-y1 - 2*s2) // 12
+
+				% -c1	// 13
+				% -c2	// 14
+				% -c3	// 15
+				% -c4	// 16
+				% -c5	// 17
+				% -c6	// 18
+			
+				% this->arrow_head(same_col*180*(x2>x1) | -same_row*(90+180*(y2<y1))) // 19
+
+				% -s1	// 20
+				% -s2	// 21
+			
+				% (c1*(same_row ? 1 : -1))	// 22
+				% (c2*(same_col ? 1 : -1))	// 23
+				% (c3*(same_row ? 1 : -1))	// 24
+				% (c4*(same_col ? 1 : -1))	// 25
+				% (c5*(same_row ? 1 : -1))	// 26
+				% (c6*(same_col ? 1 : -1))	// 27
+			
+				% -(x2-x1 - 2*s1) // 28
+				% -(y2-y1 - 2*s2) // 29
+			
+				% -(c1*(same_row ? 1 : -1))	// 30
+				% -(c2*(same_col ? 1 : -1))	// 31
+				% -(c3*(same_row ? 1 : -1))	// 32
+				% -(c4*(same_col ? 1 : -1))	// 33
+				% -(c5*(same_row ? 1 : -1))	// 34
+				% -(c6*(same_col ? 1 : -1))	// 35
+			));
 }
 

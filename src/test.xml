@@ -8,6 +8,8 @@
 		<link source="(1,0)" sink="(1,2)"/>
 		<link source="(2,2)" sink="(2,0)"/>
 
+		<link source="(2,2)" sink="(2,1)"/>
+
 
 		<!--link source="(2,2)" sink="(1,2)"/-->
 		<!--link source="(0,0)" sink="(2,2)"/-->
