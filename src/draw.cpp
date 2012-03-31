@@ -34,25 +34,37 @@ draw::draw(network_t& _n)
 		const int rect_y = y*scale;
 		
 		layer1.AddChild(element().Tag("rect")
-			.Set("x",rect_x).Set("y",rect_y) // coordinates are to the top left corner
-			.Set("width",scale).Set("height",scale)
-			.Set("fill", "none").Set("stroke","#999999").Set("stroke-width",1));
-
-		layer1.AddChild(element().Tag("text")
-			.Set("x",rect_x).Set("y",rect_y)
-			.Set("dy","1.5ex").Set("fill", "#D0D0D0")
-			.Set("font-size", 10).Set("text-anchor","start").SetValue(router_id(x,y)));
-		
-		if (!n.has({x,y})) continue; // skip non-existant routers
+			.Set("x",rect_x)
+			.Set("y",rect_y) // coordinates are to the top left corner
+			.Set("width",scale)
+			.Set("height",scale)
+			.Set("fill", "lightgrey")
+			.Set("stroke","white")
+			.Set("stroke-width",2));
 
 		const int circle_x = x*scale+scale/2;
 		const int circle_y = y*scale+scale/2;
 		
-		layer1.AddChild(element().Tag("circle")
-			.Set("cx",circle_x).Set("cy",circle_y) // coordinates are to the center 
-			.Set("r",router_size/2)
-			.Set("fill", "#ffeecc").Set("stroke", "#ddaa66").Set("stroke-width", 2)
-		);
+		if (n.has({x,y})) 
+		{
+			layer1.AddChild(element().Tag("circle")
+				.Set("cx",circle_x)
+				.Set("cy",circle_y) // coordinates are to the center 
+				.Set("r",router_size/2)
+				.Set("fill", "#ffeecc")
+				.Set("stroke", "#ddaa66")
+				.Set("stroke-width", 2)
+			);
+		} 
+		
+		layer1.AddChild(element().Tag("text")
+			.Set("x",circle_x)
+			.Set("y",circle_y)
+			.Set("dy","0.5ex")
+			.Set("fill", "grey")
+			.Set("font-size", 10)
+			.Set("text-anchor","middle")
+			.SetValue(router_id(x,y)));
 	}
 
 	
@@ -88,8 +100,12 @@ element draw::link(link_t *l) {
 	std::pair<int,int> p1 = coords(l->source);
 	std::pair<int,int> p2 = coords(l->sink);
 	
+	const bool same_row = (p1.second==p2.second);
+	const bool same_col = (p1.first==p2.first);
+	const int d = 2; // half-distance
 	
-	
+	if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? -d : d);
+	if (same_col)	p1.first = p2.first = p1.first+(p1.second < p2.second ? -d : d);
 	
 	if (! l->wrapped) {
 		return this->arrow_straight(p1.first,p1.second, p2.first,p2.second);
@@ -163,21 +179,26 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 {
 	const int stub = 3;	// the small straight line which touches the node
 	const int r = 10;	// "radius" of bezier curve (appoximately a circle)
-	const int w = -28;	// width of curve
+	int w = -26;	// width of curve
 
-	const bool same_row = (x1==x2);
-	const bool same_col = (y1==y2);
-	assert(same_row ^ same_col && "Arbitary positions not allowed, must be in either same row or col");
+	const bool same_row = (y1==y2);
+	const bool same_col = (x1==x2);
+	assert(same_col ^ same_row && "Arbitary positions not allowed, must be in either same row or col");
 	
-	const auto s1 = (same_col * ((x1 < x2) ? -stub : stub));
-	const auto s2 = (same_row * ((y1 < y2) ? -stub : stub));
+	const bool down = (same_col * (y1 < y2));
+	const bool right= (same_row * (x1 < x2));
+	if (down||right) w *= -1;
 	
-	const auto c1 = (same_col * ((x1 < x2) ? -r : r));
-	const auto c2 = (same_row * ((y1 < y2) ? -r : r));
-	const auto c3 = (same_col * ((x1 < x2) ? -r : r) | same_row * (-w));
-	const auto c4 = (same_row * ((y1 < y2) ? -r : r) | same_col * (-w));
-	const auto c5 = (same_row * (-w));
-	const auto c6 = (same_col * (-w));
+	
+	const auto s1 = (same_row * ((x1 < x2) ? -stub : stub));
+	const auto s2 = (same_col * ((y1 < y2) ? -stub : stub));
+	
+	const auto c1 = (same_row * ((x1 < x2) ? -r : r));
+	const auto c2 = (same_col * ((y1 < y2) ? -r : r));
+	const auto c3 = (same_row * ((x1 < x2) ? -r : r) | same_col * (-w));
+	const auto c4 = (same_col * ((y1 < y2) ? -r : r) | same_row * (-w));
+	const auto c5 = (same_col * (-w));
+	const auto c6 = (same_row * (-w));
 	
 	
 	return element().Tag("path")
@@ -224,27 +245,27 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 				% -c5	// 17
 				% -c6	// 18
 			
-				% this->arrow_head(same_col*180*(x2>x1) | -same_row*(90+180*(y2<y1))) // 19
+				% this->arrow_head(same_row*180*(x2>x1) | -same_col*(90+180*(y2<y1))) // 19
 
 				% -s1	// 20
 				% -s2	// 21
 			
-				% (c1*(same_row ? 1 : -1))	// 22
-				% (c2*(same_col ? 1 : -1))	// 23
-				% (c3*(same_row ? 1 : -1))	// 24
-				% (c4*(same_col ? 1 : -1))	// 25
-				% (c5*(same_row ? 1 : -1))	// 26
-				% (c6*(same_col ? 1 : -1))	// 27
+				% (c1*(same_col ? 1 : -1))	// 22
+				% (c2*(same_row ? 1 : -1))	// 23
+				% (c3*(same_col ? 1 : -1))	// 24
+				% (c4*(same_row ? 1 : -1))	// 25
+				% (c5*(same_col ? 1 : -1))	// 26
+				% (c6*(same_row ? 1 : -1))	// 27
 			
 				% -(x2-x1 - 2*s1) // 28
 				% -(y2-y1 - 2*s2) // 29
 			
-				% -(c1*(same_row ? 1 : -1))	// 30
-				% -(c2*(same_col ? 1 : -1))	// 31
-				% -(c3*(same_row ? 1 : -1))	// 32
-				% -(c4*(same_col ? 1 : -1))	// 33
-				% -(c5*(same_row ? 1 : -1))	// 34
-				% -(c6*(same_col ? 1 : -1))	// 35
+				% -(c1*(same_col ? 1 : -1))	// 30
+				% -(c2*(same_row ? 1 : -1))	// 31
+				% -(c3*(same_col ? 1 : -1))	// 32
+				% -(c4*(same_row ? 1 : -1))	// 33
+				% -(c5*(same_col ? 1 : -1))	// 34
+				% -(c6*(same_row ? 1 : -1))	// 35
 			));
 }
 
