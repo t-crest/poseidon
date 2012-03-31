@@ -51,12 +51,10 @@ void parser::parse_arbitary(xml_node& graph) {
 
 		const int dist = util::max(absdiff.first, absdiff.second);
 		const bool short_link = (dist == 1);
-		const bool long_link  = (dist == (same_row ? n->rows():n->cols())-1) & !short_link;
+		const bool long_link  = (dist == (same_row ? n->cols():n->rows())-1) & !short_link;
+		ensure(short_link | long_link, "Router " << r1 << " and " << r2 << " are too far apart to be connected directly");
 		assert(short_link ^ long_link);
 
-		debugf(short_link);
-		debugf(long_link);
-		
 		port_id p1, p2;
 		if (same_col) {
 			assert(r1.second != r2.second && "Same coordinates");
@@ -73,7 +71,8 @@ void parser::parse_arbitary(xml_node& graph) {
 			p2 = (choose ? W : E);
 		}
 		
-		n->add(n->add(r1)->out(p1), n->add(r2)->in(p2)); // add routers r1 and r2, and the link between them
+		link_t *l = n->add(n->add(r1)->out(p1), n->add(r2)->in(p2)); // add routers r1 and r2, and the link between them
+		l->wrapped = long_link;
 	}
 }
 

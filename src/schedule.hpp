@@ -70,7 +70,8 @@ public:
 	port_out_t& source;			// A link is always connected to an output put
 	port_in_t& sink;			// A link is always connected to an input port
 	schedule local_schedule;	// A link always has a schedule (which may be empty)
-
+	bool wrapped;	// true if must be drawn wrapped in SVG
+	
 	link_t(port_out_t& _source, port_in_t& _sink);
 };
 

@@ -9,6 +9,7 @@
 #include "matrix.hpp"
 #include "schedule.hpp"
 #include "file.hpp"
+#include <boost/format.hpp>
 #include <array>
 #include <iostream>
 #include <cstdlib>
@@ -23,9 +24,14 @@ class draw {
 	const int router_size; // width and height of a router
 
 	network_t& n;	
-	element draw_link(link_t *l);
+	element link(link_t *l);
 	element arrow(float x1, float y1, float x2, float y2);
+	element arrow_rightwards(float x1, float y, float x2);
+	element arrow_leftwards(float x1, float y, float x2);
+	element curve_arrow(float x1, float y1, float x2, float y2);
+	string arrow_head(const double angle);
 	std::pair<int,int> coords(const port_t& p);
+
 	
 public:
 	element root;

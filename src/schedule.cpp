@@ -77,7 +77,7 @@ void schedule::remove(channel *c)
 ////////////////////////////////////////////////////////////////////////////////
 
 link_t::link_t(port_out_t& _source, port_in_t& _sink) 
-:	source(_source), sink(_sink) 
+:	source(_source), sink(_sink), wrapped(false)
 {
 	const bool loop = (&this->source.parent == &this->sink.parent);
 	warn_if(loop, "Self-loop detected on link");
