@@ -145,18 +145,18 @@ port_in_t& router_t::in(port_id p) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-network_t::network_t(uint rows, uint cols) : routers(rows,cols) {}
+network_t::network_t(uint rows, uint cols) : m_routers(rows,cols) {}
 
-uint network_t::rows() const {return this->routers.rows();} 
-uint network_t::cols() const {return this->routers.cols();}
+uint network_t::rows() const {return this->m_routers.rows();} 
+uint network_t::cols() const {return this->m_routers.cols();}
 
 bool network_t::has(router_id r) {
-	return (this->routers(r) != NULL);
+	return (this->m_routers(r) != NULL);
 }
 
 link_t* network_t::add(port_out_t& source, port_in_t& sink) {
 	link_t *l = new link_t(source, sink);
-	this->link_ts.insert(l);
+	this->link_ts.push_back(l);
 	return l;
 }
 
@@ -164,61 +164,89 @@ router_t* network_t::add(router_id r) {
 	ensure(0 <= r.first && r.first <= this->cols()-1, "Tried to add router " << r << " outside network");
 	ensure(0 <= r.second && r.second <= this->rows()-1, "Tried to add router " << r << " outside network");
 
-	if (this->routers(r) == NULL) { // create only new router if it didn't exist before
-		this->routers(r) = new router_t(r);
+	if (this->m_routers(r) == NULL) { // create only new router if it didn't exist before
+		router_t *rr = new router_t(r); 
+		this->m_routers(r) = rr;
+		this->router_ts.push_back(rr);
 		assert(this->router(r) == &this->router(r)->out(N).parent);
 		assert(this->router(r) == &this->router(r)->out(L).parent);
 	}
-	return this->routers(r);
+	return this->m_routers(r);
 }
 
 router_t* network_t::router(router_id r) {
-	return this->routers(r);
+	return this->m_routers(r);
 }
 
-const set<link_t*>& network_t::links() const {
+const vector<link_t*>& network_t::links() const {
 	return this->link_ts;
 }
 
-////////////////////////////////////////////////////////////////////////////////
+const vector<router_t*>& network_t::routers() const {
+	return this->router_ts;
+}
 
+/**
+ * Traverse the topology graph backwards from destination via BFS.
+ * During BFS the depth of nodes is stored as the the number of hops.
+ * This updates the .next map member variable of all nodes connected to dest.
+ */
+void network_t::shortest_path_bfs(router_t *dest) 
+{
+	debugf(dest->address);
+	std::queue<router_t*> Q; // the BFS queue
 
-//schedule::schedule(uint rows, uint cols)
-//:	network_topology(rows, cols) 
-//{
-//	
-//}
-//
-//void
-//schedule::add_directed_link(router_id src, port_id src_port, router_id dest) {
-//	this->network_topology(src).outgoing_ports[src_port] = dest;
-//}
-//
-//void
-//schedule::insert_link(router_id r, port_id output, timeslot t, channel chan) {
-//	
-////	this->frames[t].routers[r].outputs[output] = chan;
-//	
-//	
-//}
-//
-//boost::optional<channel>
-//schedule::read_link(router_id current, port_id output, timeslot slot) {
-//
-//}
-//
-//void
-//schedule::free_link(router_id current, port_id output, timeslot slot) {
-//
-//}
-//
-//std::vector<port_id>
-//schedule::get_next_links(router_id current, timeslot slot, router_id dest) {
-//
-//}
-//
-//router_id 
-//schedule::get_previous_router(router_id current, port_id input, timeslot slot) {
-//
-//}
-//
+	// We don't want to pollute our router_t's class with ad-hoc members, 
+	// instead we use std::maps to associate these properties 
+	std::map<router_t*, bool> marked;
+	std::map<router_t*, int> hops;
+	
+	Q.push(dest);
+	marked[dest] = true;
+	
+	while (!Q.empty()) 
+	{
+		router_t *t = Q.front(); Q.pop(); 
+		
+//		cout << "Router " << t->address << " is " << hops[t] << " hops away from "<< dest->address << endl;
+		
+		for (int i = 0; i < __NUM_PORTS; i++) {
+			if (!t->out((port_id)i).has_link()) continue;
+			router_t *c = &t->out((port_id)i).link().sink.parent;
+			if (!util::contains(hops, c)) continue;
+			
+			assert(hops[c] == hops[t]-1);
+//			debugf(c->address);
+//			debugf((port_id)i);
+			
+			t->next[dest->address].insert( &t->out((port_id)i) ); 
+		}
+
+		for (int i = 0; i < __NUM_PORTS; i++) {
+			if (!t->in((port_id)i).has_link()) continue;
+			router_t *o = &t->in((port_id)i).link().source.parent; // visit backwards
+			
+			if (!marked[o]) {
+				marked[o] = true;
+				hops[o] = hops[t]+1;
+				Q.push(o);
+			}
+		}
+	}
+}
+
+void network_t::shortest_path() {
+	for_each(this->routers(), [this](router_t *r) {
+		this->shortest_path_bfs(r);
+	});
+}
+
+void network_t::print_next_table() {
+	for_each(this->routers(), [&](router_t *r) {
+	for_each(r->next, [&](const pair<router_id, set<port_out_t*> >& p) {
+	for_each(p.second, [&](port_out_t *o) {
+				cout << "From router " << r->address << " take " << o->corner << " towards " << p.first << endl;
+			});
+		});
+	});
+}

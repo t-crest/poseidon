@@ -1,6 +1,7 @@
 #ifndef SCHEDULE2_HPP
 #define	SCHEDULE2_HPP
 
+#include "higher_order.h"
 #include "util.hpp"
 #include "lex_cast.h"
 #include "matrix.hpp"
@@ -10,13 +11,17 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <queue>
 #include <memory>
+#include <iostream>
 
 using std::pair;
 using std::map;
 using std::set;
 using std::array;
 using std::vector;
+using std::cout;
+using std::endl;
 
 typedef uint timeslot;
 typedef int coord;
@@ -118,7 +123,8 @@ private:
 
 public:
 	const router_id address;	// Fixed address
-
+	map<router_id, set<port_out_t*> > next; // shortest path 
+	
 	router_t(router_id _address);
 	port_in_t& in(port_id p);
 	port_out_t& out(port_id p);
@@ -136,8 +142,9 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 
 class network_t {
-	matrix<router_t*> routers;
-	set<link_t*> link_ts;
+	matrix<router_t*> m_routers;
+	vector<router_t*> router_ts;
+	vector<link_t*> link_ts;
 	class specification {
 		vector<channel> channels;
 	};
@@ -149,27 +156,12 @@ public:
 	link_t* add(port_out_t& source, port_in_t& sink);
 	router_t* add(router_id r);
 	router_t* router(router_id r);
-	const set<link_t*>& links() const;
+	const vector<link_t*>& links() const;
+	const vector<router_t*>& routers() const;
+	void shortest_path_bfs(router_t *dest);
+	void shortest_path();
+	void print_next_table();
 };
-
-////////////////////////////////////////////////////////////////////////////////
-
-//class schedule {
-//private:
-//	std::vector<frame> frames;
-////	matrix<router> network_topology;
-//	network topology;
-//
-//public:
-//	schedule(uint rows, uint cols);
-//
-//	void add_directed_link(router_id src, port_id src_port, router_id dest);
-//	void insert_link(router_id current, port_id output, timeslot t, channel chan);
-//	boost::optional<channel> read_link(router_id current, port_id output, timeslot slot);
-//	void free_link(router_id current, port_id output, timeslot slot);
-//	std::vector<port_id> get_next_links(router_id current, timeslot slot, router_id dest);
-//	router_id get_previous_router(router_id current, port_id input, timeslot slot);
-//};
 
 #endif	/* SCHEDULE2_HPP */
 

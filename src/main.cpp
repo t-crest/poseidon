@@ -9,13 +9,12 @@
 #include "file.hpp"
 #include "draw.hpp"
 #include <array>
+#include <queue>
 #include <iostream>
 #include <cstdlib>
 #include <memory>
 
 using namespace std;
-
-
 
 int main(int argc, char* argv[]) 
 {
@@ -25,6 +24,8 @@ int main(int argc, char* argv[])
 	
 	snts::file f("network.svg", fstream::out);
 	f << d.root.toString() << "\n";
+	
+	n.print_next_table();
 	
 	
 	

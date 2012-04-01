@@ -28,6 +28,8 @@ parser::parser(string file)
 	} else {
 		ensure(false, "Graph type not recognized");
 	}
+
+	this->n->shortest_path();	// Calculate all the shortests paths, and store in routing tables
 	
 	for (EACH_TAG(node_itr, "channel", channels)) { 
 		channel c = this->parse_channel(node_itr);
