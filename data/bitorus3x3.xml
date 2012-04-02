@@ -11,7 +11,7 @@
     </graph>
     -->
   </topology>
-  <channels>
+  <channels type="all2all">
     <channel from="(0,0)" to="(1,1)" bandwidth="10" response="true" response-delay="2"/>
     <channel from="(0,1)" to="(2,2)" bandwidth="2" response="false"/>
     <channel from="(0,2)" to="(2,2)" bandwidth="2" response="false"/>

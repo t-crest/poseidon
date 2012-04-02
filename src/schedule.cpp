@@ -241,7 +241,7 @@ void network_t::shortest_path_bfs(router_t *dest) {
 
 	// We don't want to pollute our router_t's class with ad-hoc members, 
 	// instead we use std::maps to associate these properties 
-	std::map < router_t*, bool> marked;
+	std::map<router_t*, bool> marked;
 	std::map<router_t*, int> hops;
 
 	Q.push(dest);
@@ -251,16 +251,18 @@ void network_t::shortest_path_bfs(router_t *dest) {
 		router_t *t = Q.front();
 		Q.pop();
 
-		//		cout << "Router " << t->address << " is " << hops[t] << " hops away from "<< dest->address << endl;
+//		cout << "Router " << t->address << " is " << hops[t] << " hops away from "<< dest->address << endl;
 
+		t->hops[dest->address] = hops[t];
+		
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!t->out((port_id) i).has_link()) continue;
 			router_t *c = &t->out((port_id) i).link().sink.parent;
 			if (!util::contains(hops, c)) continue;
 
 			if (hops[c] == hops[t] - 1) {
-				//			debugf(c->address);
-				//			debugf((port_id)i);
+	//			debugf(c->address);
+	//			debugf((port_id)i);
 				t->next[dest->address].insert(&t->out((port_id) i));
 			}
 		}
