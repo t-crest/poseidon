@@ -6,6 +6,7 @@
 #include "lex_cast.h"
 #include "matrix.hpp"
 #include <boost/optional/optional.hpp>
+#include "parser.hpp"
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -145,9 +146,8 @@ class network_t {
 	matrix<router_t*> m_routers;
 	vector<router_t*> router_ts;
 	vector<link_t*> link_ts;
-	class specification {
-		vector<channel> channels;
-	};
+	vector<channel> specification;
+    friend class parser;
 public:
 	network_t(uint rows, uint cols);
 	uint rows() const;
@@ -158,9 +158,11 @@ public:
 	router_t* router(router_id r);
 	const vector<link_t*>& links() const;
 	const vector<router_t*>& routers() const;
+    const vector<channel*>& channels() const;
 	void shortest_path_bfs(router_t *dest);
 	void shortest_path();
 	void print_next_table();
+    void print_channel_specification();
 };
 
 #endif	/* SCHEDULE2_HPP */

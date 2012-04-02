@@ -20,6 +20,9 @@ using namespace pugi;
 #define ALL_ATTR(ITR, NODE)			xml_attribute ITR = NODE.first_attribute(); ITR; ITR = ITR.next_attribute()
 
 
+class network_t;
+class channel;
+
 class parser {
 public:
 	network_t *n;

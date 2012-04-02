@@ -30,12 +30,17 @@ parser::parser(string file)
 	}
 
 	this->n->shortest_path();	// Calculate all the shortests paths, and store in routing tables
-	
+    
 	for (EACH_TAG(node_itr, "channel", channels)) { 
 		channel c = this->parse_channel(node_itr);
-//		debugf(c.from);
-//		debugf(c.to);
-//		debugf(c.bandwidth);
+        
+        ensure(this->n->has(c.from), "Network does not have router " << c.from << " used in channel.");
+        ensure(this->n->has(c.to), "Network does not have router " << c.to << " used in channel.");
+        
+        bool pathexist = !this->n->router(c.from)->next[c.to].empty();
+        ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
+        
+        this->n->specification.push_back(c);
 	}
 }
 
@@ -80,16 +85,16 @@ void parser::parse_arbitary(xml_node& graph) {
 
 channel parser::parse_channel(xml_node& chan) {
 	channel ret;
-
-	for (ALL_ATTR(attr_itr, chan)) {
-		const string key = attr_itr.name(); // Name of XML attribute
-		const string val = attr_itr.value(); // Value of XML attribute
-
-		if (key == "from"){				ret.from = ::lex_cast<router_id>(val);} 
-		else if (key == "to"){			ret.to = ::lex_cast<router_id>(val);} 
-		else if (key == "bandwidth"){	ret.bandwidth = ::lex_cast<int>(val);}
-	}
-		
+    
+    const router_id r1 = get_attr<router_id>(chan, "from");
+    const router_id r2 = get_attr<router_id>(chan, "to");
+    const int bw = get_attr<int>(chan, "bandwidth");
+    
+    ret.from = r1;
+    ret.to = r2;
+    ret.bandwidth = bw;
+	
+    ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");
 	return ret;
 }
 

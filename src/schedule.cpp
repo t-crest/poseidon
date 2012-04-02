@@ -193,7 +193,6 @@ const vector<router_t*>& network_t::routers() const {
  */
 void network_t::shortest_path_bfs(router_t *dest) 
 {
-	debugf(dest->address);
 	std::queue<router_t*> Q; // the BFS queue
 
 	// We don't want to pollute our router_t's class with ad-hoc members, 
@@ -250,3 +249,11 @@ void network_t::print_next_table() {
 		});
 	});
 }
+
+
+//void network_t::print_channel_specification() {
+//    cout << "Channels to be scheduled:" << endl;
+//    for_each(this->channels(), [&](channel *c) {
+//        cout << "From router " << c->from << " to " << c->to << " using bandwidth " << c->bandwidth << endl;
+//    });
+//}
