@@ -8,6 +8,7 @@
 #include "schedule.hpp"
 #include "file.hpp"
 #include "draw.hpp"
+#include "options.h"
 #include <array>
 #include <queue>
 #include <iostream>
@@ -27,7 +28,10 @@ void draw_schedule(network_t& n, timeslot p) {
 
 int main(int argc, char* argv[]) 
 {
-	parser p("../data/test.xml");
+	options opt(argc, argv);
+	
+	parser p(opt.input_spec_file);
+//	parser p("./data/test.xml");
 	network_t& n = *(p.n);
 	draw d(n);
 	
