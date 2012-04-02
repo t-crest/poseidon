@@ -2,7 +2,7 @@
 
 
 options::options(int argc, char *argv[])
-:	input_spec_file("./data/bitorus3x3.xml"),		// Options defaults
+:	input_spec_file("../data/bitorus3x3.xml"),		// Options defaults
 	meta(ALNS)
 {
 	/* Set options as specified by user */

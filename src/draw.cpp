@@ -81,7 +81,7 @@ void draw::init()
 	
 	for_each(n.links(), [&layer2,this](link_t *l){
 		layer2.AddChild(this->link(l));
-		debugf(*l);
+//		debugf(*l);
 	});
 	
 	
