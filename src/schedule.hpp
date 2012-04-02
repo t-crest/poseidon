@@ -34,14 +34,15 @@ typedef std::pair<router_id, port_id> routerport_id;
 router_id operator-(const router_id& lhs, const router_id& rhs);
 router_id abs(const router_id& arg);
 
+struct channel; // Forward decl.
+
 std::ostream& operator<<(std::ostream& stream, const port_id& rhs);
 std::istream& operator>>(std::istream& stream, port_id& rhs);
 
 std::ostream& operator<<(std::ostream& stream, const routerport_id& rhs);
 std::istream& operator>>(std::istream& stream, routerport_id& rhs);
 
-
-
+std::ostream& operator<<(std::ostream& stream, const channel& rhs);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -161,7 +162,7 @@ public:
 	router_t* router(router_id r);
 	const vector<link_t*>& links() const;
 	const vector<router_t*>& routers() const;
-    const vector<channel*>& channels() const;
+    const vector<channel>& channels() const;
 	void shortest_path_bfs(router_t *dest);
 	void shortest_path();
 	void print_next_table();
