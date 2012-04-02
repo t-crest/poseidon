@@ -115,8 +115,6 @@ element draw::link(link_t *l) {
 	const bool same_col = (p1.first==p2.first);
 	const int d = 2; // half-distance
 	
-	if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? -d : d);
-	if (same_col)	p1.first = p2.first = p1.first+(p1.second < p2.second ? -d : d);
 
 	string color ;
 	if (!this->t) {
@@ -125,9 +123,14 @@ element draw::link(link_t *l) {
 		color = (l->local_schedule.has(*t)) ? "red" : "grey";
 	}
 	
+	
 	if (! l->wrapped) {
+                if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? -d : d);
+                if (same_col)	p1.first = p2.first = p1.first+(p1.second < p2.second ? -d : d);
 		return this->arrow_straight(p1.first,p1.second, p2.first,p2.second, color);
 	} else {
+                if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? d : -d);
+                if (same_col)	p1.first = p2.first = p1.first+(p1.second < p2.second ? d : -d);
 		return this->arrow_wrapped(p1.first, p1.second, p2.first, p2.second, color);
 	}
 }
@@ -197,7 +200,7 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 {
 	const int stub = 3;	// the small straight line which touches the node
 	const int r = 10;	// "radius" of bezier curve (appoximately a circle)
-	int w = -26;	// width of curve
+	int w = 26;	// width of curve
 
 	const bool same_row = (y1==y2);
 	const bool same_col = (x1==x2);

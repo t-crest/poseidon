@@ -27,7 +27,7 @@ void draw_schedule(network_t& n, timeslot p) {
 
 int main(int argc, char* argv[]) 
 {
-	parser p("test.xml");
+	parser p("data/test.xml");
 	network_t& n = *(p.n);
 	draw d(n);
 	

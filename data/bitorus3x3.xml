@@ -1,0 +1,20 @@
+<?xmlversion="1.0" encoding="UTF-8"?>
+
+  <topology width="3" height="3">
+    <graph type="bitorus"></graph>
+
+    <!--
+    <graph type="arbitary">
+      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+      ...      
+    </graph>
+    -->
+  </topology>
+  <channels>
+    <channel from="(0,0)" to="(1,1)" bandwidth="10" response="true" response-delay="2"/>
+    <channel from="(0,1)" to="(2,2)" bandwidth="2" response="false"/>
+    <channel from="(0,2)" to="(2,2)" bandwidth="2" response="false"/>
+    <channel from="(1,1)" to="(2,2)" bandwidth="2" response="false"/>
+  </channels>
+
