@@ -43,6 +43,10 @@ std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
 bool schedule::available(timeslot t) {
 	return ! util::contains(this->table, t);
 }
+/** Returns true if something has been scheduled at timeslot t */
+bool schedule::has(timeslot t) {
+	return util::contains(this->table, t);
+}
 /** Get the channel which is scheduled in timeslot t */
 channel* schedule::get(timeslot t) {
 	return this->table.at(t);

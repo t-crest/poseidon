@@ -10,6 +10,7 @@
 #include "schedule.hpp"
 #include "file.hpp"
 #include <boost/format.hpp>
+#include <boost/optional.hpp>
 #include <array>
 #include <iostream>
 #include <cstdlib>
@@ -22,18 +23,20 @@ class draw {
 	const int scale;
 	const int bezel;
 	const int router_size; // width and height of a router
-
+	boost::optional<timeslot> t;
 	network_t& n;	
+	
+	void init();
 	element link(link_t *l);
 	string arrow_head(const double angle);
-	element arrow_straight(const float x1, const float y1, const float x2, const float y2);
-	element arrow_wrapped(const float x1, const float y1, const float x2, const float y2);
+	element arrow_straight(const float x1, const float y1, const float x2, const float y2, const string color);
+	element arrow_wrapped(const float x1, const float y1, const float x2, const float y2, const string color);
 	std::pair<int,int> coords(const port_t& p);
-
 	
 public:
 	element root;
 	draw(network_t& _n);
+	draw(network_t& _n, timeslot _t);
 };
 
 #endif	/* DRAW_HPP */

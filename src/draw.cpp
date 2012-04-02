@@ -3,6 +3,17 @@
 draw::draw(network_t& _n) 
 :	n(_n), scale(60), bezel(20), router_size(scale/2)
 {
+	this->init();
+}
+
+draw::draw(network_t& _n, timeslot _t) 
+:	n(_n), scale(60), bezel(20), router_size(scale/2), t(_t)
+{
+	this->init();
+}
+
+void draw::init() 
+{
 	const string bezel_s = ::lex_cast<string>(bezel);
 
 	const int width = bezel + n.cols()*scale + bezel;
@@ -76,7 +87,7 @@ draw::draw(network_t& _n)
 	
 	g.AddChild(layer1);
 	g.AddChild(layer2);
-	root.AddChild(g);
+	root.AddChild(g);	
 }
 
 std::pair<int,int> draw::coords(const port_t& p) {
@@ -106,11 +117,18 @@ element draw::link(link_t *l) {
 	
 	if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? -d : d);
 	if (same_col)	p1.first = p2.first = p1.first+(p1.second < p2.second ? -d : d);
+
+	string color ;
+	if (!this->t) {
+		color = "black";
+	} else {
+		color = (l->local_schedule.has(*t)) ? "red" : "grey";
+	}
 	
 	if (! l->wrapped) {
-		return this->arrow_straight(p1.first,p1.second, p2.first,p2.second);
+		return this->arrow_straight(p1.first,p1.second, p2.first,p2.second, color);
 	} else {
-		return this->arrow_wrapped(p1.first, p1.second, p2.first, p2.second);
+		return this->arrow_wrapped(p1.first, p1.second, p2.first, p2.second, color);
 	}
 }
 
@@ -141,7 +159,7 @@ string draw::arrow_head(const double offset_angle)
 	);
 }
 
-element draw::arrow_straight(const float x1, const float y1, const float x2, const float y2) 
+element draw::arrow_straight(const float x1, const float y1, const float x2, const float y2, const string color) 
 {
 	static const float pi = std::atan(1.0)*4.0;
 	static const float rad2deg = 180.0/pi;
@@ -161,7 +179,7 @@ element draw::arrow_straight(const float x1, const float y1, const float x2, con
 		.Set("transform","translate("+::lex_cast<string>(x1)+","+::lex_cast<string>(y1)+") rotate("+::lex_cast<string>(angle)+")")
 		.AddChild(element().Tag("path")
 		.Set("style", "fill")
-		.Set("stroke", "#000000")
+		.Set("stroke", color)
 		.Set("stroke-linejoin", "round")
 		.Set("stroke-linecap", "round")
 		.Set("d",	
@@ -175,7 +193,7 @@ element draw::arrow_straight(const float x1, const float y1, const float x2, con
 	return g;
 }
 
-element draw::arrow_wrapped(const float x1, const float y1, const float x2, const float y2) 
+element draw::arrow_wrapped(const float x1, const float y1, const float x2, const float y2, const string color) 
 {
 	const int stub = 3;	// the small straight line which touches the node
 	const int r = 10;	// "radius" of bezier curve (appoximately a circle)
@@ -203,7 +221,7 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 	
 	return element().Tag("path")
 		.Set("style", "fill")
-		.Set("stroke", "#000000")
+		.Set("stroke", color)
 		.Set("stroke-linejoin", "round")
 		.Set("stroke-linecap", "round")
 		.Set("d",	
