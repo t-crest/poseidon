@@ -1,0 +1,89 @@
+<?xmlversion="1.0" encoding="UTF-8"?>
+  <topologygraph width="3" height="3">
+    <graph type="bitorus"></graph>
+  </topologygraph>
+  
+  <channelgraph>
+    <channel src="0,0" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="0,0" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="0,1" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="0,1" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="0,2" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="0,2" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="1,0" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="1,0" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="1,1" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="1,1" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="1,2" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="1,2" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="2,0" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="2,0" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="2,1" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="0,0" bandwidth="1" response="false"/>
+	<channel src="2,1" dest="2,2" bandwidth="1" response="false"/>
+	
+	<channel src="2,2" dest="0,1" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="0,2" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="1,0" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="1,1" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="1,2" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="2,0" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="2,1" bandwidth="1" response="false"/>
+	<channel src="2,2" dest="0,0" bandwidth="1" response="false"/>
+  </channelgraph>
+
+</xml>
