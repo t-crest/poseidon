@@ -1,0 +1,18 @@
+
+Done with:
+ - 
+ 
+ To do:
+  - Channels parsing - R&J
+  - type="bitorus"
+  - Draw schedule as cartoon - Mark
+  - Greedy initial schedule 
+  - Metaheuristics, SA ANLS GRASP
+  - Delta eval (vector over timeslots)
+  
+  - Rapport
+	- Teori: Algoritmer (SA, ALNS, etc)
+	- Testing
+	- Datastructure organization 
+		- Delta eval
+	

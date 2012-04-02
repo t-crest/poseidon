@@ -35,7 +35,10 @@ std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
 	return stream;
 }
 
-
+std::ostream& operator<<(std::ostream& stream, const channel& rhs) {
+    stream << "[from=" << rhs.from << ", to=" << rhs.to << ", bandwith=" << rhs.bandwidth << "]";
+    return stream;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -190,6 +193,10 @@ const vector<router_t*>& network_t::routers() const {
 	return this->router_ts;
 }
 
+const vector<channel>& network_t::channels() const {
+    return this->specification;
+}
+
 /**
  * Traverse the topology graph backwards from destination via BFS.
  * During BFS the depth of nodes is stored as the the number of hops.
@@ -254,10 +261,8 @@ void network_t::print_next_table() {
 	});
 }
 
-
-//void network_t::print_channel_specification() {
-//    cout << "Channels to be scheduled:" << endl;
-//    for_each(this->channels(), [&](channel *c) {
-//        cout << "From router " << c->from << " to " << c->to << " using bandwidth " << c->bandwidth << endl;
-//    });
-//}
+void network_t::print_channel_specification() {
+    for_each(this->channels(), [&](const channel& c){
+        cout << "Network has channel " << c << endl;
+    });
+}
