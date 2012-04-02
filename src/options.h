@@ -18,4 +18,7 @@ public:
 	string	input_spec_file;
 };
 
+namespace global {
+    extern options* opt;
+}
 #endif	/* OPTIONS_H */

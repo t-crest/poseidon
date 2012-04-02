@@ -23,3 +23,10 @@ options::options(int argc, char *argv[])
 
 options::~options()
 { }
+
+
+namespace global {
+	options* opt;
+}
+
+

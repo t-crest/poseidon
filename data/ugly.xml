@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <topology width="3" height="3">
-	<!--<graph type="arbitary">
+	<graph type="arbitary">
 		<link source="(0,1)" sink="(2,1)"/>
 		<link source="(2,2)" sink="(0,2)"/>
 
@@ -20,13 +20,11 @@
 
 		<link source="(2,2)" sink="(1,2)"/>
 		<link source="(0,0)" sink="(2,2)"/>
-	</graph>-->
- 
-	<graph type="bitorus"></graph>
+	</graph>
 </topology>
 
 
-<channels>
+<channels type="arbitrary">
 	<channel from="(0,0)" to="(1,1)" bandwidth="10" response="true" response-delay="2"/>
 	<channel from="(0,1)" to="(2,2)" bandwidth="2" response="false"/>
 	<channel from="(0,2)" to="(2,2)" bandwidth="2" response="false"/>

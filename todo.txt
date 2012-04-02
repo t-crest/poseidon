@@ -4,16 +4,18 @@ Done with:
  - type="bitorus" - Rasmus
  - Draw schedule as cartoon - Mark
  - type "all2all" - Rasmus
+ - Greedy initial schedule - Mark
+ - Command line arguments - Jaspur
  
 To do:
-  - Command line arguments
   - Operators (Route, delete, reroute, replace)
-  - Greedy initial schedule
+  - Bandwidth to channels
+  - Link local
   - Metaheuristics, SA ALNS GRASP
   - Delta eval (vector over timeslots)
 	- Gafle ud
   - Parallel behaviour
-	- Neighborhoob
+	- Neighbourhood
 	- Several metaheuristics running seperately
 	- 
   
