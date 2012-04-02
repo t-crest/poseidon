@@ -154,6 +154,14 @@ network_t::network_t(uint rows, uint cols) : m_routers(rows,cols) {}
 uint network_t::rows() const {return this->m_routers.rows();} 
 uint network_t::cols() const {return this->m_routers.cols();}
 
+timeslot network_t::p() const {
+	timeslot ret = 0;
+	for_each(this->links(), [&](link_t *l){
+		ret = util::max(ret, l->local_schedule.max_time());
+	});
+	return ret;
+}
+
 bool network_t::has(router_id r) {
 	return (this->m_routers(r) != NULL);
 }

@@ -151,6 +151,7 @@ class network_t {
     friend class parser;
 public:
 	network_t(uint rows, uint cols);
+	timeslot p() const;
 	uint rows() const;
 	uint cols() const;
 	bool has(router_id r);
