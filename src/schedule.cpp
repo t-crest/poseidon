@@ -62,7 +62,7 @@ bool schedule::has(timeslot t) {
 }
 
 /** Get the channel which is scheduled in timeslot t */
-channel* schedule::get(timeslot t) {
+const channel* schedule::get(timeslot t) {
 	return this->table.at(t);
 }
 
@@ -73,7 +73,7 @@ timeslot schedule::max_time() {
 }
 
 /** Schedule channel c in timeslot t */
-void schedule::add(channel *c, timeslot t) {
+void schedule::add(const channel *c, timeslot t) {
 	this->table[t] = c;
 }
 

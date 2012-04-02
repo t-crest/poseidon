@@ -57,13 +57,13 @@ struct channel {
 
 class schedule {
 private:
-	map<timeslot, channel*> table;
+	map<timeslot, const channel*> table;
 public:
 	bool available(timeslot t); 
 	bool has(timeslot t); 
-	channel* get(timeslot t);
+	const channel* get(timeslot t);
 	timeslot max_time();
-	void add(channel *c, timeslot t); 
+	void add(const channel *c, timeslot t); 
 	void remove(timeslot t);
 	void remove(channel *c);	
 };

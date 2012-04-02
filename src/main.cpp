@@ -25,21 +25,44 @@ void draw_schedule(network_t& n, timeslot p) {
 	}
 }
 
-void greedy(network_t& n) 
+bool greedy2(network_t& n, const channel* c, router_id curr, timeslot t) 
 {
-	priority_queue< pair<int, channel*> > pq;
+	if (curr == c->to) return true;
 	
-	for_each(n.channels(), [&](channel* c){
-		int hops = n.router(c->from)->hops[c->to];
-		pq.push(make_pair(hops, c));
+	for_each(n.router(curr)->next[c->to], [&](port_out_t *p) {
+		link_t& l = p->link();
 		
-		debugf(hops);
-//		debugf(*c);
+		debugf(curr);
+		
+		if (l.local_schedule.available(t) && greedy2(n, c, l.sink.parent.address, t+1)) {
+			l.local_schedule.add(c, t);
+			return true;
+		} 
 	});
 	
+	return false;
+}
+
+void greedy1(network_t& n) 
+{
+	typedef pair<int, const channel*> pq_t; 
+	priority_queue< pq_t > pq;
 	
+	for_each(n.channels(), [&](const channel& c){
+		int hops = n.router(c.from)->hops[c.to];
+		pq.push(make_pair(hops, &c));
+	});
 	
-	
+	while (!pq.empty()) {
+		pq_t t = pq.top(); pq.pop();
+		debugf(t);
+		
+		for (timeslot i = 0;; i++) {
+			debugf(i);
+			bool okay = greedy2(n, t.second, t.second->from, i);
+			if (okay) break;
+		}
+	}
 }
 
 int main(int argc, char* argv[]) 
@@ -47,12 +70,12 @@ int main(int argc, char* argv[])
 	parser p("../data/bitorus3x3.xml");
 	network_t& n = *(p.n);
 	draw d(n);
-	greedy(n);
+	greedy1(n);
 	
 	snts::file f("network.svg", fstream::out);
 	f << d.root.toString() << "\n";
 	
-	n.print_next_table();
+//	n.print_next_table();
 	debugf(n.p());
 	draw_schedule(n, n.p());	
 	
