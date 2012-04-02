@@ -3,14 +3,13 @@ Done with:
  - Channels parsing - Jaspur
  - type="bitorus" - Rasmus
  - Draw schedule as cartoon - Mark
+ - type "all2all" - Rasmus
  
 To do:
-  - type "all2all"
   - Command line arguments
+  - Operators (Route, delete, reroute, replace)
   - Greedy initial schedule
   - Metaheuristics, SA ALNS GRASP
-  - Operators (Route, delete, reroute, replace)
-	- SA: 
   - Delta eval (vector over timeslots)
 	- Gafle ud
   - Parallel behaviour
