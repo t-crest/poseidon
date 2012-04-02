@@ -215,11 +215,11 @@ void network_t::shortest_path_bfs(router_t *dest)
 			router_t *c = &t->out((port_id)i).link().sink.parent;
 			if (!util::contains(hops, c)) continue;
 			
-			assert(hops[c] == hops[t]-1);
+			if(hops[c] == hops[t]-1){
 //			debugf(c->address);
 //			debugf((port_id)i);
-			
-			t->next[dest->address].insert( &t->out((port_id)i) ); 
+                                t->next[dest->address].insert( &t->out((port_id)i) ); 
+                        }
 		}
 
 		for (int i = 0; i < __NUM_PORTS; i++) {
