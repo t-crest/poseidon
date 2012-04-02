@@ -28,18 +28,21 @@ void draw_schedule(network_t& n, timeslot p) {
 
 bool greedy2(network_t& n, const channel* c, router_id curr, timeslot t) 
 {
-	if (curr == c->to) return true;
+	if (curr == c->to) {
+		return true;
+	}
 	
-	for_each(n.router(curr)->next[c->to], [&](port_out_t *p) {
+	auto next = n.router(curr)->next[c->to];
+	for (auto it = next.begin(); it != next.end(); ++it) 
+	{
+		port_out_t *p = *it;
 		link_t& l = p->link();
-		
-		debugf(curr);
 		
 		if (l.local_schedule.available(t) && greedy2(n, c, l.sink.parent.address, t+1)) {
 			l.local_schedule.add(c, t);
 			return true;
 		} 
-	});
+	}
 	
 	return false;
 }
@@ -71,10 +74,18 @@ int main(int argc, char* argv[])
 	options opt(argc, argv);
 	
 	parser p(opt.input_spec_file);
-//	parser p("./data/test.xml");
+//	parser p("../data/bitorus3x3.xml");
 	network_t& n = *(p.n);
 	draw d(n);
 	greedy1(n);
+	
+//	channel *c = new channel();
+//	c->from = {0,0};
+//	c->to = {1,1};
+//	c->bandwidth = 1;
+//	debugf(greedy2(n, c, {0,0}, 0)); 
+	
+	
 	
 	snts::file f("network.svg", fstream::out);
 	f << d.root.toString() << "\n";
