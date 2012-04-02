@@ -25,21 +25,22 @@ class channel;
 
 class parser {
 public:
-	network_t *n;
-	parser(string file);
-	
+    network_t *n;
+    parser(string file);
+
 private:
-	
-	template<typename T>
-	T get_attr(xml_node& xn, const string& attr_name) {
-		auto attr = xn.attribute(attr_name.c_str());
-		ensure(!attr.empty(), "XML attribute '"<<attr_name<<"' not found under '"<<xn.name()<<"' tag");
-		return ::lex_cast<T>(attr.value());
-	}
-	
-	void parse_arbitary(xml_node& graph);
-        void create_bitorus();
-	channel parse_channel(xml_node& chan);	
+
+    template<typename T>
+    T get_attr(xml_node& xn, const string& attr_name) {
+        auto attr = xn.attribute(attr_name.c_str());
+        ensure(!attr.empty(), "XML attribute '" << attr_name << "' not found under '" << xn.name() << "' tag");
+        return ::lex_cast<T > (attr.value());
+    }
+
+    void parse_arbitary(xml_node& graph);
+    void create_bitorus();
+    channel parse_channel(xml_node& chan);
+    void create_all2all();
 };
 
 #endif	/* PARSER_HPP */
