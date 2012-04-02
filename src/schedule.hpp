@@ -126,6 +126,7 @@ private:
 public:
 	const router_id address;	// Fixed address
 	map<router_id, set<port_out_t*> > next; // shortest path 
+	map<router_id, int> hops; // hops from this to router_id
 	
 	router_t(router_id _address);
 	port_in_t& in(port_id p);

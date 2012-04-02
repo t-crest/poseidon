@@ -20,16 +20,34 @@ using namespace std;
 void draw_schedule(network_t& n, timeslot p) {
 	for (timeslot t = 0; t < p; t++) {
 		draw d(n, t);
-		snts::file f("t" + ::lex_cast<string>(t) + ".svg", fstream::out);
+		snts::file f("./cartoon/t" + ::lex_cast<string>(t) + ".svg", fstream::out);
 		f << d.root.toString() << "\n";
 	}
 }
 
+void greedy(network_t& n) 
+{
+	priority_queue< pair<int, channel*> > pq;
+	
+	for_each(n.channels(), [&](channel* c){
+		int hops = n.router(c->from)->hops[c->to];
+		pq.push(make_pair(hops, c));
+		
+		debugf(hops);
+//		debugf(*c);
+	});
+	
+	
+	
+	
+}
+
 int main(int argc, char* argv[]) 
 {
-	parser p("../data/test.xml");
+	parser p("../data/bitorus3x3.xml");
 	network_t& n = *(p.n);
 	draw d(n);
+	greedy(n);
 	
 	snts::file f("network.svg", fstream::out);
 	f << d.root.toString() << "\n";
@@ -37,6 +55,8 @@ int main(int argc, char* argv[])
 	n.print_next_table();
 	debugf(n.p());
 	draw_schedule(n, n.p());	
+	
+	
 	
 	
 	
