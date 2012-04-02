@@ -35,6 +35,7 @@ private:
 	}
 	
 	void parse_arbitary(xml_node& graph);
+        void create_bitorus();
 	channel parse_channel(xml_node& chan);	
 };
 

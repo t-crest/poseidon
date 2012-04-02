@@ -24,7 +24,9 @@ parser::parser(string file)
 	if (graph_type == "arbitary") {
 		this->parse_arbitary(graph);
 	} else if (graph_type == "bitorus") {
-		ensure(false, "Not implemented yet");
+                ensure(cols == rows,"Graph does not qualify to be bi-torus");
+                this->create_bitorus();
+		//ensure(false, "Not implemented yet");
 	} else {
 		ensure(false, "Graph type not recognized");
 	}
@@ -76,6 +78,46 @@ void parser::parse_arbitary(xml_node& graph) {
 		link_t *l = n->add(n->add(r1)->out(p1), n->add(r2)->in(p2)); // add routers r1 and r2, and the link between them
 		l->wrapped = long_link;
 	}
+}
+
+void parser::create_bitorus(){
+    link_t *l;
+    for(int i = 0; i < n->cols(); i++){
+        for(int j = 0; j < n->rows(); j++){
+            if(i == 0){
+                l = n->add(n->add({i,j})->out({W}), n->add({n->cols()-1,j})->in({E}));
+                l->wrapped = true;
+                l = n->add(n->add({i,j})->out({E}), n->add({i+1,j})->in({W}));
+                l->wrapped = false;
+            } else if(i == n->cols()-1){
+                l = n->add(n->add({i,j})->out({W}), n->add({i-1,j})->in({E}));
+                l->wrapped = false;
+                l = n->add(n->add({i,j})->out({E}), n->add({0,j})->in({W}));
+                l->wrapped = true;
+            } else {
+                l = n->add(n->add({i,j})->out({W}), n->add({i-1,j})->in({E}));
+                l->wrapped = false;
+                l = n->add(n->add({i,j})->out({E}), n->add({i+1,j})->in({W}));
+                l->wrapped = false;
+            }
+            if(j == 0){
+                l = n->add(n->add({i,j})->out({N}), n->add({i,n->rows()-1})->in({S}));
+                l->wrapped = true;
+                l = n->add(n->add({i,j})->out({S}), n->add({i,j+1})->in({N}));
+                l->wrapped = false;
+            }else if(j == n->rows()-1){
+                l = n->add(n->add({i,j})->out({N}), n->add({i,j-1})->in({S}));
+                l->wrapped = false;
+                l = n->add(n->add({i,j})->out({S}), n->add({i,0})->in({N}));
+                l->wrapped = true;
+            } else{
+                l = n->add(n->add({i,j})->out({N}), n->add({i,j-1})->in({S}));
+                l->wrapped = false;
+                l = n->add(n->add({i,j})->out({S}), n->add({i,j+1})->in({N}));
+                l->wrapped = false;
+            }
+        }
+    }
 }
 
 channel parser::parse_channel(xml_node& chan) {
