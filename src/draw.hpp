@@ -32,6 +32,7 @@ class draw {
 	element arrow_straight(const float x1, const float y1, const float x2, const float y2, const string color);
 	element arrow_wrapped(const float x1, const float y1, const float x2, const float y2, const string color);
 	std::pair<int,int> coords(const port_t& p);
+	uint32_t hsv(float h, float s, float v);
 	
 public:
 	element root;

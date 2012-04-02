@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "draw.hpp"
 
 draw::draw(network_t& _n) 
@@ -43,15 +45,15 @@ void draw::init()
 		
 		const int rect_x = x*scale;
 		const int rect_y = y*scale;
-		
-		layer1.AddChild(element().Tag("rect")
-			.Set("x",rect_x)
-			.Set("y",rect_y) // coordinates are to the top left corner
-			.Set("width",scale)
-			.Set("height",scale)
-			.Set("fill", "lightgrey")
-			.Set("stroke","white")
-			.Set("stroke-width",2));
+
+//		layer1.AddChild(element().Tag("rect") // draw tile as background
+//			.Set("x",rect_x)
+//			.Set("y",rect_y) // coordinates are to the top left corner
+//			.Set("width",scale)
+//			.Set("height",scale)
+//			.Set("fill", "lightgrey")
+//			.Set("stroke","white")
+//			.Set("stroke-width",2));
 
 		const int circle_x = x*scale+scale/2;
 		const int circle_y = y*scale+scale/2;
@@ -81,7 +83,6 @@ void draw::init()
 	
 	for_each(n.links(), [&layer2,this](link_t *l){
 		layer2.AddChild(this->link(l));
-//		debugf(*l);
 	});
 	
 	
@@ -116,13 +117,31 @@ element draw::link(link_t *l) {
 	const int d = 2; // half-distance
 	
 
-	string color ;
+	string color;
+	
+	
+	
 	if (!this->t) {
 		color = "black";
 	} else {
-		color = (l->local_schedule.has(*t)) ? "red" : "grey";
+		string hsv = "grey";
+
+		if (l->local_schedule.has(*t)) 
+		{
+			const float hue_step = 360.0 / this->n.channels().size();
+			for (int i = 0; i < this->n.channels().size(); i++) {
+				if (&this->n.channels()[i] == l->local_schedule.get(*this->t)) {
+					char buf[10] = {0};
+					sprintf(buf, "#%06x", this->hsv(i * hue_step, 1.0, 1.0));
+					hsv = buf;
+					debugf(hsv);
+					break;
+				}
+			}
+		}
+		
+		color = hsv;
 	}
-	
 	
 	if (! l->wrapped) {
                 if (same_row)	p1.second = p2.second = p1.second+(p1.first < p2.first ? -d : d);
@@ -290,3 +309,40 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 			));
 }
 
+
+uint32_t draw::hsv(float h, float s, float v)
+{
+	/*
+	 * Kilde:
+	 * http://en.wikipedia.org/w/index.php?title=HSL_and_HSV&oldid=282264028#Conversion_from_HSV_to_RGB
+	 */
+
+	struct colour {
+		float r, g, b;
+		colour() {r = g = b = 1.0;} // Default til hvid
+	} c;
+
+	float f = h / 60;
+	int hi = int(floor(f)) % 6;
+	f -= floor(f);
+
+	float p = v*(1 - s);
+	float q = v*(1 - f*s);
+	float t = v*(1 - (1-f)*s);
+
+	switch(hi) {
+		case 0:	c.r = v; c.g = t; c.b = p;	break;
+		case 1:	c.r = q; c.g = v; c.b = p;	break;
+		case 2:	c.r = p; c.g = v; c.b = t;	break;
+		case 3:	c.r = p; c.g = q; c.b = v;	break;
+		case 4:	c.r = t; c.g = p; c.b = v;	break;
+		case 5:	c.r = v; c.g = p; c.b = q;	break;
+	}
+
+	c.r *= 255; // Gå fra [0; 1] til [0; 255]
+	c.g *= 255; // ...
+	c.b *= 255;
+
+	// Pack farve komponenterne sammen til én værdi
+	return (uint32_t(c.b) << 16) | (uint32_t(c.g) << 8) | uint32_t(c.r);
+}

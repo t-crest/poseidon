@@ -78,13 +78,6 @@ int main(int argc, char* argv[])
 	draw d(n);
 	greedy1(n);
 	
-//	channel *c = new channel();
-//	c->from = {0,0};
-//	c->to = {1,1};
-//	c->bandwidth = 1;
-//	debugf(greedy2(n, c, {0,0}, 0)); 
-	
-	
 	
 	snts::file f("network.svg", fstream::out);
 	f << d.root.toString() << "\n";
