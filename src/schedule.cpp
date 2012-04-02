@@ -43,6 +43,10 @@ std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
 bool schedule::available(timeslot t) {
 	return ! util::contains(this->table, t);
 }
+/** Returns true if something has been scheduled at timeslot t */
+bool schedule::has(timeslot t) {
+	return util::contains(this->table, t);
+}
 /** Get the channel which is scheduled in timeslot t */
 channel* schedule::get(timeslot t) {
 	return this->table.at(t);
@@ -214,11 +218,11 @@ void network_t::shortest_path_bfs(router_t *dest)
 			router_t *c = &t->out((port_id)i).link().sink.parent;
 			if (!util::contains(hops, c)) continue;
 			
-			assert(hops[c] == hops[t]-1);
+			if(hops[c] == hops[t]-1){
 //			debugf(c->address);
 //			debugf((port_id)i);
-			
-			t->next[dest->address].insert( &t->out((port_id)i) ); 
+                                t->next[dest->address].insert( &t->out((port_id)i) ); 
+                        }
 		}
 
 		for (int i = 0; i < __NUM_PORTS; i++) {

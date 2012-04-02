@@ -59,6 +59,7 @@ private:
 	map<timeslot, channel*> table;
 public:
 	bool available(timeslot t); 
+	bool has(timeslot t); 
 	channel* get(timeslot t);
 	timeslot max_time();
 	void add(channel *c, timeslot t); 

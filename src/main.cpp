@@ -16,6 +16,15 @@
 
 using namespace std;
 
+
+void draw_schedule(network_t& n, timeslot p) {
+	for (timeslot t = 0; t < p; t++) {
+		draw d(n, t);
+		snts::file f("t" + ::lex_cast<string>(t) + ".svg", fstream::out);
+		f << d.root.toString() << "\n";
+	}
+}
+
 int main(int argc, char* argv[]) 
 {
 	parser p("test.xml");
@@ -26,6 +35,9 @@ int main(int argc, char* argv[])
 	f << d.root.toString() << "\n";
 	
 	n.print_next_table();
+	draw_schedule(n, 2/*TODO*/);	
+	
+	
 	
 	
 	
