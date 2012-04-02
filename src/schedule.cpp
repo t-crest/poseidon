@@ -44,7 +44,10 @@ std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
 	return stream;
 }
 
-
+std::ostream& operator<<(std::ostream& stream, const channel& rhs) {
+    stream << "[from=" << rhs.from << ", to=" << rhs.to << ", bandwith=" << rhs.bandwidth << "]";
+    return stream;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -180,6 +183,14 @@ uint network_t::cols() const {
 	return this->m_routers.cols();
 }
 
+timeslot network_t::p() const {
+	timeslot ret = 0;
+	for_each(this->links(), [&](link_t *l){
+		ret = util::max(ret, l->local_schedule.max_time());
+	});
+	return ret;
+}
+
 bool network_t::has(router_id r) {
 	return (this->m_routers(r) != NULL);
 }
@@ -214,6 +225,10 @@ const vector<link_t*>& network_t::links() const {
 
 const vector<router_t*>& network_t::routers() const {
 	return this->router_ts;
+}
+
+const vector<channel>& network_t::channels() const {
+    return this->specification;
 }
 
 /**
@@ -281,10 +296,8 @@ void network_t::print_next_table() {
 	});
 }
 
-
-//void network_t::print_channel_specification() {
-//    cout << "Channels to be scheduled:" << endl;
-//    for_each(this->channels(), [&](channel *c) {
-//        cout << "From router " << c->from << " to " << c->to << " using bandwidth " << c->bandwidth << endl;
-//    });
-//}
+void network_t::print_channel_specification() {
+    for_each(this->channels(), [&](const channel& c){
+        cout << "Network has channel " << c << endl;
+    });
+}

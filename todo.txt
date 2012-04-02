@@ -1,0 +1,28 @@
+
+Done with:
+ - Channels parsing - Jaspur
+ - type="bitorus" - Rasmus
+ - Draw schedule as cartoon - Mark
+ 
+To do:
+  - type "all2all"
+  - Command line arguments
+  - Greedy initial schedule
+  - Metaheuristics, SA ALNS GRASP
+  - Operators (Route, delete, reroute, replace)
+	- SA: 
+  - Delta eval (vector over timeslots)
+	- Gafle ud
+  - Parallel behaviour
+	- Neighborhoob
+	- Several metaheuristics running seperately
+	- 
+  
+  - Rapport
+	- Teori: Algoritmer (SA, ALNS, etc)
+	- Testing
+	- Datastructure organization 
+		- Delta eval
+	- Schedule of route, use DFS rather than BFS
+	- In grasp it only makes sense to rip up more than just the dominating path
+	- 
