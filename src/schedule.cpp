@@ -199,7 +199,8 @@ uint network_t::cols() const {
 timeslot network_t::p() const {
 	timeslot ret = 0;
 	for_each(this->links(), [&](link_t *l){
-		ret = util::max(ret, l->local_schedule.max_time());
+		ret = util::max(ret, l->local_schedule.max_time()+1);
+                // +1 because we want number of time slots
 	});
 	return ret;
 }
