@@ -21,14 +21,18 @@ using global::opt;
 void draw_schedule(network_t& n, timeslot p) {
 	for (timeslot t = 0; t < p; t++) {
 		draw d(n, t);
-		snts::file f("./cartoon/t" + ::lex_cast<string>(t) + ".svg", fstream::out);
+		//snts::file f("./cartoon/t" + ::lex_cast<string>(t) + ".svg", fstream::out);
+		string filename = "t" + ::lex_cast<string>(t) + ".svg";
+		debugf(filename);
+		snts::file f(filename, fstream::out);
 		f << d.root.toString() << "\n";
 	}
 }
 
 bool greedy2(network_t& n, const channel* c, router_id curr, timeslot t) 
 {
-	if (curr == c->to) {
+	if (curr == c->to && n.router(c->to)->local_out.local_schedule.available(t)) {
+		n.router(c->to)->local_out.local_schedule.add(c,t);
 		return true;
 	}
 	
@@ -56,15 +60,21 @@ void greedy1(network_t& n)
 		int hops = n.router(c.from)->hops[c.to];
 		pq.push(make_pair(hops, &c));
 	});
+	debugf(pq.size());
 	
 	while (!pq.empty()) {
 		pq_t t = pq.top(); pq.pop();
-		debugf(t);
+	//	debugf(t);
 		
 		for (timeslot i = 0;; i++) {
-			debugf(i);
-			bool okay = greedy2(n, t.second, t.second->from, i);
-			if (okay) break;
+	//		debugf(i);
+			if(n.router(t.second->from)->local_in.local_schedule.available(i)){
+				bool okay = greedy2(n, t.second, t.second->from, i);
+				if(okay){
+					n.router(t.second->from)->local_in.local_schedule.add(t.second,i);
+					break;
+				}
+			}
 		}
 	}
 }
