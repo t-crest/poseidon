@@ -31,8 +31,8 @@ void draw_schedule(network_t& n, timeslot p) {
 
 bool greedy2(network_t& n, const channel* c, router_id curr, timeslot t) 
 {
-	if (curr == c->to && n.router(c->to)->local_out.local_schedule.available(t)) {
-		n.router(c->to)->local_out.local_schedule.add(c,t);
+	if (curr == c->to && n.router(c->to)->local_out_schedule.available(t)) {
+		n.router(c->to)->local_out_schedule.add(c,t);
 		return true;
 	}
 	
@@ -68,10 +68,10 @@ void greedy1(network_t& n)
 		
 		for (timeslot i = 0;; i++) {
 	//		debugf(i);
-			if(n.router(t.second->from)->local_in.local_schedule.available(i)){
+			if(n.router(t.second->from)->local_in_schedule.available(i)){
 				bool okay = greedy2(n, t.second, t.second->from, i);
 				if(okay){
-					n.router(t.second->from)->local_in.local_schedule.add(t.second,i);
+					n.router(t.second->from)->local_in_schedule.add(t.second,i);
 					break;
 				}
 			}

@@ -129,12 +129,13 @@ private:
     std::array<port_out_t, __NUM_PORTS> ports_out; // always 5 ports (but a port might have no link connected)
 
 public:
+    schedule local_in_schedule; // Local link to schedule traffic outof the processor
+    schedule local_out_schedule; // Local link to schedule traffic into the processor
     const router_id address; // Fixed address
     map<router_id, set<port_out_t*> > next; // shortest path 
     map<router_id, int> hops; // hops from this to router_id
     
-    link_t local_in; // Local link to schedule traffic outof the processor
-    link_t local_out; // Local link to schedule traffic into the processor,
+    
 
     router_t(router_id _address);
     port_in_t& in(port_id p);
