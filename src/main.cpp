@@ -21,10 +21,7 @@ using global::opt;
 void draw_schedule(network_t& n, timeslot p) {
 	for (timeslot t = 0; t < p; t++) {
 		draw d(n, t);
-		//snts::file f("./cartoon/t" + ::lex_cast<string>(t) + ".svg", fstream::out);
-		string filename = "t" + ::lex_cast<string>(t) + ".svg";
-		debugf(filename);
-		snts::file f(filename, fstream::out);
+		snts::file f("./cartoon/t" + ::lex_cast<string>(t) + ".svg", fstream::out);
 		f << d.root.toString() << "\n";
 	}
 }
