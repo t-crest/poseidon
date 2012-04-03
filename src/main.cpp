@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 	f << d.root.toString() << "\n";
 	
 //	n.print_next_table();
-	debugf(n.p()+1);
+	debugf(n.p());
 	draw_schedule(n, n.p());	
 
 	return 0;
