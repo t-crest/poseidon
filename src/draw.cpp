@@ -134,7 +134,7 @@ element draw::link(link_t *l) {
 					char buf[10] = {0};
 					sprintf(buf, "#%06x", this->hsv(i * hue_step, 1.0, 1.0));
 					hsv = buf;
-					debugf(hsv);
+			//		debugf(hsv);
 					break;
 				}
 			}

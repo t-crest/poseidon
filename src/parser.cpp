@@ -156,12 +156,13 @@ void parser::create_all2all(){
 				c.from = r1->address;
 				c.to = r2->address;
 				c.bandwidth = 1;
-				this->n->specification.push_back(c);	
+				this->n->specification.push_back(c);
+				
 			}
 			
 		});
 	});
-	
+	debugf(this->n->specification.size());
 	
 }
 

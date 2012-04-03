@@ -106,6 +106,16 @@ link_t::link_t(port_out_t& _source, port_in_t& _sink)
 	this->sink.add_link(this);
 }
 
+link_t::link_t(port_out_t& _source, port_in_t& _sink, bool in)
+: source(_source), sink(_sink), wrapped(false) {
+	if(in){
+		this->sink.add_link(this);
+	} else {
+		this->source.add_link(this);
+	}
+	
+}
+
 std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
 	stream << rhs.source << "-->" << rhs.sink;
 	return stream;
@@ -148,7 +158,10 @@ port_in_t::port_in_t(router_t& _router, port_id _corner) : port_t(_router, _corn
 ////////////////////////////////////////////////////////////////////////////////
 
 router_t::router_t(router_id _address)
-: address(_address), ports_in(init<port_in_t>(this)), ports_out(init<port_out_t>(this)) {
+: address(_address), ports_in(init<port_in_t>(this)), ports_out(init<port_out_t>(this)){	
+	// , local_in({this,L},{this,L},true), local_out({this,L},{this,L},false)
+	//local_out = new link_t({this,L},{this,L},false);
+	//local_in = new link_t({this,L},{this,L},true);
 	assert(&this->in(N).parent == this);
 	assert(&this->in(S).parent == this);
 	assert(&this->in(E).parent == this);
