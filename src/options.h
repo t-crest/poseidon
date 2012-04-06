@@ -15,10 +15,11 @@ public:
 	~options();
 
     enum {SA, GRASP, ALNS, ERR} meta;
-	string	input_spec_file;
+	string	input_file;
+	bool draw;
 };
 
 namespace global {
-    extern options* opt;
+    extern options* opts;
 }
 #endif	/* OPTIONS_H */
