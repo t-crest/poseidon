@@ -297,8 +297,7 @@ void network_t::shortest_path_bfs(router_t *dest) {
 	marked[dest] = true;
 
 	while (!Q.empty()) {
-		router_t *t = Q.front();
-		Q.pop();
+		router_t *t = Q.front(); Q.pop();
 
 //		cout << "Router " << t->address << " is " << hops[t] << " hops away from "<< dest->address << endl;
 
@@ -310,8 +309,6 @@ void network_t::shortest_path_bfs(router_t *dest) {
 			if (!util::contains(hops, c)) continue;
 
 			if (hops[c] == hops[t] - 1) {
-	//			debugf(c->address);
-	//			debugf((port_id)i);
 //				assert( ! util::contains(t->next[dest->address], &t->out((port_id) i)));
 				t->next[dest->address].push_back( &t->out((port_id) i) );
 			}

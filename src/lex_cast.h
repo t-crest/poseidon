@@ -5,6 +5,7 @@
 #include <typeinfo>
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include <vector>
 #include <array>
@@ -84,6 +85,21 @@ std::ostream& operator<<(std::ostream& stream, const boost::optional<A>& s)
 
 template <typename K, typename V>
 std::ostream& operator<<(std::ostream& stream, const std::map<K,V>& m)
+{
+	stream << "[";
+	for (auto it = m.begin(); it != m.end(); ++it) {
+		stream << ((it == m.begin()) ? "" : ",");
+		stream << it->first;
+		stream << "->";
+		stream << it->second;
+	}
+	stream << "]";
+	
+	return stream; 
+}
+
+template <typename K, typename V>
+std::ostream& operator<<(std::ostream& stream, const std::unordered_map<K,V>& m)
 {
 	stream << "[";
 	for (auto it = m.begin(); it != m.end(); ++it) {
