@@ -317,3 +317,30 @@ void network_t::print_channel_specification() {
         cout << "Network has channel " << c << endl;
     });
 }
+
+bool network_t::route_channel(const channel* c, router_id curr, timeslot t) 
+{
+	const bool dest_reached = (curr == c->to);
+	
+	if (dest_reached) {
+		if (this->router(c->to)->local_out_schedule.available(t)) {
+			this->router(c->to)->local_out_schedule.add(c, t);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	auto next = this->router(curr)->next[c->to];
+	for (auto it = next.begin(); it != next.end(); ++it) {
+		port_out_t *p = *it;
+		link_t& l = p->link();
+
+		if (l.local_schedule.available(t) && this->route_channel(c, l.sink.parent.address, t+1)) {
+			l.local_schedule.add(c, t);
+			return true;
+		}
+	}
+
+	return false;
+}

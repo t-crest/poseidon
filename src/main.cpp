@@ -11,6 +11,7 @@
 #include "draw.hpp"
 #include "options.h"
 #include <array>
+#include <stack>
 #include <queue>
 #include <iostream>
 #include <cstdlib>
@@ -20,28 +21,74 @@ using namespace std;
 
 
 
-bool greedy2(network_t& n, const channel* c, router_id curr, timeslot t) 
+// // This is 1.7x slower than the recursive solution. This might be due to more indirections and std::stack is slower than the call-stack
+//bool route_channel2(network_t& n, const channel* c, timeslot start) 
+//{
+//	std::stack<link_t*> ls;
+//	
+//	std::stack< 
+//		std::pair<
+//			set<port_out_t*>::iterator, 
+//			set<port_out_t*>::iterator /*end*/
+//		> 
+//	> rs;
+//
+//	rs.push( make_pair(n.router(c->from)->next[c->to].begin(), n.router(c->from)->next[c->to].end()) );
+//	assert(n.router(c->from)->next[c->to].begin() != n.router(c->from)->next[c->to].end());
+//	timeslot t = start;
+//	
+//	while (!rs.empty()) 
+//	{
+//		set<port_out_t*>::iterator& it = rs.top().first;
+//		set<port_out_t*>::iterator& end = rs.top().second;
+//		assert(it != end);
+//				
+//		if ((*it)->link().local_schedule.available(t++)) 
+//		{
+//			router_t& next_router = (*it)->link().sink.parent;
+//			const bool dest_reached = (next_router.address == c->to);
+//			if (dest_reached) {
+//				if (n.router(c->to)->local_out_schedule.available(t))	break;
+//				else													return false;
+//			}
+//
+//			set<port_out_t*>& next_ports = next_router.next[c->to];
+//			assert(next_ports.begin() != next_ports.end());
+//
+//			rs.push(	
+//				make_pair(
+//					next_ports.begin(), 
+//					next_ports.end()
+//				)    
+//			);
+//			
+//		} else {
+//			while (!rs.empty() && (++rs.top().first == rs.top().second)) {
+//				rs.pop(); t--;
+//			}
+//		}
+//	}
+//
+//	if (rs.empty())
+//		return false;
+//
+//
+//	n.router(c->to)->local_out_schedule.add(c, t--);
+//	while (!rs.empty()) {
+//		set<port_out_t*>::iterator& it = rs.top().first;
+//		set<port_out_t*>::iterator& end = rs.top().second;
+//		assert(it != end);
+//
+//		(*it)->link().local_schedule.add(c, t--);
+//		rs.pop();
+//	}
+//	
+//	return true;
+//}
+//
+
+void greedy1(network_t& n) 
 {
-	if (curr == c->to && n.router(c->to)->local_out_schedule.available(t)) {
-		n.router(c->to)->local_out_schedule.add(c, t);
-		return true;
-	}
-
-	auto next = n.router(curr)->next[c->to];
-	for (auto it = next.begin(); it != next.end(); ++it) {
-		port_out_t *p = *it;
-		link_t& l = p->link();
-
-		if (l.local_schedule.available(t) && greedy2(n, c, l.sink.parent.address, t + 1)) {
-			l.local_schedule.add(c, t);
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void greedy1(network_t& n) {
 	typedef pair<int, const channel*> pq_t;
 	priority_queue< pq_t > pq;
 
@@ -51,15 +98,17 @@ void greedy1(network_t& n) {
 	});
 	debugf(pq.size());
 
-	while (!pq.empty()) {
-		pq_t t = pq.top();
-		pq.pop();
-
+	
+	while (!pq.empty()) 
+	{
+		pq_t t = pq.top(); pq.pop();
+		const channel *c = t.second;
+		
 		for (timeslot i = 0;; i++) {
-			if (n.router(t.second->from)->local_in_schedule.available(i)) {
-				bool okay = greedy2(n, t.second, t.second->from, i);
+			if (n.router(c->from)->local_in_schedule.available(i)) {
+				bool okay = n.route_channel(c, c->from, i);
 				if (okay) {
-					n.router(t.second->from)->local_in_schedule.add(t.second, i);
+					n.router(c->from)->local_in_schedule.add(c, i);
 					break;
 				}
 			}
@@ -75,6 +124,8 @@ int main(int argc, char* argv[])
 	network_t& n = *(p.n);
 	greedy1(n);
 
+	debugf(n.p());
+	
 	if (global::opts->draw) {
 		draw_network(n);
 		draw_schedule(n);

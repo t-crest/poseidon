@@ -176,6 +176,7 @@ public:
     void shortest_path();
     void print_next_table();
     void print_channel_specification();
+	bool route_channel(const channel* c, router_id curr, timeslot t);
 };
 
 #endif	/* SCHEDULE2_HPP */
