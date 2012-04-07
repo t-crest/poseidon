@@ -14,12 +14,12 @@ public:
 	options(int argc, char *argv[]);
 	~options();
 
-    enum {SA, GRASP, ALNS, ERR} meta;
+	enum meta_t {GREEDY, RANDOM, SA, GRASP, ALNS, ERR} metaheuristic;
 	string	input_file;
 	bool draw;
 };
 
 namespace global {
-    extern options* opts;
+	extern options* opts;
 }
 #endif	/* OPTIONS_H */

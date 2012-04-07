@@ -143,7 +143,5 @@ void s_random::run()
 			}
 		}
 	}	
-	
-	
 }
-	
+

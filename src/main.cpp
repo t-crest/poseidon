@@ -21,7 +21,6 @@
 using namespace std;
 
 
-
 int main(int argc, char* argv[]) 
 {
 	global::opts = new options(argc, argv);
@@ -30,16 +29,20 @@ int main(int argc, char* argv[])
 	network_t& n = *(p.n);
 
 	{
-		s_random scheduler(n);
-		scheduler.run();
+		scheduler *s;
+		switch (global::opts->metaheuristic) {
+			case options::GREEDY :	s = new s_greedy(n);	break;
+			case options::RANDOM :	s = new s_random(n);	break;
+			default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
+		}
+		s->run();
+		
 		debugf(n.p());
-
 		if (global::opts->draw) {
 			draw_network(n);
 			draw_schedule(n);
 		}
 	}
-
 
 	return 0;
 }
