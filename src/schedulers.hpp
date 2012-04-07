@@ -16,6 +16,7 @@
 #include <array>
 #include <stack>
 #include <queue>
+#include <random>
 #include <iostream>
 #include <cstdlib>
 #include <memory>
@@ -32,9 +33,16 @@ public:
 };
 
 
-class greedy : public scheduler {
+class s_greedy : public scheduler {
 public:
-	greedy(network_t& _n);
+	s_greedy(network_t& _n);
+	void run();
+};
+
+
+class s_random : public scheduler {
+public:
+	s_random(network_t& _n);
 	void run();
 };
 

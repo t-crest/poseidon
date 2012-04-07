@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 	network_t& n = *(p.n);
 
 	{
-		greedy scheduler(n);
+		s_random scheduler(n);
 		scheduler.run();
 		debugf(n.p());
 

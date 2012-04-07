@@ -7,8 +7,8 @@ scheduler::scheduler(network_t& _n) : n(_n) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 
-greedy::greedy(network_t& _n) : scheduler(_n) {}
-void greedy::run() 
+s_greedy::s_greedy(network_t& _n) : scheduler(_n) {}
+void s_greedy::run() 
 {
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
@@ -106,3 +106,44 @@ void greedy::run()
 //	return true;
 //}
 //
+
+////////////////////////////////////////////////////////////////////////////////
+
+s_random::s_random(network_t& _n) : scheduler(_n) {}
+void s_random::run() 
+{
+	std::random_device seed;
+	std::mt19937 rng(seed());
+	std::uniform_int_distribution<uint> unif;
+	
+	
+	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
+	
+	// Add all channels to a priority queue, sorting by their length
+	for_each(n.channels(), [&](const channel & c) {
+		pq.push( make_pair(unif(rng), &c) );
+	});
+	debugf(pq.size());
+
+	
+	// Routes channels and mutates the network. Long channels routed first.
+	while (!pq.empty()) 
+	{
+		const channel *c = pq.top().second; pq.pop(); // ignore .first
+		
+		for (timeslot t = 0;; t++) 
+		{
+			if (n.router(c->from)->local_in_schedule.available(t) == false) 
+				continue;
+			
+			const bool path_routed = n.route_channel(c, c->from, t);
+			if (path_routed) {
+				n.router(c->from)->local_in_schedule.add(c, t);
+				break;
+			}
+		}
+	}	
+	
+	
+}
+	
