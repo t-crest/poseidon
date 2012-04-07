@@ -51,9 +51,24 @@ std::ostream& operator<<(std::ostream& stream, const channel& rhs) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+schedule::schedule() 
+#ifdef USE_SCHEDULE_HASHMAP
+:	max(0) 
+#endif
+{}
+
+#ifdef USE_SCHEDULE_HASHMAP
+void schedule::refresh_max() {
+	timeslot t = 0;
+	for (auto it = this->table.cbegin(); it != this->table.cend(); ++it)
+		t = util::max(t, it->first);
+	this->max = t;
+}
+#endif
+
 /** Returns true if nothing has been scheduled at timeslot t */
 bool schedule::available(timeslot t) {
-	return !util::contains(this->table, t);
+	return ! util::contains(this->table, t);
 }
 
 /** Returns true if something has been scheduled at timeslot t */
@@ -63,23 +78,39 @@ bool schedule::has(timeslot t) {
 
 /** Get the channel which is scheduled in timeslot t */
 const channel* schedule::get(timeslot t) {
+#ifdef USE_SCHEDULE_HASHMAP
+	assert(t <= this->max);
+#endif
 	return this->table.at(t);
 }
 
 /** Returns the last timeslot where we have something scheduled */
 timeslot schedule::max_time() {
 	if (this->table.empty()) return 0;
+
+#ifdef USE_SCHEDULE_HASHMAP
+	return this->max;
+#else
 	return (this->table.rbegin()->first); // rbegin is iterator to pair having the greatest key (and timeslot is the key)
+#endif
 }
 
 /** Schedule channel c in timeslot t */
 void schedule::add(const channel *c, timeslot t) {
 	this->table[t] = c;
+
+#ifdef USE_SCHEDULE_HASHMAP
+	this->max = util::max(this->max, t);
+#endif
 }
 
 /** Removes whatever channel is scheduled at t */
 void schedule::remove(timeslot t) {
 	this->table.erase(t);
+
+#ifdef USE_SCHEDULE_HASHMAP
+	this->refresh_max();
+#endif
 }
 
 /** Removes channel c from all timeslots */
@@ -92,6 +123,10 @@ void schedule::remove(channel *c) {
 		if (remove) this->table.erase(it++);
 		else ++it;
 	}
+
+#ifdef USE_SCHEDULE_HASHMAP
+	this->refresh_max();
+#endif
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -277,7 +312,8 @@ void network_t::shortest_path_bfs(router_t *dest) {
 			if (hops[c] == hops[t] - 1) {
 	//			debugf(c->address);
 	//			debugf((port_id)i);
-				t->next[dest->address].insert(&t->out((port_id) i));
+//				assert( ! util::contains(t->next[dest->address], &t->out((port_id) i)));
+				t->next[dest->address].push_back( &t->out((port_id) i) );
 			}
 		}
 
@@ -304,7 +340,7 @@ void network_t::shortest_path() {
 void network_t::print_next_table() {
 
 	for_each(this->routers(), [&](router_t * r) {
-		for_each(r->next, [&](const pair<router_id, set<port_out_t*> >& p) {
+		for_each(r->next, [&](const pair<router_id, vector<port_out_t*> >& p) {
 			for_each(p.second, [&](port_out_t * o) {
 				cout << "From router " << r->address << " take " << o->corner << " towards " << p.first << endl;
 			});

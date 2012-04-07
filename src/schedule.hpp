@@ -12,6 +12,7 @@
 #include <vector>
 #include <array>
 #include <map>
+#include <unordered_map>
 #include <queue>
 #include <memory>
 #include <iostream>
@@ -57,11 +58,19 @@ struct channel {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+#define USE_SCHEDULE_HASHMAP 
 
 class schedule {
 private:
-    map<timeslot, const channel*> table;
+#ifdef USE_SCHEDULE_HASHMAP
+	std::unordered_map<timeslot, const channel*> table;
+	void refresh_max();
+	timeslot max;
+#else
+	std::map<timeslot, const channel*> table;
+#endif
 public:
+	schedule();
     bool available(timeslot t);
     bool has(timeslot t);
     const channel* get(timeslot t);
@@ -132,7 +141,7 @@ public:
     schedule local_in_schedule; // Local link to schedule traffic outof the processor
     schedule local_out_schedule; // Local link to schedule traffic into the processor
     const router_id address; // Fixed address
-    map<router_id, set<port_out_t*> > next; // shortest path 
+    map<router_id, vector<port_out_t*> > next; // shortest path 
     map<router_id, int> hops; // hops from this to router_id
     
     

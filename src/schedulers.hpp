@@ -1,3 +1,6 @@
+#ifndef SCHEDULERS_HPP
+#define	SCHEDULERS_HPP
+
 #include "output.hpp"
 #include "draw.hpp"
 #include "svg.h"
@@ -10,7 +13,6 @@
 #include "file.hpp"
 #include "draw.hpp"
 #include "options.h"
-#include "schedulers.hpp"
 #include <array>
 #include <stack>
 #include <queue>
@@ -21,25 +23,21 @@
 using namespace std;
 
 
-
-int main(int argc, char* argv[]) 
-{
-	global::opts = new options(argc, argv);
-
-	parser p(global::opts->input_file);
-	network_t& n = *(p.n);
-
-	{
-		greedy scheduler(n);
-		scheduler.run();
-		debugf(n.p());
-
-		if (global::opts->draw) {
-			draw_network(n);
-			draw_schedule(n);
-		}
-	}
+class scheduler {
+protected:
+	network_t& n;
+public:
+	scheduler(network_t& _n);
+	virtual void run() = 0;
+};
 
 
-	return 0;
-}
+class greedy : public scheduler {
+public:
+	greedy(network_t& _n);
+	void run();
+};
+
+
+#endif	/* SCHEDULERS_HPP */
+
