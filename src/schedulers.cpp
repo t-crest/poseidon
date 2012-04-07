@@ -10,8 +10,10 @@ scheduler::scheduler(network_t& _n) : n(_n) {}
 s_greedy::s_greedy(network_t& _n) : scheduler(_n) {}
 void s_greedy::run() 
 {
-	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
+	util::srand();
+	
 
+	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 	
 	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
@@ -20,6 +22,15 @@ void s_greedy::run()
 	});
 	debugf(pq.size());
 
+			auto next_mutator = [](vector<port_out_t*>& arg){
+				if (arg.size() == 1) return;
+				
+				for (int i = 0; i < arg.size(); i++) {
+					int a = util::rand() % arg.size();
+					int b = util::rand() % arg.size();
+					std::swap(arg[a], arg[b]);
+				}
+			};
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) 
@@ -31,7 +42,7 @@ void s_greedy::run()
 			if (n.router(c->from)->local_in_schedule.available(t) == false) 
 				continue;
 			
-			const bool path_routed = n.route_channel(c, c->from, t);
+			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
 			if (path_routed) {
 				n.router(c->from)->local_in_schedule.add(c, t);
 				break;
@@ -112,19 +123,28 @@ void s_greedy::run()
 s_random::s_random(network_t& _n) : scheduler(_n) {}
 void s_random::run() 
 {
-	std::random_device seed;
-	std::mt19937 rng(seed());
-	std::uniform_int_distribution<uint> unif;
-	
+	util::srand();
 	
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 	
 	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
-		pq.push( make_pair(unif(rng), &c) );
+		pq.push( make_pair(util::rand(), &c) );
 	});
 	debugf(pq.size());
 
+
+	
+			auto next_mutator = [](vector<port_out_t*>& arg){
+				if (arg.size() == 1) return;
+				
+//				for (int i = 0; i < arg.size(); i++) {
+					int a = util::rand() % arg.size();
+					int b = util::rand() % arg.size();
+					std::swap(arg[a], arg[b]);
+//				}
+			};
+	
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) 
@@ -135,8 +155,8 @@ void s_random::run()
 		{
 			if (n.router(c->from)->local_in_schedule.available(t) == false) 
 				continue;
-			
-			const bool path_routed = n.route_channel(c, c->from, t);
+
+			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
 			if (path_routed) {
 				n.router(c->from)->local_in_schedule.add(c, t);
 				break;

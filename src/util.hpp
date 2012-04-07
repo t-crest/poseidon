@@ -5,6 +5,7 @@
 #include <string>
 #include <cmath>
 #include <set>
+#include <random>
 
 #define ensure(pred, x)		{if (!(pred))	{std::cerr << "Error:  \t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl; abort();}}
 #define warn_if(pred, x)	{if ((pred))	{std::cerr << "Warning:\t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl;}}
@@ -29,6 +30,13 @@ namespace util {
 		return (a < b) ? a : b;
 	}
 
+
+	namespace rand_global {
+		static unsigned long next = 1;
+	}
+	int rand(void);
+	void srand(unsigned seed);
+	void srand();
 }
 
 #endif	/* _UTIL_HPP */

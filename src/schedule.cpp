@@ -276,7 +276,7 @@ const vector<router_t*>& network_t::routers() const {
 }
 
 const vector<channel>& network_t::channels() const {
-    return this->specification;
+	return this->specification;
 }
 
 /**
@@ -327,14 +327,12 @@ void network_t::shortest_path_bfs(router_t *dest) {
 }
 
 void network_t::shortest_path() {
-
 	for_each(this->routers(), [this](router_t * r) {
 		this->shortest_path_bfs(r);
 	});
 }
 
 void network_t::print_next_table() {
-
 	for_each(this->routers(), [&](router_t * r) {
 		for_each(r->next, [&](const pair<router_id, vector<port_out_t*> >& p) {
 			for_each(p.second, [&](port_out_t * o) {
@@ -345,12 +343,15 @@ void network_t::print_next_table() {
 }
 
 void network_t::print_channel_specification() {
-    for_each(this->channels(), [&](const channel& c){
-        cout << "Network has channel " << c << endl;
-    });
+	for_each(this->channels(), [&](const channel& c){
+		cout << "Network has channel " << c << endl;
+	});
 }
 
-bool network_t::route_channel(const channel* c, router_id curr, timeslot t) 
+bool network_t::route_channel(
+	const channel* c, router_id curr, timeslot t, 
+	std::function<void(vector<port_out_t*>&)> next_mutator  
+) 
 {
 	const bool dest_reached = (curr == c->to);
 	
@@ -363,12 +364,19 @@ bool network_t::route_channel(const channel* c, router_id curr, timeslot t)
 		}
 	}
 
-	auto next = this->router(curr)->next[c->to];
+	auto& next = this->router(curr)->next[c->to];
+	next_mutator(next);
+	assert(1 <= next.size());
+	assert(next.size() <= 4);
+
 	for (auto it = next.begin(); it != next.end(); ++it) {
 		port_out_t *p = *it;
 		link_t& l = p->link();
 
-		if (l.local_schedule.available(t) && this->route_channel(c, l.sink.parent.address, t+1)) {
+		if (l.local_schedule.available(t) == false)
+			continue;
+		
+		if (this->route_channel(c, l.sink.parent.address, t+1, next_mutator)) {
 			l.local_schedule.add(c, t);
 			return true;
 		}
