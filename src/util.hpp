@@ -30,7 +30,8 @@ namespace util {
 		return (a < b) ? a : b;
 	}
 
-
+	#define UTIL_RAND_MAX 32767 /*DO NOT CHANGE*/
+	
 	namespace rand_global {
 		static unsigned long next = 1;
 	}

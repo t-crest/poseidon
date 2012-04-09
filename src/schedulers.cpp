@@ -47,7 +47,7 @@ void s_greedy::run()
 		{
 			if (n.router(c->from)->local_in_schedule.available(t) == false) 
 				continue;
-			
+						
 			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
 			if (path_routed) {
 				n.router(c->from)->local_in_schedule.add(c, t);
@@ -171,3 +171,66 @@ void s_random::run()
 	}	
 }
 
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+s_lns::s_lns(network_t& _n) {
+	
+}
+void s_lns::run() {
+	// initial 
+
+	for (;;) {
+		auto chosen = this->choose_random();
+		
+		for_each(chosen, [&](const channel *c) {
+			this->destroy(c);
+		}); 
+		
+		for_each(this->unrouted_channels, [&](const channel *c) {
+			this->repair(c);
+		});
+		
+		
+		// noget := asdasdads
+		// choose:
+		//	1. random
+		//  2. dense routers
+		//  3. dominating paths + dependencies
+		//  4. functor next_mutator: always route towards least dense router
+		//  5. finite lookahead
+		
+		// destroy noget
+		// repair igen
+	}
+	
+}
+
+std::set<const channel *c> s_lns::choose_random() {
+	util::srand();
+
+	std::set<const channel *c> ret;
+	int cnt =  util::rand() % (int)(0.1 * this->n.channels().size());
+	cnt = util::max(cnt, 2);
+
+	while (ret.size() < cnt) {
+		const int idx = util::rand() % this->n.channels();
+		ret.insert(this->n.channels()[idx]);
+	}
+	
+	return ret;
+}
+
+
+
+void s_lns::destroy(const channel *c) {
+	this->n.ripup_channel(c);
+	this->unrouted_channels.insert(c);
+}
+
+void s_lns::repair(const channel *c) {
+	
+	this->n.route_channel(c, c->from)
+	
+}

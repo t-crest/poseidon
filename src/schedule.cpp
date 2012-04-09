@@ -378,9 +378,39 @@ bool network_t::route_channel(
 		
 		if (this->route_channel(c, l.sink.parent.address, t+1, next_mutator)) {
 			l.local_schedule.add(c, t);
+			c->t_start = t;
 			return true;
 		}
 	}
 
 	return false;
+}
+
+
+bool network_t::ripup_channel(const channel* c) 
+{
+	this->router(c->from)->local_in_schedule.remove(c->t_start);
+	router_id curr = c->from;
+	timeslot t = c->t_start;
+
+	while (curr != c->to) {
+		port_out_t *p = NULL;
+		for (int i = 0, i < __NUM_PORTS; i++) {
+			if (!this->router(curr)->out(i).has_link())
+				continue;
+			
+			if (this->router(curr)->out(i).link().local_schedule.get(t) == c) {
+				p = &this->router(curr)->out(i);
+				break;
+			}
+		}
+		assert(p != NULL);
+
+		p->link().local_schedule.remove(t++);
+		curr = p->link().sink.parent.address;
+	}
+
+	assert(curr == c->to);
+	
+	this->router(c->to)->local_out_schedule.remove(t);
 }

@@ -11,7 +11,7 @@ namespace util {
 	int rand(void) {
 		using rand_global::next;
 		next = next * 1103515245 + 12345;
-		return ((unsigned) (next / 65536) % 32768);
+		return ((unsigned) (next / 65536) % 32768); // Goes up to and including UTIL_RAND_MAX 
 	}
 
 	/**	Seed the RNG with specific value

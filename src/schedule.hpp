@@ -56,6 +56,8 @@ struct channel {
 	router_id to;
 	int bandwidth; // We desire so many packets in the period p.
 	// Add Response delay
+
+	timeslot t_start;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +190,7 @@ public:
 
 	
 	bool route_channel(const channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
+	bool ripup_channel(const channel* c);
 };
 
 #endif	/* SCHEDULE2_HPP */

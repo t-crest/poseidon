@@ -50,5 +50,20 @@ public:
 };
 
 
+class s_lns : public scheduler {
+	std::set<const channel*> unrouted_channels;
+public:
+	s_lns(network_t& _n);
+	void run();
+	void destroy(const channel *c);
+//	void destroy(router_id r, timeslot t); // destroys all channels going through r at t
+//	void destroy(timeslot t); // destroys all channels which are routed at t
+	void repair(const channel *c);
+	
+	std::set<const channel *c> choose_random();
+};
+
+
+
 #endif	/* SCHEDULERS_HPP */
 
