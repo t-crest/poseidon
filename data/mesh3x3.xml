@@ -1,0 +1,16 @@
+<?xmlversion="1.0" encoding="UTF-8"?>
+
+  <topology width="3" height="3">
+    <graph type="mesh"></graph>
+
+    <!--
+    <graph type="arbitary">
+      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+      ...      
+    </graph>
+    -->
+  </topology>
+  <channels type="all2all">
+  </channels>
+

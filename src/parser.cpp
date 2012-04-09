@@ -26,6 +26,9 @@ parser::parser(string file) {
 		ensure(cols == rows, "Graph does not qualify to be bi-torus");
 		this->create_bitorus();
 		//ensure(false, "Not implemented yet");
+	} else if (graph_type == "mesh") {
+		ensure(cols == rows, "Graph does not qualify to be mesh");
+		this->create_mesh();
 	} else {
 		ensure(false, "Graph type not recognized");
 	}
@@ -92,6 +95,39 @@ void parser::parse_arbitary(xml_node& graph) {
 		l->wrapped = long_link;
 	}
 }
+
+void parser::create_mesh() {
+	link_t *l;
+	for (int i = 0; i < n->cols(); i++) {
+		for (int j = 0; j < n->rows(); j++) {
+			if (i == 0) {
+				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
+				l->wrapped = false;
+			} else if (i == n->cols() - 1) {
+				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
+				l->wrapped = false;
+			} else {
+				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
+				l->wrapped = false;
+				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
+				l->wrapped = false;
+			}
+			if (j == 0) {
+				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
+				l->wrapped = false;
+			} else if (j == n->rows() - 1) {
+				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
+				l->wrapped = false;
+			} else {
+				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
+				l->wrapped = false;
+				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
+				l->wrapped = false;
+			}
+		}
+	}
+}
+
 
 void parser::create_bitorus() {
 	link_t *l;
