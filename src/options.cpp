@@ -13,6 +13,7 @@ options::options(int argc, char *argv[])
 			case 'm':	if		(string(optarg)=="SA")		metaheuristic=SA;		// -m SA gives simulated annealing
 						else if (string(optarg)=="RANDOM")	metaheuristic=RANDOM;
 						else if (string(optarg)=="GREEDY")	metaheuristic=GREEDY;
+						else if (string(optarg)=="rGREEDY")	metaheuristic=rGREEDY;
 						else if (string(optarg)=="GRASP")	metaheuristic=GRASP;	// -m GRASP gives GRASP
 						else if (string(optarg)=="ALNS")	metaheuristic=ALNS;		// -m ALNS gives ALNS
 						else metaheuristic=ERR;				break;

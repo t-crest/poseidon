@@ -24,6 +24,8 @@
 using namespace std;
 
 
+
+
 class scheduler {
 protected:
 	network_t& n;
@@ -34,8 +36,9 @@ public:
 
 
 class s_greedy : public scheduler {
+	bool random;
 public:
-	s_greedy(network_t& _n);
+	s_greedy(network_t& _n, bool _random);
 	void run();
 };
 
