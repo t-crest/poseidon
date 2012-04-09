@@ -160,6 +160,8 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+typedef std::function<void(vector<port_out_t*>&)> mutate_func_t;
+static const mutate_func_t next_identity = [](vector<port_out_t*>& arg){/*This is the identity function; arg is not modified*/};	
 
 class network_t {
 	matrix<router_t*> m_routers;
@@ -183,7 +185,9 @@ public:
 	void shortest_path();
 	void print_next_table();
 	void print_channel_specification();
-	bool route_channel(const channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = [](vector<port_out_t*>& arg){/*This is the identity function; arg is not modified*/});
+
+	
+	bool route_channel(const channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 };
 
 #endif	/* SCHEDULE2_HPP */

@@ -7,7 +7,7 @@ scheduler::scheduler(network_t& _n) : n(_n) {}
 ////////////////////////////////////////////////////////////////////////////////
 
 
-s_greedy::s_greedy(network_t& _n) : scheduler(_n) {}
+s_greedy::s_greedy(network_t& _n, bool _random) : scheduler(_n), random(_random) {}
 void s_greedy::run() 
 {
 	util::srand();
@@ -22,15 +22,21 @@ void s_greedy::run()
 	});
 	debugf(pq.size());
 
-			auto next_mutator = [](vector<port_out_t*>& arg){
-				if (arg.size() == 1) return;
-				
-				for (int i = 0; i < arg.size(); i++) {
-					int a = util::rand() % arg.size();
-					int b = util::rand() % arg.size();
-					std::swap(arg[a], arg[b]);
-				}
-			};
+			auto next_mutator = 
+				this->random 
+				? 
+					[](vector<port_out_t*>& arg){
+						if (arg.size() == 1) return;
+
+						for (int i = 0; i < arg.size(); i++) {
+							int a = util::rand() % arg.size();
+							int b = util::rand() % arg.size();
+							std::swap(arg[a], arg[b]);
+						}
+					}
+				:	
+					[](vector<port_out_t*>& arg){/*This is the identity function; arg is not modified*/}
+			;
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) 
