@@ -178,8 +178,9 @@ void s_random::run() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_lns::s_lns(network_t& _n) : scheduler(n){
-	scheduler *s = new s_greedy(n,true);
+s_lns::s_lns(network_t& _n) : scheduler(_n) {
+	assert(&_n == &n);
+	scheduler *s = new s_greedy(this->n, true);
 	s->run();
 }
 

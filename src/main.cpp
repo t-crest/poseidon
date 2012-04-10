@@ -28,6 +28,13 @@ int main(int argc, char* argv[])
 	parser p(global::opts->input_file);
 	network_t& n = *(p.n);
 
+	
+//	for_each (n.channels(), [](const channel& c) {
+//		debugf(c.from);
+//	});
+//	
+	
+	
 	{
 		scheduler *s;
 		switch (global::opts->metaheuristic) {
