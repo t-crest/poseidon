@@ -349,7 +349,7 @@ void network_t::print_channel_specification() {
 }
 
 bool network_t::route_channel(
-	const channel* c, router_id curr, timeslot t, 
+	channel* c, router_id curr, timeslot t, 
 	std::function<void(vector<port_out_t*>&)> next_mutator  
 ) 
 {
@@ -395,12 +395,12 @@ bool network_t::ripup_channel(const channel* c)
 
 	while (curr != c->to) {
 		port_out_t *p = NULL;
-		for (int i = 0, i < __NUM_PORTS; i++) {
-			if (!this->router(curr)->out(i).has_link())
+		for (int i = 0; i < __NUM_PORTS; i++) {
+			if (!this->router(curr)->out((port_id)i).has_link())
 				continue;
 			
-			if (this->router(curr)->out(i).link().local_schedule.get(t) == c) {
-				p = &this->router(curr)->out(i);
+			if (this->router(curr)->out((port_id)i).link().local_schedule.get(t) == c) {
+				p = &this->router(curr)->out((port_id)i);
 				break;
 			}
 		}

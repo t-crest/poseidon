@@ -15,6 +15,7 @@
 #include "options.h"
 #include <array>
 #include <stack>
+#include <set>
 #include <queue>
 #include <random>
 #include <iostream>
@@ -55,12 +56,12 @@ class s_lns : public scheduler {
 public:
 	s_lns(network_t& _n);
 	void run();
-	void destroy(const channel *c);
 //	void destroy(router_id r, timeslot t); // destroys all channels going through r at t
 //	void destroy(timeslot t); // destroys all channels which are routed at t
-	void repair(const channel *c);
+        void destroy();
+	void repair();
 	
-	std::set<const channel *c> choose_random();
+	std::set<const channel*> choose_random();
 };
 
 

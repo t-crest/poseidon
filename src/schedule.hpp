@@ -189,7 +189,7 @@ public:
 	void print_channel_specification();
 
 	
-	bool route_channel(const channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
+	bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	bool ripup_channel(const channel* c);
 };
 
