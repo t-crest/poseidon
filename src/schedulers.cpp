@@ -237,15 +237,19 @@ void s_lns::destroy() {
 
 	for_each(chosen, [&](const channel * c) {
 		this->n.ripup_channel(c);
-		this->unrouted_channels.insert(c);
+		const int hops = this->n.router(c->from)->hops[c->to];
+		this->unrouted_channels.insert( make_pair(hops, c) );
 	});
 }
 
 void s_lns::repair() {
-
-	for_each(this->unrouted_channels, [&](const channel * c) {
-		for(int t = 0;; t++){
-			if(this->n.route_channel((channel*)c, c->from,t))
+	
+	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
+		
+		const channel *c = p.second;
+		
+		for (int t = 0;; t++) {
+			if (this->n.route_channel((channel*)c, c->from,t))
 				break;
 		}
 	});

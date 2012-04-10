@@ -52,13 +52,13 @@ public:
 
 
 class s_lns : public scheduler {
-	std::set<const channel*> unrouted_channels;
+	std::set<std::pair<int, const channel*> > unrouted_channels;
 public:
 	s_lns(network_t& _n);
 	void run();
 //	void destroy(router_id r, timeslot t); // destroys all channels going through r at t
 //	void destroy(timeslot t); // destroys all channels which are routed at t
-        void destroy();
+	void destroy();
 	void repair();
 	
 	std::set<const channel*> choose_random();
