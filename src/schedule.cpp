@@ -398,6 +398,9 @@ bool network_t::ripup_channel(const channel* c)
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!this->router(curr)->out((port_id)i).has_link())
 				continue;
+
+			if (this->router(curr)->out((port_id)i).link().local_schedule.has(t) == false)
+				continue;
 			
 			if (this->router(curr)->out((port_id)i).link().local_schedule.get(t) == c) {
 				p = &this->router(curr)->out((port_id)i);

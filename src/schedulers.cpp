@@ -189,10 +189,15 @@ void s_lns::run() {
 	int best, curr;
 	best = curr = n.p();
 
+	debugf(curr);
+	
 	for (;;) {
 		this->destroy();
 		this->repair();
+		
 		curr = n.p();
+		debugf(curr);
+		
 		if(curr < best){
 			best = curr;
 			debugf(best);
