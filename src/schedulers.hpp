@@ -50,6 +50,12 @@ public:
 	void run();
 };
 
+class s_bad_random : public scheduler {
+public:
+	s_bad_random(network_t& _n);
+	void run();
+};
+
 
 class s_lns : public scheduler {
 	std::set<std::pair<int, const channel*> > unrouted_channels;
