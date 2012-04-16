@@ -175,22 +175,48 @@ std::set<const channel*> s_lns::choose_dom_and_depends() {
 
 	// Find the dominating paths first
 
-	for_each(this->n.links(), [&](link_t * t) {
+	for_each(this->n.links(), [&](link_t* t) {
 		if (t->local_schedule.has(p - 1)) {
 			assert(t->local_schedule.max_time() <= p - 1);
-					const channel *c = t->local_schedule.get(p - 1);
-					assert(c != NULL);
-					dom.insert(c);
-					//			debugf(dom.size());
+			const channel *c = t->local_schedule.get(p - 1);
+			assert(c != NULL);
+			dom.insert(c);
+//			debugf(dom.size());
 		}
 	});
 
+	std::set<const channel*> ret = dom;
+	
+	for_each(dom, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->depend_path(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
 
+	return ret;
+}
 
-
-
-
-	assert(false && "TODO");
+std::set<const channel*> s_lns::depend_path(const channel* dom) 
+{
+	router_id curr = dom->from;
+	std::set<const channel*> ret;
+	
+	for (int i = 0; i < __NUM_PORTS; i++) {
+		port_id p = (port_id)i;
+		
+		if (!n.router(curr)->out(p).has_link()) continue;
+		auto time = n.router(curr)->out(p).link().local_schedule.time(dom);
+		if (!time) continue;
+		
+		timeslot max = *time;
+		for (timeslot t = 0; t <= max; t++) {
+			if (!n.router(curr)->out(p).link().local_schedule.has(t)) continue;
+			const channel *c = n.router(curr)->out(p).link().local_schedule.get(t);
+			ret.insert(c);
+		}
+		curr = n.router(curr)->out(p).link().sink.parent.address;
+	}
+	
+	return ret;
 }
 
 void s_lns::destroy() {

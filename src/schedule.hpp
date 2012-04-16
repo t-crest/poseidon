@@ -76,6 +76,7 @@ public:
 	schedule();
 	bool available(timeslot t);
 	bool has(timeslot t);
+	boost::optional<timeslot> time(const channel *c);
 	const channel* get(timeslot t);
 	timeslot max_time();
 	void add(const channel *c, timeslot t);
