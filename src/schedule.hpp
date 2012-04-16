@@ -7,6 +7,7 @@
 #include "matrix.hpp"
 #include <boost/optional/optional.hpp>
 #include "parser.hpp"
+#include <set>
 #include <cassert>
 #include <utility>
 #include <vector>
@@ -78,6 +79,7 @@ public:
 	bool has(timeslot t);
 	boost::optional<timeslot> time(const channel *c);
 	const channel* get(timeslot t);
+    std::set<const channel*> channels() const;
 	timeslot max_time();
 	void add(const channel *c, timeslot t);
 	void remove(timeslot t);

@@ -271,6 +271,39 @@ std::set<const channel*> s_lns::depend_path(const channel* dom)
 	return ret;
 }
 
+std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
+	std::set<const channel*> ret;
+	std::set<const link_t*> links;
+	
+	std::queue<router_t*> Q;
+	std::map<router_t*, bool> marked;
+	
+	Q.push(this->n.router(c->from));
+	marked[this->n.router(c->from)] = true;
+	
+	while(!Q.empty()) {
+		router_t *t = Q.front(); Q.pop();
+		auto &next = t->next.at(c->to);
+		
+		for_each(next, [&](port_out_t* p){
+			if(p->has_link()) {
+				Q.push(&(p->link().sink.parent));
+				links.insert(&(p->link()));
+			}
+		});
+	}
+	
+	for_each(links, [&](const link_t* l) {
+		std::set<const channel*> channels = l->local_schedule.channels();
+		for (auto it = channels.begin(); it != channels.end(); ++it ) {
+			ret.insert(c);
+		}
+	});
+	
+	return ret;
+}
+
+
 void s_lns::destroy() {
 	//	auto chosen = this->choose_random();
 	auto chosen = this->choose_dom_and_depends();
