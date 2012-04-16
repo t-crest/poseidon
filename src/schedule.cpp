@@ -350,7 +350,7 @@ void network_t::print_channel_specification() {
 
 bool network_t::route_channel(
 	channel* c, router_id curr, timeslot t, 
-	std::function<void(vector<port_out_t*>&)> next_mutator  
+	std::function<void(vector<port_out_t*>&)> next_mutator
 ) 
 {
 	const bool dest_reached = (curr == c->to);
@@ -373,8 +373,9 @@ bool network_t::route_channel(
 		port_out_t *p = *it;
 		link_t& l = p->link();
 
-		if (l.local_schedule.available(t) == false)
+		if (l.local_schedule.available(t) == false) {
 			continue;
+		}
 		
 		if (this->route_channel(c, l.sink.parent.address, t+1, next_mutator)) {
 			l.local_schedule.add(c, t);

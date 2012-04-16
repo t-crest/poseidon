@@ -62,6 +62,7 @@ public:
 	void repair();
 	
 	std::set<const channel*> choose_random();
+	std::set<const channel*> choose_dom_and_depends();
 };
 
 
