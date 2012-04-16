@@ -1,8 +1,10 @@
 #include "schedulers.hpp"
 
+
+////////////////////////////////////////////////////////////////////////////////
+
 scheduler::scheduler(network_t& _n) : n(_n) {
 }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,9 +26,9 @@ void s_greedy::run() {
 	debugf(pq.size());
 
 	auto next_mutator =
-		this->random
-		?
-		[](vector<port_out_t*>& arg){
+			this->random
+			?
+			[](vector<port_out_t*>& arg){
 		if (arg.size() == 1) return;
 
 		for (int i = 0; i < arg.size(); i++) {
@@ -44,7 +46,7 @@ void s_greedy::run() {
 
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
-		channel *c = (channel*)pq.top().second;
+		channel *c = (channel*) pq.top().second;
 		pq.pop(); // ignore .first
 
 		for (timeslot t = 0;; t++) {
@@ -59,73 +61,6 @@ void s_greedy::run() {
 		}
 	}
 }
-
-
-// // This is 1.7x slower than the recursive solution. This might be due to more indirections and std::stack is slower than the call-stack
-//bool route_channel2(network_t& n, const channel* c, timeslot start) 
-//{
-//	std::stack<link_t*> ls;
-//	
-//	std::stack< 
-//		std::pair<
-//			set<port_out_t*>::iterator, 
-//			set<port_out_t*>::iterator /*end*/
-//		> 
-//	> rs;
-//
-//	rs.push( make_pair(n.router(c->from)->next[c->to].begin(), n.router(c->from)->next[c->to].end()) );
-//	assert(n.router(c->from)->next[c->to].begin() != n.router(c->from)->next[c->to].end());
-//	timeslot t = start;
-//	
-//	while (!rs.empty()) 
-//	{
-//		set<port_out_t*>::iterator& it = rs.top().first;
-//		set<port_out_t*>::iterator& end = rs.top().second;
-//		assert(it != end);
-//				
-//		if ((*it)->link().local_schedule.available(t++)) 
-//		{
-//			router_t& next_router = (*it)->link().sink.parent;
-//			const bool dest_reached = (next_router.address == c->to);
-//			if (dest_reached) {
-//				if (n.router(c->to)->local_out_schedule.available(t))	break;
-//				else													return false;
-//			}
-//
-//			set<port_out_t*>& next_ports = next_router.next[c->to];
-//			assert(next_ports.begin() != next_ports.end());
-//
-//			rs.push(	
-//				make_pair(
-//					next_ports.begin(), 
-//					next_ports.end()
-//				)    
-//			);
-//			
-//		} else {
-//			while (!rs.empty() && (++rs.top().first == rs.top().second)) {
-//				rs.pop(); t--;
-//			}
-//		}
-//	}
-//
-//	if (rs.empty())
-//		return false;
-//
-//
-//	n.router(c->to)->local_out_schedule.add(c, t--);
-//	while (!rs.empty()) {
-//		set<port_out_t*>::iterator& it = rs.top().first;
-//		set<port_out_t*>::iterator& end = rs.top().second;
-//		assert(it != end);
-//
-//		(*it)->link().local_schedule.add(c, t--);
-//		rs.pop();
-//	}
-//	
-//	return true;
-//}
-//
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -159,7 +94,7 @@ void s_random::run() {
 
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
-		channel *c = (channel*)pq.top().second;
+		channel *c = (channel*) pq.top().second;
 		pq.pop(); // ignore .first
 
 		for (timeslot t = 0;; t++) {
@@ -180,7 +115,7 @@ void s_random::run() {
 
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
-	scheduler *s = new s_greedy(this->n, true);
+	scheduler *s = new s_greedy(this->n, false);
 	s->run();
 }
 
@@ -190,22 +125,22 @@ void s_lns::run() {
 	best = curr = n.p();
 
 	debugf(curr);
-	
+
 	for (;;) {
 		this->destroy();
 		this->repair();
-		
+
 		curr = n.p();
 		debugf(curr);
-		
-		if(curr < best){
+
+		if (curr < best) {
 			best = curr;
 			debugf(best);
 		}
 
 		// noget := asdasdads
 		// choose:
-		//	1. random
+		//	1. random - Done
 		//  2. dense routers
 		//  3. dominating paths + dependencies
 		//  4. functor next_mutator: always route towards least dense router
@@ -232,25 +167,52 @@ std::set<const channel*> s_lns::choose_random() {
 	return ret;
 }
 
+std::set<const channel*> s_lns::choose_dom_and_depends() {
+
+	std::set<const channel*> dom;
+
+	timeslot p = this->n.p();
+
+	// Find the dominating paths first
+
+	for_each(this->n.links(), [&](link_t * t) {
+		if (t->local_schedule.has(p - 1)) {
+			assert(t->local_schedule.max_time() <= p - 1);
+					const channel *c = t->local_schedule.get(p - 1);
+					assert(c != NULL);
+					dom.insert(c);
+					//			debugf(dom.size());
+		}
+	});
+
+
+
+
+
+
+	assert(false && "TODO");
+}
+
 void s_lns::destroy() {
-	auto chosen = this->choose_random();
+	//	auto chosen = this->choose_random();
+	auto chosen = this->choose_dom_and_depends();
 
 	for_each(chosen, [&](const channel * c) {
 		this->n.ripup_channel(c);
 		const int hops = this->n.router(c->from)->hops[c->to];
-		this->unrouted_channels.insert( make_pair(hops, c) );
+		this->unrouted_channels.insert(make_pair(hops, c));
 	});
 }
 
 void s_lns::repair() {
-	
+
 	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
-		
+
 		const channel *c = p.second;
-		
+
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*)c, c->from,t))
+			if (this->n.route_channel((channel*) c, c->from, t))
 				break;
-		}
+			}
 	});
 }
