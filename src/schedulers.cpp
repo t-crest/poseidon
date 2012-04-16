@@ -306,6 +306,7 @@ std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
 	
 	while(!Q.empty()) {
 		router_t *t = Q.front(); Q.pop();
+		if (t->address == c->to) continue; // we've reached the destination
 		auto &next = t->next.at(c->to);
 		
 		for_each(next, [&](port_out_t* p){
