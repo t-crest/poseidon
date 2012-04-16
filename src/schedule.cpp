@@ -84,6 +84,14 @@ const channel* schedule::get(timeslot t) {
 	return this->table.at(t);
 }
 
+std::set<const channel*> schedule::channels() const {
+	std::set<const channel*> ret;
+	for(auto it = this->table.cbegin(); it != this->table.cend(); ++it)
+		ret.insert(it->second);
+	
+	return ret;
+}
+
 /** Returns the last timeslot where we have something scheduled */
 timeslot schedule::max_time() {
 	if (this->table.empty()) return 0;

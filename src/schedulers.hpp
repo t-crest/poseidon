@@ -63,6 +63,7 @@ public:
 	
 	std::set<const channel*> choose_random();
 	std::set<const channel*> choose_dom_and_depends();
+    std::set<const channel*> depend_rectangle(const channel* c);
 };
 
 
