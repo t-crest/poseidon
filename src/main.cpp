@@ -29,11 +29,7 @@ int main(int argc, char* argv[])
 	network_t& n = *(p.n);
 
 	
-//	for_each (n.channels(), [](const channel& c) {
-//		debugf(c.from);
-//	});
-//	
-	
+	if (global::opts->draw) draw_network(n); // draw network before scheduling anything
 	
 	{
 		scheduler *s;
@@ -47,11 +43,9 @@ int main(int argc, char* argv[])
 		s->run();
 		
 		debugf(n.p());
-		if (global::opts->draw) {
-			draw_network(n);
-			draw_schedule(n);
-		}
 	}
+
+	if (global::opts->draw) draw_schedule(n); // finally draw the schedule itself 
 
 	return 0;
 }

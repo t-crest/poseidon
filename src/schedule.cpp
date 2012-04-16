@@ -388,6 +388,8 @@ bool network_t::route_channel(
 
 	for (auto it = next.begin(); it != next.end(); ++it) {
 		port_out_t *p = *it;
+				
+		assert(p->has_link());
 		link_t& l = p->link();
 
 		if (l.local_schedule.available(t) == false) {
