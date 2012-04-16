@@ -1,6 +1,26 @@
 #include "schedulers.hpp"
 
 
+
+std::function<void(vector<port_out_t*>&)>
+get_next_mutator() 
+{
+	std::function<void(vector<port_out_t*>&)> 
+	ret = [](vector<port_out_t*>& arg)
+	{
+		if (arg.size() == 1) return; // singleton -- not much to randomize here
+
+		for (int i = 0; i < arg.size(); i++) {
+			int a = util::rand() % arg.size();
+			int b = util::rand() % arg.size();
+			std::swap(arg[a], arg[b]);
+		}
+	};
+	
+	return ret;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 
 scheduler::scheduler(network_t& _n) : n(_n) {
@@ -18,11 +38,10 @@ void scheduler::percent_up(const int curr){
 	
 	float curr_percent = 100-(curr*100)/initial;
 	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
-	debugf(curr_percent);
 	if(curr_percent > percent && curr_percent <= 100){
 		percent = curr_percent;
-		cout << "Progress: " << curr_percent << "%" << "\r" ;
-		if ((int)curr_percent == 100)
+		(cout << "Progress: " << curr_percent << "%" << "\r").flush();
+		if (int(curr_percent) == 100)
 			cout << endl;
 	}
 
@@ -47,25 +66,10 @@ void s_greedy::run() {
 	});
 	debugf(pq.size());
 
-	auto next_mutator =
-			this->random
-			?
-			[](vector<port_out_t*>& arg){
-		if (arg.size() == 1) return;
-
-		for (int i = 0; i < arg.size(); i++) {
-			int a = util::rand() % arg.size();
-			int b = util::rand() % arg.size();
-			std::swap(arg[a], arg[b]);
-		}
-	}
-	:
-
-	[](vector<port_out_t*>& arg) {
-		/*This is the identity function; arg is not modified*/
-	}
-	;
-	percent_set(pq.size(),"Creating initial solution:");
+	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
+	
+	percent_set(pq.size(), "Creating initial solution:");
+	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
@@ -96,7 +100,6 @@ void s_random::run() {
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
 	// Add all channels to a priority queue, sorting by their length
-
 	for_each(n.channels(), [&](const channel & c) {
 		pq.push(make_pair(util::rand(), &c));
 	});
@@ -104,15 +107,7 @@ void s_random::run() {
 
 
 
-	auto next_mutator = [](vector<port_out_t*>& arg){
-		if (arg.size() == 1) return;
-
-		//				for (int i = 0; i < arg.size(); i++) {
-		int a = util::rand() % arg.size();
-		int b = util::rand() % arg.size();
-		std::swap(arg[a], arg[b]);
-		//				}
-	};
+	auto next_mutator = get_next_mutator();
 
 
 	// Routes channels and mutates the network. 
@@ -153,15 +148,7 @@ void s_bad_random::run() {
 
 
 
-	auto next_mutator = [](vector<port_out_t*>& arg){
-		if (arg.size() == 1) return;
-
-		//				for (int i = 0; i < arg.size(); i++) {
-		int a = util::rand() % arg.size();
-		int b = util::rand() % arg.size();
-		std::swap(arg[a], arg[b]);
-		//				}
-	};
+	auto next_mutator = get_next_mutator();
 
 	timeslot t_start = 0;
 
@@ -242,25 +229,22 @@ std::set<const channel*> s_lns::choose_random() {
 	return ret;
 }
 
-std::set<const channel*> s_lns::choose_dom_and_depends() {
-
+std::set<const channel*> s_lns::choose_dom_and_depends() 
+{
 	std::set<const channel*> dom;
-
 	timeslot p = this->n.p();
 
 	// Find the dominating paths first
-
 	for_each(this->n.links(), [&](link_t* t) {
 		if (t->local_schedule.has(p - 1)) {
 			assert(t->local_schedule.max_time() <= p - 1);
 			const channel *c = t->local_schedule.get(p - 1);
 			assert(c != NULL);
 			dom.insert(c);
-//			debugf(dom.size());
 		}
 	});
 
-	std::set<const channel*> ret = dom;
+	std::set<const channel*> ret = dom; // the dominating path + its "dependencies"
 	
 	for_each(dom, [&](const channel *dom_c){
 		std::set<const channel*> chns = this->depend_path(dom_c);
@@ -329,7 +313,7 @@ std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
 
 
 void s_lns::destroy() {
-	//	auto chosen = this->choose_random();
+//	auto chosen = this->choose_random();
 	auto chosen = this->choose_dom_and_depends();
 
 	for_each(chosen, [&](const channel * c) {
@@ -341,12 +325,14 @@ void s_lns::destroy() {
 
 void s_lns::repair() {
 
+	auto next_mutator = get_next_mutator();
+	
 	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
 
 		const channel *c = p.second;
 
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t))
+			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
 				break;
 			}
 	});

@@ -26,6 +26,10 @@ using namespace std;
 
 
 
+std::function<void(vector<port_out_t*>&)> get_next_mutator();
+
+
+
 
 class scheduler {
         float percent;
