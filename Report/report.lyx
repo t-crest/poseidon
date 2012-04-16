@@ -182,14 +182,273 @@ Optimization problem
 \end_layout
 
 \begin_layout Standard
+In this project we are to implement a meta heuristic for scheduling communicatio
+n in a real-time Multi-Processor System-on-Chip (MPSoC).
+ The MPSoCs we will be targeting for this project, are MPSoCs with a Network-on-
+Chip (NoC) as interconnect.
+ This general-purpose real-time MPSoC is part of the 
+\family sans
+T-Crest
+\family default
+ project
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.t-crest.org/"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+ funded by the European Union.
+\end_layout
+
+\begin_layout Standard
+In real-time systems, performance depends purely on the Worst-Case Execution
+ Time (WCET) -- therefore the analyzability of the system is very important
+ to obtain good performance.
+ A NoC is built of 
+\emph on
+tiles
+\emph default
+ consisting of a processor, a router and links to neighboring tiles.
+ A sample sketch of a tile can be seen in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Tile-concept"
+
+\end_inset
+
+.
+ In a real-time MPSoC, each tile processor executes one task to keep the
+ timing analysis simple and get a lower WCET bound.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/Tile-Details.pdf
+	lyxscale 30
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Tile-concept"
+
+\end_inset
+
+A tile contains a processor, a Network Interface (NI), a local instruction
+ and data cache and possibly some I/O.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A communication channel is a point-to-point connection from one tile to
+ another, this point-to-point connection can route packets along different
+ paths.
+ A path is the sequence of links, on which the packet travels to reach the
+ end point of the connection.
+ Two communication channels can not affect each other -- they are decoupled.
+ Decoupling is required to make the NoC-interconnect analyzable.
+ To decouple communication channels, the traffic in the network can be scheduled
+ statically at compile time.
+ Generating this routing schedule is a hard problem to solve.
+ The schedule is periodic, and thus for performance reasons (bandwidth and
+ latency) it is important to have the schedule as short as possible.
+ Given use-case, we therefore want to optimize towards the shortest schedule.
+\end_layout
+
+\begin_layout Standard
+Routers can be connected in many different topologies, the most common structure
+ is in a grid-like fashion.
+ One possible NoC topology is a double-torus, an example of this layout
+ is seen in Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_nice"
+
+\end_inset
+
+.
+ In this figure, some of the links are very long which does not scale well
+ in hardware implementations.
+ Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Double-torus_not-nice"
+
+\end_inset
+
+ is an example of how the double-torus can be laid out, with a minimum average
+ link length.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+\begin_inset Float figure
+wide true
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/simple-double-torus.pdf
+	lyxscale 20
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_nice"
+
+\end_inset
+
+Nice graph representation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/double-torus.pdf
+	lyxscale 20
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Double-torus_not-nice"
+
+\end_inset
+
+Minimized longest-link distance.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Two double-torus graphs, only differing in layout.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 Describe the optimization problem
+\end_layout
+
+\begin_layout Standard
+Relate the problem to multi commodity flow problems.
 \end_layout
 
 \begin_layout Standard
 The problem is a multi commodity flow problem, but fractional flows are
  not allowed as physical links can not be shared.
- This makes our multi commodity flow problem NP-complete, we will later
- give proof for this NP-completeness.
+ This makes our multi commodity flow problem NP-complete.
 \end_layout
 
 \begin_layout Standard
@@ -222,12 +481,87 @@ Figure of the system
 Applying Metaheuristics
 \end_layout
 
-\begin_layout Subsection
-Simulated Annealing
+\begin_layout Standard
+The initial solution...
 \end_layout
 
 \begin_layout Standard
-Temperature
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any timeslot.
+ Another is that packets must arrive in the same order as they were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
+ Due to the regularity of the graph, this shortest path routing is simple.
+ Always taking the shortest path will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Subsection
+Neighborhood and operators
+\end_layout
+
+\begin_layout Standard
+The problem consists of a collection of paths to be scheduled onto the NoC.
+ We consider the neighborhood of one feasible solution, to be all other
+ feasible solutions where 
+\begin_inset Formula $k$
+\end_inset
+
+ paths are permuted.
+ A permutation of a path could be patching a part of it (local changes,
+ eg.
+ swapping individual links), or rerouting it in a randomized greedy fashion.
+\end_layout
+
+\begin_layout Standard
+Imagine a compact schedule where most links are already occupied, we expect
+ small changes like swapping individual links to result in a lot of infeasible
+ schedules.
+ Instead we consider removing entire paths and rebuilding them: Patching
+ an existing path versus rerouting it, the rerouting-approach will obviously
+ be a superset, as the patching-approach makes only locally limited changes.
+ The rerouting-approach greatly increases our neighborhood and increases
+ our chances of finding a new and feasible path.
+ It is also possible to reroute part of an existing path.
+\end_layout
+
+\begin_layout Standard
+We can use the above approach to 
+\begin_inset Quotes eld
+\end_inset
+
+make room
+\begin_inset Quotes erd
+\end_inset
+
+ in the schedule such that the latest-finishing path may be moved to an
+ earlier starting timeslot -- thus reducing the overall schedule period.
+\end_layout
+
+\begin_layout Subsection
+Proposed metaheuristics
+\end_layout
+
+\begin_layout Standard
+We expect the following two metaheuristics to yield good results:
+\end_layout
+
+\begin_layout Itemize
+Large Neighborhood Search (LNS): Choose initial solution.
+ Destroy and rebuild part of current solution.
+ This is exactly what we described above.
+ 
+\end_layout
+
+\begin_layout Itemize
+Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy initial
+ solution.
+ Destroy and rebuild part of solution.
+ Start over with new initial solution.
 \end_layout
 
 \begin_layout Subsection
@@ -235,7 +569,7 @@ Greedy Randomized Adaptive Search Procedure
 \end_layout
 
 \begin_layout Subsection
-Adaptive Large Neighborhood Search
+Large Neighborhood Search
 \end_layout
 
 \begin_layout Section
@@ -252,6 +586,10 @@ Infrastructure.
 
 \begin_layout Itemize
 Ensuring feasible solutions
+\end_layout
+
+\begin_layout Itemize
+Shortest path calculation
 \end_layout
 
 \begin_layout Itemize
