@@ -77,6 +77,7 @@ public:
 	schedule();
 	bool available(timeslot t);
 	bool has(timeslot t);
+	boost::optional<timeslot> time(const channel *c);
 	const channel* get(timeslot t);
     std::set<const channel*> channels() const;
 	timeslot max_time();
