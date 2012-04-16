@@ -28,10 +28,14 @@ using namespace std;
 
 
 class scheduler {
+        float percent;
+        int initial;
 protected:
 	network_t& n;
 public:
 	scheduler(network_t& _n);
+        void percent_set(const int init, const string);
+        void percent_up(const int curr);
 	virtual void run() = 0;
 };
 

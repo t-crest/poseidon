@@ -4,6 +4,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 scheduler::scheduler(network_t& _n) : n(_n) {
+	percent = 0.0;
+	initial = 0;
+}
+
+void scheduler::percent_set(const int init, const string text){
+	percent = 0.0;
+	initial = init;
+	cout << text << endl;
+}
+
+void scheduler::percent_up(const int curr){
+	
+	float curr_percent = 100-(curr*100)/initial;
+	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
+	debugf(curr_percent);
+	if(curr_percent > percent && curr_percent <= 100){
+		percent = curr_percent;
+		cout << "Progress: " << curr_percent << "%" << "\r" ;
+		if ((int)curr_percent == 100)
+			cout << endl;
+	}
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +65,7 @@ void s_greedy::run() {
 		/*This is the identity function; arg is not modified*/
 	}
 	;
-
+	percent_set(pq.size(),"Creating initial solution:");
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
@@ -59,6 +81,7 @@ void s_greedy::run() {
 				break;
 			}
 		}
+		percent_up(pq.size());
 	}
 }
 
