@@ -76,12 +76,29 @@ bool schedule::has(timeslot t) {
 	return util::contains(this->table, t);
 }
 
+/** Returns true if channel c is contained in the schedule */
+boost::optional<timeslot> schedule::time(const channel *c) {
+	boost::optional<timeslot> ret;
+	for (auto it = this->table.begin(); it != this->table.end(); ++it) {
+		if (it->second == c) return it->first;
+	}
+	return ret;
+}
+
 /** Get the channel which is scheduled in timeslot t */
 const channel* schedule::get(timeslot t) {
 #ifdef USE_SCHEDULE_HASHMAP
 	assert(t <= this->max);
 #endif
 	return this->table.at(t);
+}
+
+std::set<const channel*> schedule::channels() const {
+	std::set<const channel*> ret;
+	for(auto it = this->table.cbegin(); it != this->table.cend(); ++it)
+		ret.insert(it->second);
+	
+	return ret;
 }
 
 /** Returns the last timeslot where we have something scheduled */

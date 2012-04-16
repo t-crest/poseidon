@@ -115,7 +115,7 @@ void s_random::run() {
 	};
 
 
-	// Routes channels and mutates the network. Long channels routed first.
+	// Routes channels and mutates the network. 
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
 		pq.pop(); // ignore .first
@@ -136,9 +136,61 @@ void s_random::run() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+s_bad_random::s_bad_random(network_t& _n) : scheduler(_n) {
+}
+
+void s_bad_random::run() {
+	util::srand();
+
+	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
+
+	// Add all channels to a priority queue, sorting by their length
+
+	for_each(n.channels(), [&](const channel & c) {
+		pq.push(make_pair(util::rand(), &c));
+	});
+	debugf(pq.size());
+
+
+
+	auto next_mutator = [](vector<port_out_t*>& arg){
+		if (arg.size() == 1) return;
+
+		//				for (int i = 0; i < arg.size(); i++) {
+		int a = util::rand() % arg.size();
+		int b = util::rand() % arg.size();
+		std::swap(arg[a], arg[b]);
+		//				}
+	};
+
+	timeslot t_start = 0;
+
+	// Routes channels and mutates the network. 
+	while (!pq.empty()) {
+		channel *c = (channel*) pq.top().second; pq.pop(); // ignore .first
+
+		for (timeslot t = t_start;; t++) {
+			if (n.router(c->from)->local_in_schedule.available(t) == false)
+				continue;
+
+			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
+			if (path_routed) {
+				n.router(c->from)->local_in_schedule.add(c, t);
+				t_start = t + n.router(c->from)->hops.at(c->to) + 1;
+				break;
+			}
+		}
+	}
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
-	scheduler *s = new s_greedy(this->n, false);
+//	scheduler *s = new s_greedy(this->n, false);
+	scheduler *s = new s_bad_random(this->n);
+	
 	s->run();
 }
 
@@ -198,23 +250,82 @@ std::set<const channel*> s_lns::choose_dom_and_depends() {
 
 	// Find the dominating paths first
 
-	for_each(this->n.links(), [&](link_t * t) {
+	for_each(this->n.links(), [&](link_t* t) {
 		if (t->local_schedule.has(p - 1)) {
 			assert(t->local_schedule.max_time() <= p - 1);
-					const channel *c = t->local_schedule.get(p - 1);
-					assert(c != NULL);
-					dom.insert(c);
-					//			debugf(dom.size());
+			const channel *c = t->local_schedule.get(p - 1);
+			assert(c != NULL);
+			dom.insert(c);
+//			debugf(dom.size());
 		}
 	});
 
+	std::set<const channel*> ret = dom;
+	
+	for_each(dom, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->depend_path(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
 
-
-
-
-
-	assert(false && "TODO");
+	return ret;
 }
+
+std::set<const channel*> s_lns::depend_path(const channel* dom) 
+{
+	router_id curr = dom->from;
+	std::set<const channel*> ret;
+	
+	for (int i = 0; i < __NUM_PORTS; i++) {
+		port_id p = (port_id)i;
+		
+		if (!n.router(curr)->out(p).has_link()) continue;
+		auto time = n.router(curr)->out(p).link().local_schedule.time(dom);
+		if (!time) continue;
+		
+		timeslot max = *time;
+		for (timeslot t = 0; t <= max; t++) {
+			if (!n.router(curr)->out(p).link().local_schedule.has(t)) continue;
+			const channel *c = n.router(curr)->out(p).link().local_schedule.get(t);
+			ret.insert(c);
+		}
+		curr = n.router(curr)->out(p).link().sink.parent.address;
+	}
+	
+	return ret;
+}
+
+std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
+	std::set<const channel*> ret;
+	std::set<const link_t*> links;
+	
+	std::queue<router_t*> Q;
+	std::map<router_t*, bool> marked;
+	
+	Q.push(this->n.router(c->from));
+	marked[this->n.router(c->from)] = true;
+	
+	while(!Q.empty()) {
+		router_t *t = Q.front(); Q.pop();
+		auto &next = t->next.at(c->to);
+		
+		for_each(next, [&](port_out_t* p){
+			if(p->has_link()) {
+				Q.push(&(p->link().sink.parent));
+				links.insert(&(p->link()));
+			}
+		});
+	}
+	
+	for_each(links, [&](const link_t* l) {
+		std::set<const channel*> channels = l->local_schedule.channels();
+		for (auto it = channels.begin(); it != channels.end(); ++it ) {
+			ret.insert(c);
+		}
+	});
+	
+	return ret;
+}
+
 
 void s_lns::destroy() {
 	//	auto chosen = this->choose_random();
@@ -238,4 +349,6 @@ void s_lns::repair() {
 				break;
 			}
 	});
+	
+	this->unrouted_channels.clear();
 }

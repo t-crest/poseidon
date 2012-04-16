@@ -54,6 +54,12 @@ public:
 	void run();
 };
 
+class s_bad_random : public scheduler {
+public:
+	s_bad_random(network_t& _n);
+	void run();
+};
+
 
 class s_lns : public scheduler {
 	std::set<std::pair<int, const channel*> > unrouted_channels;
@@ -67,6 +73,8 @@ public:
 	
 	std::set<const channel*> choose_random();
 	std::set<const channel*> choose_dom_and_depends();
+	std::set<const channel*> depend_path(const channel* dom);
+    std::set<const channel*> depend_rectangle(const channel* c);
 };
 
 
