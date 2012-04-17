@@ -83,12 +83,14 @@ public:
 	void repair();
 	
 private:
+	std::set<const channel*> find_dom_paths();
 	void punish_or_reward();
 	void normalize_choose_table();
 	std::set<const channel*> choose_random();
-	std::set<const channel*> choose_dom_and_depends();
-	std::set<const channel*> depend_path(const channel* dom);
-    std::set<const channel*> depend_rectangle(const channel* c);
+	std::set<const channel*> choose_dom_paths();
+	std::set<const channel*> choose_dom_rectangle();
+	std::set<const channel*> find_depend_path(const channel* dom);
+    std::set<const channel*> find_depend_rectangle(const channel* c);
 };
 
 

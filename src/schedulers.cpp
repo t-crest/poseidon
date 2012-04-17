@@ -191,7 +191,8 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	
 	
 	this->choose_table.push_back({1.0, &s_lns::choose_random});
-	this->choose_table.push_back({1.0, &s_lns::choose_dom_and_depends});
+	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
+	this->choose_table.push_back({1.0, &s_lns::choose_dom_rectangle});
 	this->normalize_choose_table();
 	
 //	(this->*(choose_table[0].second))();
@@ -263,7 +264,7 @@ std::set<const channel*> s_lns::choose_random() {
 	return ret;
 }
 
-std::set<const channel*> s_lns::choose_dom_and_depends() 
+std::set<const channel*> s_lns::find_dom_paths()
 {
 	std::set<const channel*> dom;
 	timeslot p = this->n.p();
@@ -278,17 +279,36 @@ std::set<const channel*> s_lns::choose_dom_and_depends()
 		}
 	});
 
+	return dom;
+}
+
+std::set<const channel*> s_lns::choose_dom_paths() 
+{
+	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
 	std::set<const channel*> ret = dom; // the dominating path + its "dependencies"
 	
 	for_each(dom, [&](const channel *dom_c){
-		std::set<const channel*> chns = this->depend_path(dom_c);
+		std::set<const channel*> chns = this->find_depend_path(dom_c);
 		ret.insert(chns.begin(), chns.end());
 	});
 
 	return ret;
 }
 
-std::set<const channel*> s_lns::depend_path(const channel* dom) 
+std::set<const channel*> s_lns::choose_dom_rectangle() 
+{
+	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
+	std::set<const channel*> ret = dom;
+	
+	for_each(dom, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->find_depend_rectangle(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
+
+	return ret;
+}
+
+std::set<const channel*> s_lns::find_depend_path(const channel* dom) 
 {
 	router_id curr = dom->from;
 	std::set<const channel*> ret;
@@ -312,7 +332,7 @@ std::set<const channel*> s_lns::depend_path(const channel* dom)
 	return ret;
 }
 
-std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
+std::set<const channel*> s_lns::find_depend_rectangle(const channel* c) {
 	std::set<const channel*> ret;
 	std::set<const link_t*> links;
 	
