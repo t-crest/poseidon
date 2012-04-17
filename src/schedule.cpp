@@ -146,6 +146,11 @@ void schedule::remove(channel *c) {
 #endif
 }
 
+schedule& schedule::operator == (const schedule& rhs) {
+	this->max = rhs.max;
+	this->table = rhs.table;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 link_t::link_t(port_out_t& _source, port_in_t& _sink)
@@ -166,6 +171,10 @@ link_t::link_t(port_out_t& _source, port_in_t& _sink, bool in)
 		this->source.add_link(this);
 	}
 	
+}
+
+void link_t::updatebest() {
+	this->best_schedule = this->local_schedule;
 }
 
 std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
@@ -362,6 +371,12 @@ void network_t::print_next_table() {
 void network_t::print_channel_specification() {
 	for_each(this->channels(), [&](const channel& c){
 		cout << "Network has channel " << c << endl;
+	});
+}
+
+void network_t::updatebest() {
+	for_each(this->links(), [&](link_t* l){
+		l->updatebest();
 	});
 }
 

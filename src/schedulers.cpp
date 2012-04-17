@@ -197,6 +197,7 @@ void s_lns::run() {
 
 		if (curr < best) {
 			best = curr;
+			this->n.updatebest();
 			debugf(best);
 		}
 
