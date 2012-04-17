@@ -67,13 +67,12 @@ struct channel {
 class schedule {
 private:
 #ifdef USE_SCHEDULE_HASHMAP
-    typedef std::unordered_map<timeslot, const channel*> table_t;
+    std::unordered_map<timeslot, const channel*> table;
 	void refresh_max();
 	timeslot max;
 #else
-    typedef std::map<timeslot, const channel*>  table_t;
+    std::map<timeslot, const channel*>  table;
 #endif
-	table_t table;
 
 public:
 	schedule();
