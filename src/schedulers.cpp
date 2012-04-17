@@ -234,7 +234,7 @@ void s_lns::run()
 	// destroy noget
 	// repair igen
 	
-	const time_t run_for = 10;
+	const time_t run_for = 2;
 	
 	for (time_t t0 = time(NULL);  time(NULL) <= t0+run_for;  ) 
 	{
@@ -411,10 +411,22 @@ void s_lns::repair() {
 
 		const channel *c = p.second;
 
+		
+		
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
+
+			const bool path_routed = this->n.route_channel((channel*) c, c->from, t, next_mutator);
+			if (path_routed) {
+				n.router(c->from)->local_in_schedule.add(c, t);
+				((channel*)c)->t_start = t;
+				
+				cout << "XXX: " << *c << " starts at " << t << endl;
+				
 				break;
-			}
+			}		
+			
+			
+		}
 	});
 	
 	this->unrouted_channels.clear();
