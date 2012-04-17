@@ -203,7 +203,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 void s_lns::punish_or_reward() {
 	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
 	this->normalize_choose_table();
-	debugf(this->choose_table);
+//	debugf(this->choose_table);
 }
 
 
@@ -226,7 +226,7 @@ void s_lns::run()
 
 		curr = n.p();
 		this->punish_or_reward();
-		debugf(curr);
+//		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
@@ -404,7 +404,7 @@ void s_lns::repair() {
 		const channel *c = p.second;
 
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t))
+			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
 				break;
 			}
 	});

@@ -244,6 +244,11 @@ port_in_t& router_t::in(port_id p) {
 	return this->ports_in[p];
 }
 
+void router_t::updatebest() {
+	this->local_in_best_schedule = this->local_in_schedule;
+	this->local_out_best_schedule = this->local_out_schedule;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 network_t::network_t(uint rows, uint cols) : m_routers(rows, cols) {
@@ -377,6 +382,10 @@ void network_t::print_channel_specification() {
 void network_t::updatebest() {
 	for_each(this->links(), [&](link_t* l){
 		l->updatebest();
+	});
+	
+	for_each(this->routers(), [&](router_t* r) {
+		r->updatebest();
 	});
 }
 
