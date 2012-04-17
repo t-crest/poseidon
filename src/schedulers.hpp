@@ -26,6 +26,7 @@ using namespace std;
 
 
 
+
 std::function<void(vector<port_out_t*>&)> get_next_mutator();
 
 
@@ -92,6 +93,9 @@ private:
 	std::set<const channel*> find_depend_path(const channel* dom);
     std::set<const channel*> find_depend_rectangle(const channel* c);
 };
+
+
+scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
 
 
 

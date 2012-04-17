@@ -184,13 +184,15 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
 //	scheduler *s = new s_random(this->n);
 //	scheduler *s = new s_greedy(this->n, false);
-	scheduler *s = new s_bad_random(this->n);
+//	scheduler *s = new s_bad_random(this->n);
+	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
+	
 	s->run(); // make initial solution
 	best = curr = n.p();
 	debugf(best);
 	
 	
-	this->choose_table.push_back({1.0, &s_lns::choose_random});
+	this->choose_table.push_back({0.5, &s_lns::choose_random});
 	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_lns::choose_dom_rectangle});
 	this->normalize_choose_table();
@@ -199,9 +201,9 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 }
 
 void s_lns::punish_or_reward() {
-	this->choose_table[this->chosen_adaptive].first *= (float(best)/curr);
+	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
 	this->normalize_choose_table();
-	debugf(this->choose_table);
+//	debugf(this->choose_table);
 }
 
 
@@ -218,19 +220,17 @@ void s_lns::normalize_choose_table() {
 
 void s_lns::run() 
 {
-
-
 	for (;;) {
 		this->destroy();
 		this->repair();
 
 		curr = n.p();
 		this->punish_or_reward();
-		debugf(curr);
+//		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
-			this->n.updatebest();
+//			this->n.updatebest();
 			debugf(best);
 		}
 
@@ -367,8 +367,6 @@ std::set<const channel*> s_lns::find_depend_rectangle(const channel* c) {
 
 
 void s_lns::destroy() {
-//	std::set<const channel*> chosen = this->choose_random();
-//	std::set<const channel*> chosen = this->choose_dom_and_depends();
 	std::set<const channel*> chosen;
 	
 	float unit_rand = float(util::rand()) / UTIL_RAND_MAX; // random float in interval [0;1[
@@ -406,10 +404,30 @@ void s_lns::repair() {
 		const channel *c = p.second;
 
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t))
+			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
 				break;
 			}
 	});
 	
 	this->unrouted_channels.clear();
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+scheduler* get_heuristic(options::meta_t meta_id, network_t& n) 
+{
+	scheduler *s;
+	switch (meta_id) 
+	{
+		case options::GREEDY	: s = new s_greedy(n, false);	break;
+		case options::rGREEDY	: s = new s_greedy(n, true);	break;
+		case options::RANDOM	: s = new s_random(n);			break;
+		case options::ALNS		: s = new s_lns(n);				break;
+		default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
+	}	
+	assert(s != NULL);
+	return s;
+}
+
