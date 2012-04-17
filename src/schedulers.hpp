@@ -67,14 +67,23 @@ public:
 
 class s_lns : public scheduler {
 	std::set<std::pair<int, const channel*> > unrouted_channels;
+	int best;
+	int curr;
+	int chosen_adaptive;
+	
+	#define MEM_FUNC_T std::set<const channel*>(s_lns::*)()
+	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;
+	
+	
 public:
 	s_lns(network_t& _n);
 	void run();
-//	void destroy(router_id r, timeslot t); // destroys all channels going through r at t
-//	void destroy(timeslot t); // destroys all channels which are routed at t
 	void destroy();
 	void repair();
 	
+private:
+	void punish_or_reward();
+	void normalize_choose_table();
 	std::set<const channel*> choose_random();
 	std::set<const channel*> choose_dom_and_depends();
 	std::set<const channel*> depend_path(const channel* dom);

@@ -10,11 +10,11 @@ get_next_mutator()
 	{
 		if (arg.size() == 1) return; // singleton -- not much to randomize here
 
-		for (int i = 0; i < arg.size(); i++) {
+//		for (int i = 0; i < arg.size(); i++) {
 			int a = util::rand() % arg.size();
 			int b = util::rand() % arg.size();
 			std::swap(arg[a], arg[b]);
-		}
+//		}
 	};
 	
 	return ret;
@@ -58,8 +58,8 @@ void s_greedy::run() {
 
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
-	// Add all channels to a priority queue, sorting by their length
 
+	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
 		int hops = n.router(c.from)->hops[c.to];
 		pq.push(make_pair(hops, &c));
@@ -140,8 +140,9 @@ void s_bad_random::run() {
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
 	// Add all channels to a priority queue, sorting by their length
-
 	for_each(n.channels(), [&](const channel & c) {
+//		int hops = n.router(c.from)->hops[c.to];
+//		pq.push(make_pair(hops, &c));
 		pq.push(make_pair(util::rand(), &c));
 	});
 	debugf(pq.size());
@@ -175,24 +176,49 @@ void s_bad_random::run() {
 
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
+//	scheduler *s = new s_random(this->n);
 //	scheduler *s = new s_greedy(this->n, false);
 	scheduler *s = new s_bad_random(this->n);
+	s->run(); // make initial solution
+	best = curr = n.p();
+	debugf(curr);
 	
-	s->run();
+	
+	this->choose_table.push_back({1.0, &s_lns::choose_random});
+	this->choose_table.push_back({1.0, &s_lns::choose_dom_and_depends});
+	this->normalize_choose_table();
+	
+//	(this->*(choose_table[0].second))();
 }
 
-void s_lns::run() {
-	// initial 
-	int best, curr;
-	best = curr = n.p();
+void s_lns::punish_or_reward() {
+	this->choose_table[this->chosen_adaptive].first *= (float(best)/curr);
+	this->normalize_choose_table();
+	debugf(this->choose_table);
+}
 
-	debugf(curr);
+
+void s_lns::normalize_choose_table() {
+	float sum = 0;
+	for (int i = 0; i < choose_table.size(); i++) {
+		sum += choose_table[i].first;
+	}
+
+	for (int i = 0; i < choose_table.size(); i++) {
+		choose_table[i].first /= sum;
+	}
+}
+
+void s_lns::run() 
+{
+
 
 	for (;;) {
 		this->destroy();
 		this->repair();
 
 		curr = n.p();
+		this->punish_or_reward();
 		debugf(curr);
 
 		if (curr < best) {
@@ -200,6 +226,7 @@ void s_lns::run() {
 			debugf(best);
 		}
 
+		
 		// noget := asdasdads
 		// choose:
 		//	1. random - Done
@@ -313,12 +340,32 @@ std::set<const channel*> s_lns::depend_rectangle(const channel* c) {
 
 
 void s_lns::destroy() {
-//	auto chosen = this->choose_random();
-	auto chosen = this->choose_dom_and_depends();
+//	std::set<const channel*> chosen = this->choose_random();
+//	std::set<const channel*> chosen = this->choose_dom_and_depends();
+	std::set<const channel*> chosen;
+	
+	float unit_rand = float(util::rand()) / UTIL_RAND_MAX; // random float in interval [0;1[
+	float cumm = 0.0;
 
+	for (int i = 0; i < this->choose_table.size(); i++) {
+		const float a = cumm;
+		const float b = a + this->choose_table[i].first;
+		
+		cumm += this->choose_table[i].first;
+
+		if (a <= unit_rand && unit_rand < b) {
+			chosen = (this->*(choose_table[i].second))();
+			this->chosen_adaptive = i;
+			break;
+		}
+	}
+	
+	assert(!chosen.empty());
+	
+	
 	for_each(chosen, [&](const channel * c) {
 		this->n.ripup_channel(c);
-		const int hops = this->n.router(c->from)->hops[c->to];
+		const int hops = this->n.router(c->from)->hops[c->to]; //+ util::rand() % 2;
 		this->unrouted_channels.insert(make_pair(hops, c));
 	});
 }
@@ -332,7 +379,7 @@ void s_lns::repair() {
 		const channel *c = p.second;
 
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
+			if (this->n.route_channel((channel*) c, c->from, t))
 				break;
 			}
 	});
