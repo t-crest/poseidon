@@ -466,16 +466,27 @@ bool network_t::ripup_channel(const channel* c)
 }
 
 
-void network_t::check_channel(const channel* c) 
+void network_t::check_channel(const channel* c, const bool best) 
 {
 	router_id curr = c->from;
 	router_id next_curr = c->from;
 	const router_id dest = c->to;
 	timeslot t_curr = c->t_start;
+	schedule* local_in_schedule;
+	schedule* local_out_schedule;
+	schedule* link_schedule;
+	
+	if(best){
+		local_in_schedule = &this->router(curr)->local_in_best_schedule;
+		local_out_schedule = &this->router(dest)->local_out_best_schedule;
+	} else {
+		local_in_schedule = &this->router(curr)->local_in_schedule;
+		local_out_schedule = &this->router(dest)->local_out_schedule;
+	}
 
-	if(!this->router(curr)->local_in_schedule.has(t_curr))
+	if(!local_in_schedule->has(t_curr))
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
-	if(this->router(curr)->local_in_schedule.get(t_curr) != c)
+	if(local_in_schedule->get(t_curr) != c)
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	
 	while (curr != dest)
@@ -485,9 +496,14 @@ void network_t::check_channel(const channel* c)
 			if(!this->router(curr)->out((port_id)i).has_link()) continue;
 			
 			link_t& l = this->router(curr)->out((port_id)i).link();
-			if (!l.local_schedule.has(t_curr)) continue;
+			if(best){
+				link_schedule = &l.best_schedule;
+			} else {
+				link_schedule = &l.local_schedule;
+			}
+			if (!link_schedule->has(t_curr)) continue;
 			
-			if (l.local_schedule.get(t_curr) == c) {
+			if (link_schedule->get(t_curr) == c) {
 				bool is_shortest = false;
 				for_each(this->router(curr)->next[dest], [&](const port_out_t* p){
 					if(p == &this->router(curr)->out((port_id)i))
@@ -503,10 +519,10 @@ void network_t::check_channel(const channel* c)
 		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " << curr << " has non or multiple output ports for channel " << *c << ".");
 	}
 	
-	if(!this->router(curr)->local_out_schedule.has(t_curr))
+	if(!local_out_schedule->has(t_curr))
 		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
 	
-	if (this->router(curr)->local_out_schedule.get(t_curr) == c){
+	if (local_out_schedule->get(t_curr) == c){
 		return;	
 	}
 	

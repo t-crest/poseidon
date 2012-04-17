@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 	{
 		scheduler *s = ::get_heuristic(global::opts->metaheuristic, n);
 		s->run();
-		s->verify();
+		s->verify(true);
 		cout << "Schedule verified." << endl;
 		debugf(n.p());
 	}

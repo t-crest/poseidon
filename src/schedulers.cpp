@@ -47,9 +47,9 @@ void scheduler::percent_up(const int curr){
 
 }
 
-void scheduler::verify(){
+void scheduler::verify(const bool best){
 	for_each(n.channels(), [&](const channel & c){
-		n.check_channel(&c);
+		n.check_channel(&c, best);
 	});
 }
 
@@ -93,6 +93,7 @@ void s_greedy::run() {
 		}
 		percent_up(pq.size());
 	}
+	n.updatebest();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ void s_random::run() {
 			}
 		}
 	}
+	n.updatebest();
 }
 
 
@@ -175,6 +177,7 @@ void s_bad_random::run() {
 			}
 		}
 	}
+	n.updatebest();
 }
 
 
@@ -189,7 +192,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	
 	s->run(); // make initial solution
 	best = curr = n.p();
-	debugf(curr);
+	debugf(best);
 	
 	
 	this->choose_table.push_back({0.5, &s_lns::choose_random});
