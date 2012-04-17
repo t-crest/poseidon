@@ -26,6 +26,9 @@ options::options(int argc, char *argv[])
 		ensure(metaheuristic == ALNS, "ALNS-inital given, but we don't run ALNS");
 	if (metaheuristic == ALNS)
 		ensure(alns_inital != ERR, "ALNS specified, but no inital solution specified");
+	
+	const bool both_alns = (metaheuristic == ALNS && alns_inital == ALNS);
+	ensure(!both_alns, "Can not use ALNS as initial solution for ALNS");
 }
 
 options::meta_t options::parse_meta_t(string str) 
