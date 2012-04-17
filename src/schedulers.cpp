@@ -182,9 +182,9 @@ void s_bad_random::run() {
 
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
-//	scheduler *s = new s_random(this->n);
+	scheduler *s = new s_random(this->n);
 //	scheduler *s = new s_greedy(this->n, false);
-	scheduler *s = new s_bad_random(this->n);
+//	scheduler *s = new s_bad_random(this->n);
 	s->run(); // make initial solution
 	best = curr = n.p();
 	debugf(curr);
@@ -200,7 +200,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 void s_lns::punish_or_reward() {
 	this->choose_table[this->chosen_adaptive].first *= (float(best)/curr);
 	this->normalize_choose_table();
-	debugf(this->choose_table);
+//	debugf(this->choose_table);
 }
 
 
@@ -225,7 +225,7 @@ void s_lns::run()
 
 		curr = n.p();
 		this->punish_or_reward();
-		debugf(curr);
+//		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
