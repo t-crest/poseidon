@@ -41,6 +41,7 @@ public:
         void percent_set(const int init, const string);
         void percent_up(const int curr);
 	virtual void run() = 0;
+        void verify();
 };
 
 

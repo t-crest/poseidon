@@ -41,9 +41,11 @@ int main(int argc, char* argv[])
 			default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 		}
 		s->run();
-		
+		s->verify();
+		cout << "Schedule verified." << endl;
 		debugf(n.p());
 	}
+	
 
 	if (global::opts->draw) draw_schedule(n); // finally draw the schedule itself 
 

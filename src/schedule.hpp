@@ -67,12 +67,13 @@ struct channel {
 class schedule {
 private:
 #ifdef USE_SCHEDULE_HASHMAP
-	std::unordered_map<timeslot, const channel*> table;
+    std::unordered_map<timeslot, const channel*> table;
 	void refresh_max();
 	timeslot max;
 #else
-	std::map<timeslot, const channel*> table;
+    std::map<timeslot, const channel*>  table;
 #endif
+
 public:
 	schedule();
 	bool available(timeslot t);
@@ -84,6 +85,7 @@ public:
 	void add(const channel *c, timeslot t);
 	void remove(timeslot t);
 	void remove(channel *c);
+    schedule& operator == (const schedule& rhs);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -96,10 +98,12 @@ public:
 	port_out_t& source; // A link is always connected to an output put
 	port_in_t& sink; // A link is always connected to an input port
 	schedule local_schedule; // A link always has a schedule (which may be empty)
+    schedule best_schedule; // The schedule on the link for the best overall solution
 	bool wrapped; // true if must be drawn wrapped in SVG
 
 	link_t(port_out_t& _source, port_in_t& _sink);
 	link_t(port_out_t& _source, port_in_t& _sink, bool in);
+    void updatebest();
 };
 
 std::ostream& operator<<(std::ostream& stream, const link_t& rhs);
@@ -190,10 +194,11 @@ public:
 	void shortest_path();
 	void print_next_table();
 	void print_channel_specification();
-
+    void updatebest();
 	
 	bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	bool ripup_channel(const channel* c);
+        void check_channel(const channel* c);
 };
 
 #endif	/* SCHEDULE2_HPP */
