@@ -34,11 +34,12 @@ options::options(int argc, char *argv[])
 options::meta_t options::parse_meta_t(string str) 
 {
 	meta_t ret = ERR;
-	if		(str=="RANDOM")	ret=RANDOM;
-	else if (str=="GREEDY")	ret=GREEDY;
-	else if (str=="rGREEDY")ret=rGREEDY;
-	else if (str=="GRASP")	ret=GRASP;		
-	else if (str=="ALNS")	ret=ALNS;
+	if		(str=="RANDOM")		ret=RANDOM;
+	else if	(str=="BAD_RANDOM")	ret=BAD_RANDOM;
+	else if (str=="GREEDY")		ret=GREEDY;
+	else if (str=="rGREEDY")	ret=rGREEDY;
+	else if (str=="GRASP")		ret=GRASP;		
+	else if (str=="ALNS")		ret=ALNS;
 	return ret;
 }
 
