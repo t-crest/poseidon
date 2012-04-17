@@ -14,9 +14,13 @@ public:
 	options(int argc, char *argv[]);
 	~options();
 
-	enum meta_t {GREEDY, rGREEDY, RANDOM, SA, GRASP, ALNS, ERR} metaheuristic;
+	enum meta_t {GREEDY, rGREEDY, RANDOM, GRASP, ALNS, ERR};
+	meta_t metaheuristic;
 	string	input_file;
 	bool draw;
+	meta_t alns_inital;
+private:
+	meta_t parse_meta_t(string str);
 };
 
 namespace global {
