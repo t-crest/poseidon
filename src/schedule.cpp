@@ -475,10 +475,10 @@ void network_t::check_channel(const channel* c, const bool best)
 	
 	if(best){
 		local_in_schedule = &this->router(curr)->local_in_best_schedule;
-		local_out_schedule = &this->router(curr)->local_out_best_schedule;
+		local_out_schedule = &this->router(dest)->local_out_best_schedule;
 	} else {
 		local_in_schedule = &this->router(curr)->local_in_schedule;
-		local_out_schedule = &this->router(curr)->local_out_schedule;
+		local_out_schedule = &this->router(dest)->local_out_schedule;
 	}
 
 	if(!local_in_schedule->has(t_curr))
@@ -494,9 +494,9 @@ void network_t::check_channel(const channel* c, const bool best)
 			
 			link_t& l = this->router(curr)->out((port_id)i).link();
 			if(best){
-				link_schedule = l.best_schedule;
+				link_schedule = &l.best_schedule;
 			} else {
-				link_schedule = l.local_schedule;
+				link_schedule = &l.local_schedule;
 			}
 			if (!link_schedule->has(t_curr)) continue;
 			

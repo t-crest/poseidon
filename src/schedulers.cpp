@@ -49,7 +49,7 @@ void scheduler::percent_up(const int curr){
 
 void scheduler::verify(const bool best){
 	for_each(n.channels(), [&](const channel & c){
-		n.check_best_channel(&c, best);
+		n.check_channel(&c, best);
 	});
 }
 
@@ -93,6 +93,7 @@ void s_greedy::run() {
 		}
 		percent_up(pq.size());
 	}
+	n.updatebest();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +133,7 @@ void s_random::run() {
 			}
 		}
 	}
+	n.updatebest();
 }
 
 
@@ -175,6 +177,7 @@ void s_bad_random::run() {
 			}
 		}
 	}
+	n.updatebest();
 }
 
 
@@ -230,7 +233,7 @@ void s_lns::run()
 
 		if (curr < best) {
 			best = curr;
-//			this->n.updatebest();
+			this->n.updatebest();
 			debugf(best);
 		}
 
