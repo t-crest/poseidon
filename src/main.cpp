@@ -32,14 +32,7 @@ int main(int argc, char* argv[])
 	if (global::opts->draw) draw_network(n); // draw network before scheduling anything
 	
 	{
-		scheduler *s;
-		switch (global::opts->metaheuristic) {
-			case options::GREEDY	: s = new s_greedy(n, false);	break;
-			case options::rGREEDY	: s = new s_greedy(n, true);	break;
-			case options::RANDOM	: s = new s_random(n);			break;
-			case options::ALNS		: s = new s_lns(n);				break;
-			default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
-		}
+		scheduler *s = ::get_heuristic(global::opts->metaheuristic, n);
 		s->run();
 		s->verify();
 		cout << "Schedule verified." << endl;
