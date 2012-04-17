@@ -220,7 +220,21 @@ void s_lns::normalize_choose_table() {
 
 void s_lns::run() 
 {
-	for (;;) {
+	// noget := asdasdads
+	// choose:
+	//	1. random - Done
+	//  2. dense routers
+	//  3. dominating paths + dependencies
+	//  4. functor next_mutator: always route towards least dense router
+	//  5. finite lookahead
+
+	// destroy noget
+	// repair igen
+	
+	const time_t run_for = 10;
+	
+	for (time_t t0 = time(NULL);  time(NULL) <= t0+run_for;  ) 
+	{
 		this->destroy();
 		this->repair();
 
@@ -230,21 +244,9 @@ void s_lns::run()
 
 		if (curr < best) {
 			best = curr;
-//			this->n.updatebest();
+			this->n.updatebest();
 			debugf(best);
 		}
-
-		
-		// noget := asdasdads
-		// choose:
-		//	1. random - Done
-		//  2. dense routers
-		//  3. dominating paths + dependencies
-		//  4. functor next_mutator: always route towards least dense router
-		//  5. finite lookahead
-
-		// destroy noget
-		// repair igen
 	}
 
 }
@@ -372,14 +374,17 @@ void s_lns::destroy() {
 	float unit_rand = float(util::rand()) / UTIL_RAND_MAX; // random float in interval [0;1[
 	float cumm = 0.0;
 
+	assert(0.0 <= unit_rand && unit_rand <= 1.0);
+	
 	for (int i = 0; i < this->choose_table.size(); i++) {
 		const float a = cumm;
 		const float b = a + this->choose_table[i].first;
-		
+						
 		cumm += this->choose_table[i].first;
 
-		if (a <= unit_rand && unit_rand < b) {
-			chosen = (this->*(choose_table[i].second))();
+		if (a <= unit_rand && unit_rand <= b) {
+			chosen = (this->*(choose_table[i].second))(); // run the channel-choosing function
+			assert(!chosen.empty());
 			this->chosen_adaptive = i;
 			break;
 		}

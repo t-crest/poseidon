@@ -14,6 +14,7 @@
 #include "draw.hpp"
 #include "options.h"
 #include <array>
+#include <ctime>
 #include <stack>
 #include <set>
 #include <queue>

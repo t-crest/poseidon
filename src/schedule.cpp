@@ -175,8 +175,7 @@ link_t::link_t(port_out_t& _source, port_in_t& _sink, bool in)
 }
 
 void link_t::updatebest() {
-	if (global::opts->save_best)
-		this->best_schedule = this->local_schedule;
+	this->best_schedule = this->local_schedule;
 }
 
 std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
@@ -382,6 +381,8 @@ void network_t::print_channel_specification() {
 }
 
 void network_t::updatebest() {
+	if (global::opts->save_best == false) return;
+
 	for_each(this->links(), [&](link_t* l){
 		l->updatebest();
 	});
