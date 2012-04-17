@@ -40,11 +40,17 @@ void scheduler::percent_up(const int curr){
 	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
 	if(curr_percent > percent && curr_percent <= 100){
 		percent = curr_percent;
-		(cout << "Progress: " << curr_percent << "%" << "\r").flush();
+		(cout << "\r" << "Progress: " << curr_percent << "%").flush();
 		if (int(curr_percent) == 100)
-			cout << endl;
+			cout << " Done." << endl;
 	}
 
+}
+
+void scheduler::verify(){
+	for_each(n.channels(), [&](const channel & c){
+		n.check_channel(&c);
+	});
 }
 
 ////////////////////////////////////////////////////////////////////////////////

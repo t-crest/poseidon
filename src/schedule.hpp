@@ -194,6 +194,7 @@ public:
 	
 	bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	bool ripup_channel(const channel* c);
+        void check_channel(const channel* c);
 };
 
 #endif	/* SCHEDULE2_HPP */

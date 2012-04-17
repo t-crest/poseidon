@@ -437,3 +437,51 @@ bool network_t::ripup_channel(const channel* c)
 	
 	this->router(c->to)->local_out_schedule.remove(t);
 }
+
+
+void network_t::check_channel(const channel* c) 
+{
+	router_id curr = c->from;
+	router_id next_curr = c->from;
+	const router_id dest = c->to;
+	timeslot t_curr = c->t_start;
+
+	if(!this->router(curr)->local_in_schedule.has(t_curr))
+		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
+	if(this->router(curr)->local_in_schedule.get(t_curr) != c)
+		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
+	
+	while (curr != dest)
+	{
+		int count = 0;
+		for (int i = 0; i < __NUM_PORTS; i++) {
+			if(!this->router(curr)->out((port_id)i).has_link()) continue;
+			
+			link_t& l = this->router(curr)->out((port_id)i).link();
+			if (!l.local_schedule.has(t_curr)) continue;
+			
+			if (l.local_schedule.get(t_curr) == c) {
+				bool is_shortest = false;
+				for_each(this->router(curr)->next[dest], [&](const port_out_t* p){
+					if(p == &this->router(curr)->out((port_id)i))
+						is_shortest = true;
+				});
+				ensure(is_shortest,"EPIC failure: Channel " << *c << " not routed on shortest path.");
+				next_curr = l.sink.parent.address;
+				count++;
+			}	
+		}
+		curr = next_curr;
+		t_curr++;
+		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " << curr << " has non or multiple output ports for channel " << *c << ".");
+	}
+	
+	if(!this->router(curr)->local_out_schedule.has(t_curr))
+		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
+	
+	if (this->router(curr)->local_out_schedule.get(t_curr) == c){
+		return;	
+	}
+	
+	ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
+}
