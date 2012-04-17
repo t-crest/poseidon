@@ -19,6 +19,8 @@ public:
 	string	input_file;
 	bool draw;
 	meta_t alns_inital;
+	bool save_best;
+	
 private:
 	meta_t parse_meta_t(string str);
 };

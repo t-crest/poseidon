@@ -6,15 +6,17 @@ options::options(int argc, char *argv[])
 :	input_file(""),
 	metaheuristic(ERR),
 	draw(false),
-	alns_inital(ERR)
+	alns_inital(ERR),
+	save_best(true) // normally, we want to remember the best globally solution
 {
 	/* Set options as specified by user */
-	for (int c; (c = getopt(argc, argv, "f:m:di:")) != -1;) {
+	for (int c; (c = getopt(argc, argv, "f:m:di:q")) != -1;) {
 		switch (c) {
-			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break;
-			case 'f':	input_file = optarg;							break;
-			case 'd':	draw = true;									break;
-			case 'i':	alns_inital = parse_meta_t(string(optarg));		break;
+			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
+			case 'f':	input_file = optarg;							break; // f for xml input file
+			case 'd':	draw = true;									break; // d for draw
+			case 'i':	alns_inital = parse_meta_t(string(optarg));		break; // i for initial sol
+			case 'q':	save_best = false;								break; // q for quick
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
 	}
