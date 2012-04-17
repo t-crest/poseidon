@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 			default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 		}
 		s->run();
-		s->verify();
+		s->verify(true);
 		cout << "Schedule verified." << endl;
 		debugf(n.p());
 	}

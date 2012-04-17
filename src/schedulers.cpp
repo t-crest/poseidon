@@ -47,9 +47,9 @@ void scheduler::percent_up(const int curr){
 
 }
 
-void scheduler::verify(){
+void scheduler::verify(const bool best){
 	for_each(n.channels(), [&](const channel & c){
-		n.check_channel(&c);
+		n.check_best_channel(&c, best);
 	});
 }
 
@@ -187,7 +187,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	scheduler *s = new s_bad_random(this->n);
 	s->run(); // make initial solution
 	best = curr = n.p();
-	debugf(curr);
+	debugf(best);
 	
 	
 	this->choose_table.push_back({1.0, &s_lns::choose_random});
