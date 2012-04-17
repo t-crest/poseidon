@@ -427,6 +427,7 @@ scheduler* get_heuristic(options::meta_t meta_id, network_t& n)
 		case options::GREEDY	: s = new s_greedy(n, false);	break;
 		case options::rGREEDY	: s = new s_greedy(n, true);	break;
 		case options::RANDOM	: s = new s_random(n);			break;
+		case options::BAD_RANDOM: s = new s_bad_random(n);		break;
 		case options::ALNS		: s = new s_lns(n);				break;
 		default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 	}	

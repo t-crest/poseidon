@@ -1,4 +1,5 @@
 #include "schedule.hpp"
+#include "options.h"
 
 router_id operator-(const router_id& lhs, const router_id& rhs) {
 	router_id ret = {lhs.first - rhs.first, lhs.second - rhs.second};
@@ -174,7 +175,8 @@ link_t::link_t(port_out_t& _source, port_in_t& _sink, bool in)
 }
 
 void link_t::updatebest() {
-	this->best_schedule = this->local_schedule;
+	if (global::opts->save_best)
+		this->best_schedule = this->local_schedule;
 }
 
 std::ostream& operator<<(std::ostream& stream, const link_t& rhs) {
