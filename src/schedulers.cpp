@@ -182,8 +182,8 @@ void s_bad_random::run() {
 
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
-	scheduler *s = new s_random(this->n);
-//	scheduler *s = new s_greedy(this->n, false);
+//	scheduler *s = new s_random(this->n);
+	scheduler *s = new s_greedy(this->n, false);
 //	scheduler *s = new s_bad_random(this->n);
 	s->run(); // make initial solution
 	best = curr = n.p();
@@ -406,7 +406,7 @@ void s_lns::repair() {
 		const channel *c = p.second;
 
 		for (int t = 0;; t++) {
-			if (this->n.route_channel((channel*) c, c->from, t))
+			if (this->n.route_channel((channel*) c, c->from, t, next_mutator))
 				break;
 			}
 	});
