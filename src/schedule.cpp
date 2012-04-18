@@ -279,6 +279,14 @@ timeslot network_t::p() const {
 	return ret;
 }
 
+timeslot network_t::p_best() const {
+	timeslot ret = 0;
+	for_each(this->links(), [&](link_t *l){
+		ret = util::max(ret, l->best_schedule.max_time()+1); // +1 because we want the number of time slots not the maximum time
+	});
+	return ret;
+}
+
 bool network_t::has(router_id r) {
 	return (this->m_routers(r) != NULL);
 }
@@ -386,6 +394,25 @@ void network_t::print_channel_specification() {
 	for_each(this->channels(), [&](const channel& c){
 		cout << "Network has channel " << c << endl;
 	});
+}
+
+float network_t::link_utilization(bool best) {
+
+	const timeslot length = (best ? this->p_best() : this->p());
+	const timeslot max_links_used = this->link_ts.size() * length;
+	timeslot links_used = 0;
+	
+	for_each(this->link_ts, [&](link_t *l){
+		schedule* sched = (best ? &l->best_schedule : &l->local_schedule);
+
+		for (timeslot i = 0; i < sched->max_time(); i++) {
+			if (sched->has(i))
+				links_used++;
+		}
+	});
+	
+	assert(links_used <= max_links_used);
+	return float(links_used)/max_links_used;
 }
 
 void network_t::updatebest() {

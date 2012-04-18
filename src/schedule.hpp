@@ -185,6 +185,7 @@ class network_t {
 public:
 	network_t(uint rows, uint cols);
 	timeslot p() const;
+	timeslot p_best() const;
 	uint rows() const;
 	uint cols() const;
 	bool has(router_id r);
@@ -198,7 +199,8 @@ public:
 	void shortest_path();
 	void print_next_table();
 	void print_channel_specification();
-    void updatebest();
+	float link_utilization(bool best);
+	void updatebest();
 	
 	bool route_channel_wrapper(channel* c, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	void ripup_channel(const channel* c);

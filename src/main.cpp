@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 		s->run();
 		s->verify( global::opts->save_best );
 		cout << "Schedule verified." << endl;
-		debugf(n.p());
+		debugf(n.link_utilization( global::opts->save_best ));
 	}
 	
 
