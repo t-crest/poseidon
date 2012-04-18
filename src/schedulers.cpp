@@ -242,7 +242,7 @@ void s_lns::run()
 	{
 		this->destroy();
 		this->repair();
-		this->verify(true);
+		this->verify(false);
 		
 
 		curr = n.p();

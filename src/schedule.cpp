@@ -519,8 +519,7 @@ void network_t::check_channel(const channel* c, const bool best)
 		from_in_schedule = &this->router(c->from)->local_in_schedule;
 		to_out_schedule = &this->router(c->to)->local_out_schedule;
 	}
-	if (from_in_schedule->is(c->t_start, c) == false) {
-		
+	if (from_in_schedule->is(c->t_start, c) == false) {		
 //		debugf(t_curr);
 //		debugf(*from_in_schedule->get(t_curr));
 //		debugf(from_in_schedule->get(t_curr)->t_start);
@@ -528,7 +527,6 @@ void network_t::check_channel(const channel* c, const bool best)
 //		if (from_in_schedule->has(7)) debugf(*from_in_schedule->get(7));
 //		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
 //		debugf(*c);
-		
 		if (from_in_schedule->has(t_curr))
 			assert(from_in_schedule->get(t_curr)->t_start == t_curr);
 
