@@ -465,7 +465,7 @@ void network_t::ripup_channel(const channel* c)
 	timeslot t = c->t_start;
 	
 	if(!this->router(curr)->local_in_schedule.is(t,c)){
-		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot" << t << ".");
+		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot: " << t << ".");
 	}
 	this->router(curr)->local_in_schedule.remove(c->t_start);
 	
@@ -516,11 +516,7 @@ void network_t::check_channel(const channel* c, const bool best)
 		from_in_schedule = &this->router(curr)->local_in_schedule;
 		to_out_schedule = &this->router(dest)->local_out_schedule;
 	}
-
-	if(!from_in_schedule->has(t_curr))
-		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
-	if(from_in_schedule->get(t_curr) != c) {
-		
+	if(!from_in_schedule->is(t_curr, c)) {
 		
 		debugf(t_curr);
 		debugf(*from_in_schedule->get(t_curr));
@@ -547,9 +543,8 @@ void network_t::check_channel(const channel* c, const bool best)
 			} else {
 				link_schedule = &l.local_schedule;
 			}
-			if (!link_schedule->has(t_curr)) continue;
 			
-			if (link_schedule->get(t_curr) == c) {
+			if (link_schedule->is(t_curr,c)) {
 				bool is_shortest = false;
 				for_each(this->router(curr)->next[dest], [&](const port_out_t* p){
 					if(p == &this->router(curr)->out((port_id)i))
@@ -565,12 +560,8 @@ void network_t::check_channel(const channel* c, const bool best)
 		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " << curr << " has non or multiple output ports for channel " << *c << ".");
 	}
 	
-	if(!to_out_schedule->has(t_curr))
+	if(!to_out_schedule->is(t_curr,c))
 		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
 	
-	if (to_out_schedule->get(t_curr) == c){
-		return;	
-	}
-	
-	ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
+	return;
 }
