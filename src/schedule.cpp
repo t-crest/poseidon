@@ -507,28 +507,31 @@ void network_t::check_channel(const channel* c, const bool best)
 	router_id next_curr = c->from;
 	const router_id dest = c->to;
 	timeslot t_curr = c->t_start;
+	
 	schedule* from_in_schedule;
 	schedule* to_out_schedule;
 	schedule* link_schedule;
 	
 	if (best) {
-		from_in_schedule = &this->router(curr)->local_in_best_schedule;
-		to_out_schedule = &this->router(dest)->local_out_best_schedule;
+		from_in_schedule = &this->router(c->from)->local_in_best_schedule;
+		to_out_schedule = &this->router(c->to)->local_out_best_schedule;
 	} else {
-		from_in_schedule = &this->router(curr)->local_in_schedule;
-		to_out_schedule = &this->router(dest)->local_out_schedule;
+		from_in_schedule = &this->router(c->from)->local_in_schedule;
+		to_out_schedule = &this->router(c->to)->local_out_schedule;
 	}
-	if(!from_in_schedule->is(t_curr, c)) {
+	if (from_in_schedule->is(c->t_start, c) == false) {
 		
-		debugf(t_curr);
-		debugf(*from_in_schedule->get(t_curr));
-		debugf(from_in_schedule->get(t_curr)->t_start);
-		if (from_in_schedule->has(6)) debugf(*from_in_schedule->get(6));
-		if (from_in_schedule->has(7)) debugf(*from_in_schedule->get(7));
-		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
-		debugf(*c);
+//		debugf(t_curr);
+//		debugf(*from_in_schedule->get(t_curr));
+//		debugf(from_in_schedule->get(t_curr)->t_start);
+//		if (from_in_schedule->has(6)) debugf(*from_in_schedule->get(6));
+//		if (from_in_schedule->has(7)) debugf(*from_in_schedule->get(7));
+//		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
+//		debugf(*c);
 		
-		assert(from_in_schedule->get(t_curr)->t_start == t_curr);
+		if (from_in_schedule->has(t_curr))
+			assert(from_in_schedule->get(t_curr)->t_start == t_curr);
+
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	}
 	

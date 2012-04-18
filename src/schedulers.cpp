@@ -191,6 +191,8 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
 	
 	s->run(); // make initial solution
+	s->verify(true);
+	
 	best = curr = n.p();
 	debugf(best);
 	
@@ -240,6 +242,8 @@ void s_lns::run()
 	{
 		this->destroy();
 		this->repair();
+		this->verify(true);
+		
 
 		curr = n.p();
 		this->punish_or_reward();
