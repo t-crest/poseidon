@@ -397,10 +397,13 @@ void s_lns::destroy() {
 		}
 	}
 	
+	if (chosen.empty()) {
+		const int i = util::rand() % choose_table.size();
+		chosen = (this->*(choose_table[i].second))(); // run the channel-choosing function
+	}
 	assert(!chosen.empty());
-	
-	
 	assert(this->unrouted_channels.empty());
+	
 	
 	for_each(chosen, [&](const channel * c) {
 		this->n.ripup_channel(c);
