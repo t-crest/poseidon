@@ -219,7 +219,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 void s_lns::punish_or_reward() {
 	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
 	this->normalize_choose_table();
-	debugf(this->choose_table);
+//	debugf(this->choose_table);
 }
 
 
