@@ -144,7 +144,7 @@ void s_random::run() {
 
 	auto next_mutator = get_next_mutator();
 
-
+	percent_set(pq.size(), "Creating initial solution:");
 	// Routes channels and mutates the network. 
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
@@ -160,6 +160,7 @@ void s_random::run() {
 				break;
 			}
 		}
+		percent_up(pq.size());
 	}
 	n.updatebest();
 }
@@ -186,7 +187,7 @@ void s_bad_random::run() {
 
 
 	auto next_mutator = get_next_mutator();
-
+	percent_set(pq.size(), "Creating initial solution:");
 	timeslot t_start = 0;
 
 	// Routes channels and mutates the network. 
@@ -204,6 +205,7 @@ void s_bad_random::run() {
 				break;
 			}
 		}
+		percent_up(pq.size());
 	}
 	n.updatebest();
 }

@@ -9,7 +9,7 @@
 \patchcmd{\maketitle}{\@copyrightspace}{}{}{}
 \makeatother
 \end_preamble
-\options natbib
+\options natbib, preprint
 \use_default_options false
 \maintain_unincluded_children false
 \language english
@@ -179,6 +179,16 @@ Multi commodity flow problem, Network-on-Chip, Time-Division-Multiplexing
 
 \begin_layout Section
 Optimization problem
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -479,6 +489,16 @@ Figure of the system
 
 \begin_layout Section
 Applying Metaheuristics
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -502,6 +522,16 @@ es and constraints.
 
 \begin_layout Subsection
 Neighborhood and operators
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -566,14 +596,44 @@ Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy initial
 
 \begin_layout Subsection
 Greedy Randomized Adaptive Search Procedure
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Jaspur
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
-Large Neighborhood Search
+Adaptive Large Neighborhood Search
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
 Implementation
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -606,6 +666,16 @@ Operators of metaheuristics
 
 \begin_layout Section
 Parameter tuning
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Jaspur
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -623,6 +693,16 @@ We have not had time to do thorough parameter tuning, because the time limit
 
 \begin_layout Section
 Results
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -641,56 +721,6 @@ First appendix
 
 \begin_layout Standard
 Appendix, only when needed, can also be started behind the bibliography.
-\end_layout
-
-\begin_layout Section*
------------------
-\end_layout
-
-\begin_layout Standard
-You can use either BibTeX:
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-The following bibliography styles are allowed: 
-\family sans
-none
-\family default
- or 
-\family sans
-plainnat
-\family default
- (use then the document class option 
-\family sans
-natbib
-\family default
-)
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset CommandInset bibtex
-LatexCommand bibtex
-bibfiles "../examples/biblioExample"
-options "bibtotoc,plainnat"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Section*
----------------------
-\end_layout
-
-\begin_layout Standard
-\noindent
-Or plain bibliography:
 \end_layout
 
 \begin_layout Bibliography
