@@ -20,6 +20,7 @@ public:
 	bool draw;
 	meta_t alns_inital;
 	bool save_best;
+	time_t run_for;
 	
 private:
 	meta_t parse_meta_t(string str);

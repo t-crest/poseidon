@@ -201,9 +201,6 @@ void s_bad_random::run() {
 
 s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
-//	scheduler *s = new s_random(this->n);
-//	scheduler *s = new s_greedy(this->n, false);
-//	scheduler *s = new s_bad_random(this->n);
 	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
 	
 	s->run(); // make initial solution
@@ -213,19 +210,16 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	curr_status(best);
 	best_status(best);
 	
-	
 	this->choose_table.push_back({0.5, &s_lns::choose_random});
 	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_lns::choose_dom_rectangle});
 	this->normalize_choose_table();
-	
-//	(this->*(choose_table[0].second))();
 }
 
 void s_lns::punish_or_reward() {
 	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
 	this->normalize_choose_table();
-//	debugf(this->choose_table);
+	debugf(this->choose_table);
 }
 
 
@@ -253,14 +247,11 @@ void s_lns::run()
 	// destroy noget
 	// repair igen
 	
-	const time_t run_for = 30;
-	
-	for (time_t t0 = time(NULL);  time(NULL) <= t0+run_for;  ) 
+	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
 	{
 		this->destroy();
 		this->repair();
 		this->verify(false);
-		
 
 		curr = n.p();
 		this->punish_or_reward();
