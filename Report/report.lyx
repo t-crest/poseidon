@@ -9,7 +9,7 @@
 \patchcmd{\maketitle}{\@copyrightspace}{}{}{}
 \makeatother
 \end_preamble
-\options natbib, preprint
+\options natbib, nocopyrightspace
 \use_default_options false
 \maintain_unincluded_children false
 \language english
