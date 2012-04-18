@@ -154,7 +154,9 @@ void schedule::remove(channel *c) {
 }
 
 schedule& schedule::operator == (const schedule& rhs) {
+#ifdef USE_SCHEDULE_HASHMAP
 	this->max = rhs.max;
+#endif
 	this->table = rhs.table;
 }
 

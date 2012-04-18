@@ -411,7 +411,7 @@ void s_lns::repair() {
 
 		const channel *c = p.second;
 
-		
+//		debugf(this->unrouted_channels.size());
 		
 		for (int t = 0;; t++) {
 
