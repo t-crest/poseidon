@@ -7,16 +7,18 @@ options::options(int argc, char *argv[])
 	metaheuristic(ERR),
 	draw(false),
 	alns_inital(ERR),
-	save_best(true) // normally, we want to remember the best globally solution
+	save_best(true), // normally, we want to remember the best globally solution
+	run_for(0)
 {
 	/* Set options as specified by user */
-	for (int c; (c = getopt(argc, argv, "f:m:di:q")) != -1;) {
+	for (int c; (c = getopt(argc, argv, "f:m:di:qt:")) != -1;) {
 		switch (c) {
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
 			case 'f':	input_file = optarg;							break; // f for xml input file
 			case 'd':	draw = true;									break; // d for draw
 			case 'i':	alns_inital = parse_meta_t(string(optarg));		break; // i for initial sol
 			case 'q':	save_best = false;								break; // q for quick
+			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
 	}
@@ -31,6 +33,9 @@ options::options(int argc, char *argv[])
 	
 	const bool both_alns = (metaheuristic == ALNS && alns_inital == ALNS);
 	ensure(!both_alns, "Can not use ALNS as initial solution for ALNS");
+
+	if (metaheuristic == GRASP || metaheuristic == ALNS)
+		ensure(run_for != 0, "Not specified how long the metaheuristic should run");
 }
 
 options::meta_t options::parse_meta_t(string str) 
