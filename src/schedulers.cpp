@@ -25,6 +25,8 @@ get_next_mutator()
 
 scheduler::scheduler(network_t& _n) : n(_n) {
 	percent = 0.0;
+	best_for_print = 0;
+	curr_for_print = 0;
 	initial = 0;
 }
 
@@ -51,6 +53,20 @@ void scheduler::verify(const bool best){
 	for_each(n.channels(), [&](const channel & c){
 		n.check_channel(&c, best);
 	});
+}
+
+void scheduler::best_status(const int best){
+	this->best_for_print = best;
+	print_status();
+}
+
+void scheduler::curr_status(const int curr){
+	this->curr_for_print = curr;
+	print_status();
+}
+
+void scheduler::print_status(){
+	(cout << "\r" << "Current solution: p = " << this->curr_for_print << "     \tBest solution: p = " << this->best_for_print).flush() << "        ";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +207,8 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	s->verify(true);
 	
 	best = curr = n.p();
-	debugf(best);
+	curr_status(best);
+	best_status(best);
 	
 	this->choose_table.push_back({0.5, &s_lns::choose_random});
 	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
@@ -234,15 +251,16 @@ void s_lns::run()
 	{
 		this->destroy();
 		this->repair();
+		this->verify(false);
 
 		curr = n.p();
 		this->punish_or_reward();
-		debugf(curr);
+		curr_status(curr);
 
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-			debugf(best);
+			best_status(best);
 		}
 	}
 

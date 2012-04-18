@@ -34,14 +34,21 @@ std::function<void(vector<port_out_t*>&)> get_next_mutator();
 
 
 class scheduler {
+private:
         float percent;
+        int best_for_print;
+        int curr_for_print;
         int initial;
+
 protected:
 	network_t& n;
-public:
-	scheduler(network_t& _n);
+        void print_status();
+        void best_status(const int best);
+        void curr_status(const int curr);
         void percent_set(const int init, const string);
         void percent_up(const int curr);
+public:
+	scheduler(network_t& _n);
 	virtual void run() = 0;
         void verify(const bool best);
 };
