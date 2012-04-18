@@ -41,15 +41,16 @@ private:
 protected:
 	network_t& n;
 	void print_status();
-	void best_status(const int best);
+	
 	void curr_status(const int curr);
 	void percent_set(const int init, const string);
 	void percent_up(const int curr);
-        void metaheuristic_done();
 public:
 	scheduler(network_t& _n);
 	virtual void run() = 0;
 	void verify(const bool best);
+        void best_status(const int best);
+        void metaheuristic_done();
 };
 
 class s_greedy : public scheduler {

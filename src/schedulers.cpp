@@ -121,6 +121,8 @@ void s_greedy::run() {
 		}
 		percent_up(pq.size());
 	}
+	curr_status(n.p());
+	best_status(n.p_best());
 	n.updatebest();
 }
 
