@@ -85,9 +85,9 @@ void s_greedy::run() {
 			if (n.router(c->from)->local_in_schedule.available(t) == false)
 				continue;
 
-			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
+			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-				n.router(c->from)->local_in_schedule.add(c, t);
+//				n.router(c->from)->local_in_schedule.add(c, t);
 				break;
 			}
 		}
@@ -126,9 +126,9 @@ void s_random::run() {
 			if (n.router(c->from)->local_in_schedule.available(t) == false)
 				continue;
 
-			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
+			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-				n.router(c->from)->local_in_schedule.add(c, t);
+//				n.router(c->from)->local_in_schedule.add(c, t);
 				break;
 			}
 		}
@@ -169,9 +169,9 @@ void s_bad_random::run() {
 			if (n.router(c->from)->local_in_schedule.available(t) == false)
 				continue;
 
-			const bool path_routed = n.route_channel(c, c->from, t, next_mutator);
+			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-				n.router(c->from)->local_in_schedule.add(c, t);
+//				n.router(c->from)->local_in_schedule.add(c, t);
 				t_start = t + n.router(c->from)->hops.at(c->to) + 1;
 				break;
 			}
@@ -415,12 +415,12 @@ void s_lns::repair() {
 		
 		for (int t = 0;; t++) {
 
-			const bool path_routed = this->n.route_channel((channel*) c, c->from, t, next_mutator);
+			const bool path_routed = this->n.route_channel_wrapper((channel*) c, t, next_mutator);
 			if (path_routed) {
-				n.router(c->from)->local_in_schedule.add(c, t);
-				((channel*)c)->t_start = t;
-				
-				cout << "XXX: " << *c << " starts at " << t << endl;
+//				n.router(c->from)->local_in_schedule.add(c, t);
+//				((channel*)c)->t_start = t;
+//				
+//				cout << "XXX: " << *c << " starts at " << t << endl;
 				
 				break;
 			}		

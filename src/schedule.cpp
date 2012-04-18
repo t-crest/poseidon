@@ -398,6 +398,24 @@ void network_t::updatebest() {
 	});
 }
 
+
+bool network_t::route_channel_wrapper(
+	channel* c, timeslot t, 
+	std::function<void(vector<port_out_t*>&)> next_mutator
+) 
+{
+	if (this->router(c->from)->local_in_schedule.available(t) == false)
+		return false;
+
+	const bool path_routed = this->route_channel(c, c->from, t, next_mutator);
+	if (path_routed) {
+		this->router(c->from)->local_in_schedule.add(c, t);
+		c->t_start = t;
+		return true;
+	} 
+	return false;
+}
+
 bool network_t::route_channel(
 	channel* c, router_id curr, timeslot t, 
 	std::function<void(vector<port_out_t*>&)> next_mutator
@@ -431,7 +449,7 @@ bool network_t::route_channel(
 		
 		if (this->route_channel(c, l.sink.parent.address, t+1, next_mutator)) {
 			l.local_schedule.add(c, t);
-			c->t_start = t;
+//			c->t_start = t;
 			return true;
 		}
 	}
