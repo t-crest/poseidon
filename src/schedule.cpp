@@ -440,14 +440,14 @@ bool network_t::route_channel(
 }
 
 
-bool network_t::ripup_channel(const channel* c) 
+void network_t::ripup_channel(const channel* c) 
 {
 	router_id curr = c->from;
 	router_id dest = c->to;
 	timeslot t = c->t_start;
 	
 	if(!this->router(curr)->local_in_schedule.is(t,c)){
-		return false;
+		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot" << t << ".");
 	}
 	this->router(curr)->local_in_schedule.remove(c->t_start);
 	
@@ -458,23 +458,26 @@ bool network_t::ripup_channel(const channel* c)
 			if (!this->router(curr)->out((port_id)i).has_link())
 				continue;
 
-			if (this->router(curr)->out((port_id)i).link().local_schedule.has(t) == false)
-				continue;
-			
-			if (this->router(curr)->out((port_id)i).link().local_schedule.get(t) == c) {
+			if (this->router(curr)->out((port_id)i).link().local_schedule.is(t,c)) {
 				p = &this->router(curr)->out((port_id)i);
 				break;
 			}
 		}
 		assert(p != NULL);
 
-		p->link().local_schedule.remove(t++);
+		ensure(p->link().local_schedule.is(t,c),"Ripup failed: Channel: " << *c << " is not routed on local schedule of link " << p->link() << ".")
+		p->link().local_schedule.remove(t);
+		t++;
 		curr = p->link().sink.parent.address;
 	}
 
 	assert(curr == c->to);
 	
+	if(!this->router(c->to)->local_out_schedule.is(t,c)){
+		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local out schedule at time slot " << t << ".");
+	}
 	this->router(c->to)->local_out_schedule.remove(t);
+	return;
 }
 
 
