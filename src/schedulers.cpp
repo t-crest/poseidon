@@ -437,33 +437,23 @@ void s_lns::destroy() {
 void s_lns::repair() {
 
 	auto next_mutator = get_next_mutator();
-
-	assert(!this->unrouted_channels.empty());	
 	
+	assert(!this->unrouted_channels.empty());	
 	int cnt = 0;
-	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
 
+	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) 
+	{
 		const channel *c = p.second;
-
-//		debugf(this->unrouted_channels.size());
 		
 		for (int t = 0;; t++) {
-
 			const bool path_routed = this->n.route_channel_wrapper((channel*) c, t, next_mutator);
 			if (path_routed) {
-//				n.router(c->from)->local_in_schedule.add(c, t);
-//				((channel*)c)->t_start = t;
-//				
-//				cout << "XXX: " << *c << " starts at " << t << endl;
-				
-				
-				
+				assert(n.router(c->from)->local_in_schedule.get(t) == c);
 				assert(c->t_start == t);
+				
 				cnt++;
 				break;
 			}		
-			
-			
 		}
 	});
 	

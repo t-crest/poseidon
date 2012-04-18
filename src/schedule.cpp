@@ -529,6 +529,9 @@ void network_t::check_channel(const channel* c, const bool best)
 //		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
 //		debugf(*c);
 		
+		debugf(*c);
+		debugf(c);
+		debugf(c->t_start);
 		debugf(from_in_schedule->table);
 
 		

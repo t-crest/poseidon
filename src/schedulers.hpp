@@ -35,7 +35,7 @@ private:
 	float percent;
 	int best_for_print;
 	int curr_for_print;
-        int print_cnt;
+	int print_cnt;
 	int initial;
 
 protected:
