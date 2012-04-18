@@ -520,7 +520,7 @@ void network_t::check_channel(const channel* c, const bool best)
 		to_out_schedule = &this->router(c->to)->local_out_schedule;
 	}
 	if (from_in_schedule->is(c->t_start, c) == false) {	
-		debug(best);
+		debugf(best);
 //		debugf(t_curr);
 //		debugf(*from_in_schedule->get(t_curr));
 //		debugf(from_in_schedule->get(t_curr)->t_start);
@@ -528,8 +528,13 @@ void network_t::check_channel(const channel* c, const bool best)
 //		if (from_in_schedule->has(7)) debugf(*from_in_schedule->get(7));
 //		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
 //		debugf(*c);
-		if (from_in_schedule->has(t_curr))
+		if (from_in_schedule->has(c->t_start)){
+			debugf(c->t_start);
+			debugf(c);
+			debugf(from_in_schedule->get(t_curr));
+			debugf(from_in_schedule->get(c->t_start));
 			assert(from_in_schedule->get(t_curr)->t_start == t_curr);
+		}
 
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	}

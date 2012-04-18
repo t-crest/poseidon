@@ -35,6 +35,7 @@ private:
 	float percent;
 	int best_for_print;
 	int curr_for_print;
+        int print_cnt;
 	int initial;
 
 protected:
@@ -44,6 +45,7 @@ protected:
 	void curr_status(const int curr);
 	void percent_set(const int init, const string);
 	void percent_up(const int curr);
+        void metaheuristic_done();
 public:
 	scheduler(network_t& _n);
 	virtual void run() = 0;

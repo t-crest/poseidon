@@ -198,7 +198,7 @@ void parser::create_all2all(){
 			
 		});
 	});
-	debugf(this->n->specification.size());
+//	debugf(this->n->specification.size());
 	
 }
 

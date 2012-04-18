@@ -27,6 +27,7 @@ scheduler::scheduler(network_t& _n) : n(_n) {
 	percent = 0.0;
 	best_for_print = 0;
 	curr_for_print = 0;
+	print_cnt = 0;
 	initial = 0;
 }
 
@@ -61,12 +62,20 @@ void scheduler::best_status(const int best){
 }
 
 void scheduler::curr_status(const int curr){
+	this->print_cnt++;
 	this->curr_for_print = curr;
-	print_status();
+	if(print_cnt == 10){
+		print_cnt = 0;
+		print_status();
+	}
 }
 
 void scheduler::print_status(){
-	(cout << "\r" << "Current solution: p = " << this->curr_for_print << "     \tBest solution: p = " << this->best_for_print).flush() << "        ";
+	(cout << "\r" << "Current solution: p = " << this->curr_for_print << " \tBest solution: p = " << this->best_for_print).flush() << " ";
+}
+
+void scheduler::metaheuristic_done(){
+	cout << " Metahueristic ran out of time." << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +95,7 @@ void s_greedy::run() {
 		int hops = n.router(c.from)->hops[c.to];
 		pq.push(make_pair(hops, &c));
 	});
-	debugf(pq.size());
+//	debugf(pq.size());
 
 	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
 	
@@ -204,7 +213,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
 	
 	s->run(); // make initial solution
-	s->verify(true);
+	s->verify(false);
 	
 	best = curr = n.p();
 	curr_status(best);
@@ -263,7 +272,7 @@ void s_lns::run()
 			best_status(best);
 		}
 	}
-
+	metaheuristic_done();
 }
 
 std::set<const channel*> s_lns::choose_random() {
