@@ -398,6 +398,10 @@ void network_t::updatebest() {
 	for_each(this->routers(), [&](router_t* r) {
 		r->updatebest();
 	});
+	
+	for_each(this->specification, [&](channel& c){
+		c.t_best_start = c.t_start;
+	});
 }
 
 
