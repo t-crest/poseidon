@@ -73,8 +73,14 @@ bool schedule::available(timeslot t) {
 }
 
 /** Returns true if something has been scheduled at timeslot t */
-bool schedule::has(timeslot t) {
+bool schedule::has(const timeslot t) {
 	return util::contains(this->table, t);
+}
+
+bool schedule::is(const timeslot t, const channel* c){
+	if(!this->has(t)) return false;
+	if(this->get(t) != c) return false;
+	return true;
 }
 
 /** Returns true if channel c is contained in the schedule */
@@ -87,7 +93,7 @@ boost::optional<timeslot> schedule::time(const channel *c) {
 }
 
 /** Get the channel which is scheduled in timeslot t */
-const channel* schedule::get(timeslot t) {
+const channel* schedule::get(const timeslot t) {
 #ifdef USE_SCHEDULE_HASHMAP
 	assert(t <= this->max);
 #endif
@@ -436,11 +442,17 @@ bool network_t::route_channel(
 
 bool network_t::ripup_channel(const channel* c) 
 {
-	this->router(c->from)->local_in_schedule.remove(c->t_start);
 	router_id curr = c->from;
+	router_id dest = c->to;
 	timeslot t = c->t_start;
+	
+	if(!this->router(curr)->local_in_schedule.is(t,c)){
+		return false;
+	}
+	this->router(curr)->local_in_schedule.remove(c->t_start);
+	
 
-	while (curr != c->to) {
+	while (curr != dest) {
 		port_out_t *p = NULL;
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!this->router(curr)->out((port_id)i).has_link())

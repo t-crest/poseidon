@@ -78,6 +78,7 @@ public:
 	schedule();
 	bool available(timeslot t);
 	bool has(timeslot t);
+        bool is(timeslot t, const channel *c);
 	boost::optional<timeslot> time(const channel *c);
 	const channel* get(timeslot t);
     std::set<const channel*> channels() const;
@@ -148,11 +149,11 @@ private:
 	std::array<port_out_t, __NUM_PORTS> ports_out; // always 5 ports (but a port might have no link connected)
 
 public:
-	schedule local_in_schedule; // Local link to schedule traffic outof the processor
-    schedule local_in_best_schedule; 
-	schedule local_out_schedule; // Local link to schedule traffic into the processor
-    schedule local_out_best_schedule; 
-	const router_id address; // Fixed address
+        schedule local_in_schedule; // Local link to schedule traffic outof the processor
+        schedule local_in_best_schedule; 
+        schedule local_out_schedule; // Local link to schedule traffic into the processor
+        schedule local_out_best_schedule; 
+        const router_id address; // Fixed address
 	map<router_id, vector<port_out_t*> > next; // shortest path 
 	map<router_id, int> hops; // hops from this to router_id
 	
@@ -160,7 +161,7 @@ public:
 	router_t(router_id _address);
 	port_in_t& in(port_id p);
 	port_out_t& out(port_id p);
-    void updatebest();
+        void updatebest();
 private:
 
 	template <typename T>
