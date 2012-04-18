@@ -247,7 +247,7 @@ void s_lns::run()
 
 		curr = n.p();
 		this->punish_or_reward();
-//		debugf(curr);
+		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
@@ -400,16 +400,22 @@ void s_lns::destroy() {
 	assert(!chosen.empty());
 	
 	
+	assert(this->unrouted_channels.empty());
+	
 	for_each(chosen, [&](const channel * c) {
 		this->n.ripup_channel(c);
 		const int hops = this->n.router(c->from)->hops[c->to]; //+ util::rand() % 2;
 		this->unrouted_channels.insert(make_pair(hops, c));
 	});
+	
+	assert(this->unrouted_channels.size() == chosen.size());
 }
 
 void s_lns::repair() {
 
 	auto next_mutator = get_next_mutator();
+
+	assert(!this->unrouted_channels.empty());	
 	
 	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
 
@@ -426,6 +432,9 @@ void s_lns::repair() {
 //				
 //				cout << "XXX: " << *c << " starts at " << t << endl;
 				
+				assert(c->t_start == t);
+				this->unrouted_channels.erase(p);
+				
 				break;
 			}		
 			
@@ -433,6 +442,7 @@ void s_lns::repair() {
 		}
 	});
 	
+	assert(this->unrouted_channels.empty());
 	this->unrouted_channels.clear();
 }
 
