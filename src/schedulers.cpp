@@ -253,7 +253,7 @@ void s_lns::run()
 	// destroy noget
 	// repair igen
 	
-	const time_t run_for = 400;
+	const time_t run_for = 30;
 	
 	for (time_t t0 = time(NULL);  time(NULL) <= t0+run_for;  ) 
 	{
