@@ -617,11 +617,152 @@ Mark
 \end_layout
 
 \begin_layout Standard
-We have implemented the program in C++ for speed considerations.
+Our scheduler is written in 
+\family sans
+C++11
+\family default
+, using 
+\family sans
+BOOST
+\family default
+ and 
+\family sans
+pugixml
+\family default
+ as 3rd party libraries.
+ However our discussion will remain language-agnostic.
+\end_layout
+
+\begin_layout Subsection
+Data-structure organization
 \end_layout
 
 \begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+How a problem is modelled and represented, affects code-cleanliness and
+ can have large impact on performance.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In our problem domain, there is basically two ways to represent the time-expande
+d graph; time-centric or network-centric.
+ 
+\end_layout
+
+\begin_layout Description
+Time-centric We could consider grouping all routing-decisions made in the
+ same timeslot, into a frame.
+ The entire schedule would then consist of a layering of such frames, numbered
+ from 
+\begin_inset Formula $0$
+\end_inset
+
+ through 
+\begin_inset Formula $period-1$
+\end_inset
+
+.
+ We would have to be able to index into a frame given a router and its link,
+ asking whether any channel in this frame has been scheduled on the link.
+ However the interconnection network can have holes, and could be sparse.
+ 
+\end_layout
+
+\begin_layout Description
+Network-centric In reality, links are resources for which communication
+ must contend.
+ Thus is its more intuitive to only have 1 of each link and router represented
+ -- rather than as a layer of frames.
+ This means we localize the schedule, storing a local schedule on each link.
+ In this representation, this means we do not have to go up one timeslot
+ and index again to check if something has been scheduled -- this information
+ is local.
+ Splitting the schedule up into such localized schedules, also allows us
+ to make fast successor queries.
+ A drawback is that determining global schedule length now takes 
+\begin_inset Formula $O(n^{2})$
+\end_inset
+
+ time (which is reducible to 
+\begin_inset Formula $O(p)$
+\end_inset
+
+ using delta-evaluation) rather than 
+\begin_inset Formula $O(1)$
+\end_inset
+
+ time as in the time-centric representation.
+ 
+\end_layout
+
+\begin_layout Standard
+In reality, the overall performance depends on channel routing and very
+ little on the internal representation.
+ Hence we chose the more Object Orientation-friendly network-centric representat
+ion.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+is to store all the physical links which are actually present only once,
+ and then layer time on top of each link.
+\end_layout
+
+\begin_layout Plain Layout
+In the-time centric representation, the interconnect network has to be encoded
+ several times.
+\end_layout
+
+\begin_layout Plain Layout
+Current and best solution: We only copy current into best, when we know
+ that we have found a better solution.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+delta-evaluation
+\end_layout
+
+\begin_layout Subsection
+Calculating shortest paths
+\end_layout
+
+\begin_layout Standard
+All-pair shortest paths via BFS.
+ N^2 time and space.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+We have implemented the program in C++ for speed considerations.
+\end_layout
+
+\begin_layout Plain Layout
 Infrastructure.
+\end_layout
+
+\begin_layout Itemize
+Data structures
 \end_layout
 
 \begin_layout Itemize
@@ -642,6 +783,11 @@ Initial solutions
 
 \begin_layout Itemize
 Operators of metaheuristics
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
