@@ -50,6 +50,9 @@ void scheduler::percent_up(const int curr){
 }
 
 void scheduler::verify(const bool best){
+	if (best)
+		ensure(global::opts->save_best, "Can not check best solution, if it is not stored!");
+		
 	for_each(n.channels(), [&](const channel & c){
 		n.check_channel(&c, best);
 	});
@@ -204,7 +207,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
 	
 	s->run(); // make initial solution
-	s->verify(true);
+	s->verify(false);
 	
 	best = curr = n.p();
 	curr_status(best);
@@ -443,6 +446,8 @@ void s_lns::repair() {
 //				((channel*)c)->t_start = t;
 //				
 //				cout << "XXX: " << *c << " starts at " << t << endl;
+				
+				
 				
 				assert(c->t_start == t);
 				cnt++;

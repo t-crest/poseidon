@@ -65,7 +65,7 @@ struct channel {
 #define USE_SCHEDULE_HASHMAP 
 
 class schedule {
-private:
+public:
 #ifdef USE_SCHEDULE_HASHMAP
     std::unordered_map<timeslot, const channel*> table;
 	void refresh_max();
@@ -78,7 +78,7 @@ public:
 	schedule();
 	bool available(timeslot t);
 	bool has(timeslot t);
-        bool is(timeslot t, const channel *c);
+	bool is(timeslot t, const channel *c);
 	boost::optional<timeslot> time(const channel *c);
 	const channel* get(timeslot t);
     std::set<const channel*> channels() const;
