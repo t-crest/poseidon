@@ -417,6 +417,7 @@ void s_lns::repair() {
 
 	assert(!this->unrouted_channels.empty());	
 	
+	int cnt = 0;
 	for_each_reverse(this->unrouted_channels, [&](const std::pair<int, const channel*>& p) {
 
 		const channel *c = p.second;
@@ -433,8 +434,7 @@ void s_lns::repair() {
 //				cout << "XXX: " << *c << " starts at " << t << endl;
 				
 				assert(c->t_start == t);
-				this->unrouted_channels.erase(p);
-				
+				cnt++;
 				break;
 			}		
 			
@@ -442,7 +442,7 @@ void s_lns::repair() {
 		}
 	});
 	
-	assert(this->unrouted_channels.empty());
+	assert(cnt == this->unrouted_channels.size());
 	this->unrouted_channels.clear();
 }
 
