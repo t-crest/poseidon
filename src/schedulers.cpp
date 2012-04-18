@@ -51,6 +51,9 @@ void scheduler::percent_up(const int curr){
 }
 
 void scheduler::verify(const bool best){
+	if (best)
+		ensure(global::opts->save_best, "Can not check best solution, if it is not stored!");
+		
 	for_each(n.channels(), [&](const channel & c){
 		n.check_channel(&c, best);
 	});
@@ -452,6 +455,8 @@ void s_lns::repair() {
 //				((channel*)c)->t_start = t;
 //				
 //				cout << "XXX: " << *c << " starts at " << t << endl;
+				
+				
 				
 				assert(c->t_start == t);
 				cnt++;

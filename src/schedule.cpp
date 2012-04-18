@@ -528,14 +528,17 @@ void network_t::check_channel(const channel* c, const bool best)
 //		if (from_in_schedule->has(7)) debugf(*from_in_schedule->get(7));
 //		if (from_in_schedule->has(8)) debugf(*from_in_schedule->get(8));
 //		debugf(*c);
-		if (from_in_schedule->has(c->t_start)){
-			debugf(c->t_start);
-			debugf(c);
-			debugf(from_in_schedule->get(t_curr));
-			debugf(from_in_schedule->get(c->t_start));
+		
+		debugf(from_in_schedule->table);
+
+		
+		if (from_in_schedule->has(t_curr))
 			assert(from_in_schedule->get(t_curr)->t_start == t_curr);
 		}
 
+		
+		
+		
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	}
 	
