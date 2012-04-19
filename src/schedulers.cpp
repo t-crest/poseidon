@@ -265,7 +265,7 @@ void s_bad_random::run() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-meta_scheduler::meta_scheduler(network_t& _n) : scheduler(_n) {
+meta_scheduler::meta_scheduler(network_t& _n) : scheduler(_n), iterations(0) {
 	
 }
 
@@ -492,7 +492,13 @@ void meta_scheduler::print_stats(time_t t0) {
 	time_t now = time(NULL);
 	if (prev + 1 <= now) {
 		prev = now;
-		global::opts->stat_file << (now-t0) << "\t" << this->curr << "\t" << this->best << "\t" << this->choose_table << endl; 
+
+		global::opts->stat_file 
+			<< (now-t0) << "\t" 
+			<< this->curr << "\t" 
+			<< this->best << "\t" 
+			<< this->iterations << "\t" 
+			<< this->choose_table << endl; 
 	}
 }
 
@@ -532,35 +538,31 @@ void s_alns::run()
 	// repair igen
 
 	std::set<time_t> best_occurences;
-	int iterations = 0;
 	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
 	{
 		this->destroy();
 		this->repair();
-		this->verify(false);
+//		this->verify(false);
 
 		curr = n.p();
 		this->punish_or_reward();
-		curr_status(curr);
+//		curr_status(curr);
 
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-			best_status(best);
-			best_occurences.clear();
-			best_occurences.insert(time(NULL) - t0);
+//			best_status(best);
+//			best_occurences.clear();
+//			best_occurences.insert(time(NULL) - t0);
 		}
-		else if (curr == best) {
-			best_occurences.insert(time(NULL) - t0);
-		}
+//		else if (curr == best) {
+//			best_occurences.insert(time(NULL) - t0);
+//		}
 		
 		this->print_stats(t0);
-		iterations++;
+		this->iterations++;
 	}
-	metaheuristic_done();
-	
-	cout << "Time occurences of best solution: " << best_occurences << endl;
-	cout << "Iterations: " << iterations << endl;
+//	metaheuristic_done();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -570,10 +572,6 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 	curr = 0;
 	best = ::numeric_limits<int>::max();
 	
-//	curr_status(best);
-//	best_status(best);
-//	
-//	this->choose_table.push_back({0.5, &s_grasp::choose_random});
 	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
@@ -583,44 +581,34 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 
 void s_grasp::run() 
 {
-	int iterations = 0;
 	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; ) 
 	{
 		this->n.clear(); // ensure nothing has been scheduled
-		s_cross s(this->n, 0.1); 
+		s_cross s(this->n, 0); 
 		s.run(); // make initial solution
 		
+
 		// Also check initial sol
 		curr = n.p();
-		debugf(curr);
-
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-			cout << "\r" << "Best solution is: " << best << endl;
 		}
-
-
 		
-		// Local search: TODO
+		// Local search
 		this->destroy();
 		this->repair();
 		this->punish_or_reward();
 
 		curr = n.p();
-		debugf(curr);
-		
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-			cout << "\r" << "Best solution is: " << best << endl;
 		}
 		
-		
 		this->print_stats(t0);
-		iterations++;
+		this->iterations++;
 	}
-	debugf(iterations);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

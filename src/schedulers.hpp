@@ -97,7 +97,7 @@ protected:
 	int curr;
 	int prev;
 	int chosen_adaptive;
-
+	int iterations;
 
 	#define MEM_FUNC_T std::set<const channel*>(meta_scheduler::*)()
 	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;
