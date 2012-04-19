@@ -6,7 +6,7 @@ options::options(int argc, char *argv[])
 :	input_file(""),
 	metaheuristic(ERR),
 	draw(false),
-	alns_inital(ERR),
+	meta_inital(ERR),
 	save_best(true), // normally, we want to remember the best globally solution
 	run_for(0)
 {
@@ -16,7 +16,7 @@ options::options(int argc, char *argv[])
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
 			case 'f':	input_file = optarg;							break; // f for xml input file
 			case 'd':	draw = true;									break; // d for draw
-			case 'i':	alns_inital = parse_meta_t(string(optarg));		break; // i for initial sol
+			case 'i':	meta_inital = parse_meta_t(string(optarg));		break; // i for initial sol
 			case 'q':	save_best = false;								break; // q for quick
 			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
 			default:	ensure(false, "Unknown flag " << c << ".");
@@ -26,12 +26,12 @@ options::options(int argc, char *argv[])
 	/* Some input validation */
 	ensure(input_file.size() > 0, "Empty file name given");
 	ensure(metaheuristic != ERR, "Metaheuristic must be set to GRASP or ALNS, etc.");
-	if (alns_inital != ERR)
+	if (meta_inital != ERR)
 		ensure(metaheuristic == ALNS, "ALNS-inital given, but we don't run ALNS");
 	if (metaheuristic == ALNS)
-		ensure(alns_inital != ERR, "ALNS specified, but no inital solution specified");
+		ensure(meta_inital != ERR, "ALNS specified, but no inital solution specified");
 	
-	const bool both_alns = (metaheuristic == ALNS && alns_inital == ALNS);
+	const bool both_alns = (metaheuristic == ALNS && meta_inital == ALNS);
 	ensure(!both_alns, "Can not use ALNS as initial solution for ALNS");
 
 	if (metaheuristic == GRASP || metaheuristic == ALNS)
