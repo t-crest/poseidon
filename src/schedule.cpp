@@ -153,6 +153,13 @@ void schedule::remove(channel *c) {
 #endif
 }
 
+void schedule::clear() {
+#ifdef USE_SCHEDULE_HASHMAP
+	this->max = 0;
+#endif
+	this->table.clear();
+}
+
 schedule& schedule::operator == (const schedule& rhs) {
 #ifdef USE_SCHEDULE_HASHMAP
 	this->max = rhs.max;
@@ -428,6 +435,17 @@ void network_t::updatebest() {
 	
 	for_each(this->specification, [&](channel& c){
 		c.t_best_start = c.t_start;
+	});
+}
+
+void network_t::clear() {
+	for_each(this->router_ts, [&](router_t *r){
+		r->local_in_schedule.clear();
+		r->local_out_schedule.clear();
+	});
+
+	for_each(this->link_ts, [&](link_t *l){
+		l->local_schedule.clear();
 	});
 }
 

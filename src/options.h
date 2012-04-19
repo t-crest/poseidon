@@ -14,7 +14,7 @@ public:
 	options(int argc, char *argv[]);
 	~options();
 
-	enum meta_t {GREEDY, rGREEDY, RANDOM, BAD_RANDOM, GRASP, ALNS, ERR};
+	enum meta_t {GREEDY, rGREEDY, CROSS, RANDOM, BAD_RANDOM, GRASP, ALNS, ERR};
 	meta_t metaheuristic;
 	string	input_file;
 	bool draw;
