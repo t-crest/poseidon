@@ -99,6 +99,32 @@ private:
 	std::set<const channel*> find_depend_rectangle(const channel* c);
 };
 
+class s_graps : public scheduler {
+	std::set<std::pair<int, const channel*> > unrouted_channels;
+	int best;
+	int curr;
+	int chosen_adaptive;
+
+#define MEM_FUNC_T std::set<const channel*>(s_lns::*)()
+	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;
+
+
+public:
+	s_lns(network_t& _n);
+	void run();
+	void destroy();
+	void repair();
+
+private:
+	std::set<const channel*> find_dom_paths();
+	void punish_or_reward();
+	void normalize_choose_table();
+	std::set<const channel*> choose_random();
+	std::set<const channel*> choose_dom_paths();
+	std::set<const channel*> choose_dom_rectangle();
+	std::set<const channel*> find_depend_path(const channel* dom);
+	std::set<const channel*> find_depend_rectangle(const channel* c);
+};
 
 scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
 
