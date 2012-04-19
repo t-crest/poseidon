@@ -222,7 +222,7 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	s->run(); // make initial solution
 	s->verify(false);
 	
-	best = curr = n.p();
+	best = curr = prev = n.p();
 	curr_status(best);
 	best_status(best);
 	
@@ -233,9 +233,9 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 }
 
 void s_lns::punish_or_reward() {
-	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
+	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(prev)/curr));
 	this->normalize_choose_table();
-//	debugf(this->choose_table);
+	prev = curr;
 }
 
 
@@ -280,6 +280,7 @@ void s_lns::run()
 		}
 	}
 	metaheuristic_done();
+	cout << this->choose_table;
 }
 
 std::set<const channel*> s_lns::choose_random() {
