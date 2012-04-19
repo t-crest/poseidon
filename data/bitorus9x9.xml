@@ -1,6 +1,6 @@
 <?xmlversion="1.0" encoding="UTF-8"?>
 
-  <topology width="2" height="2">
+  <topology width="9" height="9">
     <graph type="bitorus"></graph>
   </topology>
   <channels type="all2all">
