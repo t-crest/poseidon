@@ -576,12 +576,12 @@ void s_grasp::run()
 	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; iterations++) 
 	{
 		this->n.clear(); // ensure nothing has been scheduled
-		s_cross s(this->n, 0.2); 
+		s_cross s(this->n, 0.03);
 		s.run(); // make initial solution
 		
 		// Also check initial sol
 		curr = n.p();
-		debugf(curr);
+//		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
@@ -597,7 +597,7 @@ void s_grasp::run()
 		this->punish_or_reward();
 
 		curr = n.p();
-		debugf(curr);
+//		debugf(curr);
 		
 		if (curr < best) {
 			best = curr;
