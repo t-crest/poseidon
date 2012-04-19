@@ -2,7 +2,6 @@
 
   <topology width="2" height="2">
     <graph type="bitorus"></graph>
-
   </topology>
   <channels type="all2all">
   </channels>
