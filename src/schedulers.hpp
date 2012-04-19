@@ -74,8 +74,9 @@ public:
 
 class s_lns : public scheduler {
 	std::set<std::pair<int, const channel*> > unrouted_channels;
-	int best;
+    int best;
 	int curr;
+    int prev;
 	int chosen_adaptive;
 
 #define MEM_FUNC_T std::set<const channel*>(s_lns::*)()
