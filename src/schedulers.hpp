@@ -72,19 +72,19 @@ public:
 	void run();
 };
 
-class s_lns : public scheduler {
+class s_alns : public scheduler {
 	std::set<std::pair<int, const channel*> > unrouted_channels;
     int best;
 	int curr;
     int prev;
 	int chosen_adaptive;
 
-#define MEM_FUNC_T std::set<const channel*>(s_lns::*)()
+#define MEM_FUNC_T std::set<const channel*>(s_alns::*)()
 	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;
 
 
 public:
-	s_lns(network_t& _n);
+	s_alns(network_t& _n);
 	void run();
 	void destroy();
 	void repair();

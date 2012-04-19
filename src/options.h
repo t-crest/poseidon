@@ -18,7 +18,7 @@ public:
 	meta_t metaheuristic;
 	string	input_file;
 	bool draw;
-	meta_t alns_inital;
+	meta_t meta_inital;
 	bool save_best;
 	time_t run_for;
 	

@@ -215,7 +215,7 @@ void s_bad_random::run() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_lns::s_lns(network_t& _n) : scheduler(_n) {
+s_alns::s_alns(network_t& _n) : scheduler(_n) {
 	assert(&_n == &n);
 	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
 	
@@ -226,20 +226,20 @@ s_lns::s_lns(network_t& _n) : scheduler(_n) {
 	curr_status(best);
 	best_status(best);
 	
-	this->choose_table.push_back({0.5, &s_lns::choose_random});
-	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
-	this->choose_table.push_back({1.0, &s_lns::choose_dom_rectangle});
+	this->choose_table.push_back({0.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
+	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
 	this->normalize_choose_table();
 }
 
-void s_lns::punish_or_reward() {
+void s_alns::punish_or_reward() {
 	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(prev)/curr));
 	this->normalize_choose_table();
 	prev = curr;
 }
 
 
-void s_lns::normalize_choose_table() {
+void s_alns::normalize_choose_table() {
 	float sum = 0;
 	for (int i = 0; i < choose_table.size(); i++) {
 		sum += choose_table[i].first;
@@ -250,7 +250,7 @@ void s_lns::normalize_choose_table() {
 	}
 }
 
-void s_lns::run() 
+void s_alns::run() 
 {
 	// noget := asdasdads
 	// choose:
@@ -283,7 +283,7 @@ void s_lns::run()
 	cout << this->choose_table;
 }
 
-std::set<const channel*> s_lns::choose_random() {
+std::set<const channel*> s_alns::choose_random() {
 	util::srand();
 
 	std::set<const channel*> ret;
@@ -298,7 +298,7 @@ std::set<const channel*> s_lns::choose_random() {
 	return ret;
 }
 
-std::set<const channel*> s_lns::find_dom_paths()
+std::set<const channel*> s_alns::find_dom_paths()
 {
 	std::set<const channel*> dom;
 	timeslot p = this->n.p();
@@ -316,7 +316,7 @@ std::set<const channel*> s_lns::find_dom_paths()
 	return dom;
 }
 
-std::set<const channel*> s_lns::choose_dom_paths() 
+std::set<const channel*> s_alns::choose_dom_paths() 
 {
 	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
 	std::set<const channel*> ret = dom; // the dominating path + its "dependencies"
@@ -329,7 +329,7 @@ std::set<const channel*> s_lns::choose_dom_paths()
 	return ret;
 }
 
-std::set<const channel*> s_lns::choose_dom_rectangle() 
+std::set<const channel*> s_alns::choose_dom_rectangle() 
 {
 	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
 	std::set<const channel*> ret = dom;
@@ -342,7 +342,7 @@ std::set<const channel*> s_lns::choose_dom_rectangle()
 	return ret;
 }
 
-std::set<const channel*> s_lns::find_depend_path(const channel* dom) 
+std::set<const channel*> s_alns::find_depend_path(const channel* dom) 
 {
 	router_id curr = dom->from;
 	std::set<const channel*> ret;
@@ -366,7 +366,7 @@ std::set<const channel*> s_lns::find_depend_path(const channel* dom)
 	return ret;
 }
 
-std::set<const channel*> s_lns::find_depend_rectangle(const channel* c) {
+std::set<const channel*> s_alns::find_depend_rectangle(const channel* c) {
 	std::set<const channel*> ret;
 	std::set<const link_t*> links;
 	
@@ -400,7 +400,7 @@ std::set<const channel*> s_lns::find_depend_rectangle(const channel* c) {
 }
 
 
-void s_lns::destroy() {
+void s_alns::destroy() {
 	std::set<const channel*> chosen;
 	
 	float unit_rand = float(util::rand()) / UTIL_RAND_MAX; // random float in interval [0;1[
@@ -439,7 +439,7 @@ void s_lns::destroy() {
 	assert(this->unrouted_channels.size() == chosen.size());
 }
 
-void s_lns::repair() {
+void s_alns::repair() {
 
 	auto next_mutator = get_next_mutator();
 	
@@ -479,7 +479,7 @@ scheduler* get_heuristic(options::meta_t meta_id, network_t& n)
 		case options::rGREEDY	: s = new s_greedy(n, true);	break;
 		case options::RANDOM	: s = new s_random(n);			break;
 		case options::BAD_RANDOM: s = new s_bad_random(n);		break;
-		case options::ALNS		: s = new s_lns(n);				break;
+		case options::ALNS		: s = new s_alns(n);				break;
 		case options::GRASP		: s = new s_grasp(n);			break;
 		default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 	}	
