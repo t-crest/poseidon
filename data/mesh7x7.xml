@@ -1,0 +1,9 @@
+<?xmlversion="1.0" encoding="UTF-8"?>
+
+  <topology width="7" height="7">
+    <graph type="mesh"></graph>
+  </topology>
+
+  <channels type="all2all">
+  </channels>
+
