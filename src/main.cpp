@@ -42,5 +42,6 @@ int main(int argc, char* argv[])
 
 	if (global::opts->draw) draw_schedule(n); // finally draw the schedule itself 
 
+	delete global::opts;
 	return 0;
 }

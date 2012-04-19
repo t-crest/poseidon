@@ -6,8 +6,14 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <ctime>
+#include "file.hpp"
 #include "lex_cast.h"
 using namespace std;
+
+
+string get_stat_name(int argc, char *argv[]);
+
 
 class options {
 public:
@@ -21,6 +27,7 @@ public:
 	meta_t meta_inital;
 	bool save_best;
 	time_t run_for;
+	ofstream stat_file;
 	
 private:
 	meta_t parse_meta_t(string str);
