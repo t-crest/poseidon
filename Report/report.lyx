@@ -114,15 +114,8 @@ status collapsed
 
 \end_inset
 
-Participating in the course 42137 
-\noun on
-Optimization using metaheuristics
-\noun default
-
-\begin_inset Newline newline
-\end_inset
-
-At the Technical University of Denmark
+Technical University of Denmark, Kgs.
+ Lyngby
 \begin_inset ERT
 status collapsed
 
@@ -133,15 +126,34 @@ status collapsed
 
 \end_inset
 
-s072089@student.dtu.dk
-\begin_inset Newline newline
+{
+\begin_inset CommandInset href
+LatexCommand href
+name "s072095"
+target "s072095@student.dtu.dk"
+type "mailto:"
+
 \end_inset
 
-s072069@student.dtu.dk
-\begin_inset Newline newline
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "s072069"
+target "s072069@student.dtu.dk"
+type "mailto:"
+
 \end_inset
 
-s072080@student.dtu.dk
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "s072080"
+target "s072080@student.dtu.dk"
+type "mailto:"
+
+\end_inset
+
+}@student.dtu.dk
 \begin_inset Note Note
 status collapsed
 
@@ -168,8 +180,11 @@ At least one autor is required.
 \end_layout
 
 \begin_layout Abstract
-This paper investigates how metaheuristics can be used to optimize the NP-comple
-te scheduling problem of scheduling traffic in a Real time Network-on-Chip.
+This paper shows how meta heuristics can be applied to optimize scheduling
+ of traffic in a Real time Network-on-Chip.
+ This scheduling problem is an NP-complete Multi commodity flow problem,
+ which we optimize using the meta heuristics Adaptive Large Neighborhood
+ Search (ALNS) and Greedy Randomized Adaptive Search Procedure (GRASP).
  
 \end_layout
 
@@ -178,7 +193,7 @@ Multi commodity flow problem, Network-on-Chip, Time-Division-Multiplexing
 \end_layout
 
 \begin_layout Section
-Optimization problem
+Introduction
 \begin_inset Marginal
 status open
 
@@ -192,11 +207,32 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-In this project we are to implement a meta heuristic for scheduling communicatio
-n in a real-time Multi-Processor System-on-Chip (MPSoC).
- The MPSoCs we will be targeting for this project, are MPSoCs with a Network-on-
-Chip (NoC) as interconnect.
- The topology of the NoC of these MPSoCs are limited to routers with maximum
+This paper is part of the work carried out in the course 42137
+\noun on
+ Optimization using metaheuristics
+\noun default
+.
+ Besides each section heading we have in margin the name of the author which
+ has contributed the most to that section.
+ All three authors has contributed equally to this project and report.
+\end_layout
+
+\begin_layout Standard
+The goal of this project is to implement a scheduler for scheduling inter
+ proceesor communication in a real-time Multi-Processor System-on-Chip (MPSoC),
+ this scheduling is done in compile time, this is a property of a Time-Division-
+Multiplexed interconnect.
+\end_layout
+
+\begin_layout Standard
+This type of scheduling is a multi-commodity flow problem, not allowing
+ fractional flows on edges, an NP-complete problem.
+ For improving a greedy solution of the multi-commodity flow problem meta
+ heuristics can be applied.
+\end_layout
+
+\begin_layout Standard
+The topology of the NoC of these MPSoCs are limited to routers with maximum
  5 output ports.
 \end_layout
 
@@ -1933,6 +1969,10 @@ Results compared to the results of [Brandner2012].
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Link utilization: The schedule becomes more dens as the network size increases.
 \end_layout
 
 \begin_layout Section

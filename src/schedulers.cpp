@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "schedulers.hpp"
 
 
@@ -121,6 +123,8 @@ void s_greedy::run() {
 		}
 		percent_up(pq.size());
 	}
+	curr_status(n.p());
+	best_status(n.p_best());
 	n.updatebest();
 }
 
@@ -210,194 +214,13 @@ void s_bad_random::run() {
 	n.updatebest();
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 
-s_lns::s_lns(network_t& _n) : scheduler(_n) {
-	assert(&_n == &n);
-	scheduler *s = ::get_heuristic(global::opts->alns_inital, this->n);
+meta_scheduler::meta_scheduler(network_t& _n) : scheduler(_n) {
 	
-	s->run(); // make initial solution
-	s->verify(false);
-	
-	best = curr = n.p();
-	curr_status(best);
-	best_status(best);
-	
-	this->choose_table.push_back({0.5, &s_lns::choose_random});
-	this->choose_table.push_back({1.0, &s_lns::choose_dom_paths});
-	this->choose_table.push_back({1.0, &s_lns::choose_dom_rectangle});
-	this->normalize_choose_table();
 }
 
-void s_lns::punish_or_reward() {
-	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(best)/curr));
-	this->normalize_choose_table();
-//	debugf(this->choose_table);
-}
-
-
-void s_lns::normalize_choose_table() {
-	float sum = 0;
-	for (int i = 0; i < choose_table.size(); i++) {
-		sum += choose_table[i].first;
-	}
-
-	for (int i = 0; i < choose_table.size(); i++) {
-		choose_table[i].first /= sum;
-	}
-}
-
-void s_lns::run() 
-{
-	// noget := asdasdads
-	// choose:
-	//	1. random - Done
-	//  2. dense routers
-	//  3. dominating paths + dependencies
-	//  4. functor next_mutator: always route towards least dense router
-	//  5. finite lookahead
-
-	// destroy noget
-	// repair igen
-	
-	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
-	{
-		this->destroy();
-		this->repair();
-		this->verify(false);
-
-		curr = n.p();
-		this->punish_or_reward();
-		curr_status(curr);
-
-		if (curr < best) {
-			best = curr;
-			this->n.updatebest();
-			best_status(best);
-		}
-	}
-	metaheuristic_done();
-}
-
-std::set<const channel*> s_lns::choose_random() {
-	util::srand();
-
-	std::set<const channel*> ret;
-	int cnt = util::rand() % (int) (0.1 * this->n.channels().size());
-	cnt = util::max(cnt, 2);
-
-	while (ret.size() < cnt) {
-		const int idx = util::rand() % this->n.channels().size();
-		ret.insert(&(this->n.channels()[idx]));
-	}
-
-	return ret;
-}
-
-std::set<const channel*> s_lns::find_dom_paths()
-{
-	std::set<const channel*> dom;
-	timeslot p = this->n.p();
-
-	// Find the dominating paths first
-	for_each(this->n.links(), [&](link_t* t) {
-		if (t->local_schedule.has(p - 1)) {
-			assert(t->local_schedule.max_time() <= p - 1);
-			const channel *c = t->local_schedule.get(p - 1);
-			assert(c != NULL);
-			dom.insert(c);
-		}
-	});
-
-	return dom;
-}
-
-std::set<const channel*> s_lns::choose_dom_paths() 
-{
-	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
-	std::set<const channel*> ret = dom; // the dominating path + its "dependencies"
-	
-	for_each(dom, [&](const channel *dom_c){
-		std::set<const channel*> chns = this->find_depend_path(dom_c);
-		ret.insert(chns.begin(), chns.end());
-	});
-
-	return ret;
-}
-
-std::set<const channel*> s_lns::choose_dom_rectangle() 
-{
-	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
-	std::set<const channel*> ret = dom;
-	
-	for_each(dom, [&](const channel *dom_c){
-		std::set<const channel*> chns = this->find_depend_rectangle(dom_c);
-		ret.insert(chns.begin(), chns.end());
-	});
-
-	return ret;
-}
-
-std::set<const channel*> s_lns::find_depend_path(const channel* dom) 
-{
-	router_id curr = dom->from;
-	std::set<const channel*> ret;
-	
-	for (int i = 0; i < __NUM_PORTS; i++) {
-		port_id p = (port_id)i;
-		
-		if (!n.router(curr)->out(p).has_link()) continue;
-		auto time = n.router(curr)->out(p).link().local_schedule.time(dom);
-		if (!time) continue;
-		
-		timeslot max = *time;
-		for (timeslot t = 0; t <= max; t++) {
-			if (!n.router(curr)->out(p).link().local_schedule.has(t)) continue;
-			const channel *c = n.router(curr)->out(p).link().local_schedule.get(t);
-			ret.insert(c);
-		}
-		curr = n.router(curr)->out(p).link().sink.parent.address;
-	}
-	
-	return ret;
-}
-
-std::set<const channel*> s_lns::find_depend_rectangle(const channel* c) {
-	std::set<const channel*> ret;
-	std::set<const link_t*> links;
-	
-	std::queue<router_t*> Q;
-	std::map<router_t*, bool> marked;
-	
-	Q.push(this->n.router(c->from));
-	marked[this->n.router(c->from)] = true;
-	
-	while(!Q.empty()) {
-		router_t *t = Q.front(); Q.pop();
-		if (t->address == c->to) continue; // we've reached the destination
-		auto &next = t->next.at(c->to);
-		
-		for_each(next, [&](port_out_t* p){
-			if(p->has_link()) {
-				Q.push(&(p->link().sink.parent));
-				links.insert(&(p->link()));
-			}
-		});
-	}
-	
-	for_each(links, [&](const link_t* l) {
-		std::set<const channel*> channels = l->local_schedule.channels();
-		for (auto it = channels.begin(); it != channels.end(); ++it ) {
-			ret.insert(c);
-		}
-	});
-	
-	return ret;
-}
-
-
-void s_lns::destroy() {
+void meta_scheduler::destroy() {
 	std::set<const channel*> chosen;
 	
 	float unit_rand = float(util::rand()) / UTIL_RAND_MAX; // random float in interval [0;1[
@@ -436,7 +259,7 @@ void s_lns::destroy() {
 	assert(this->unrouted_channels.size() == chosen.size());
 }
 
-void s_lns::repair() {
+void meta_scheduler::repair() {
 
 	auto next_mutator = get_next_mutator();
 	
@@ -463,6 +286,257 @@ void s_lns::repair() {
 	this->unrouted_channels.clear();
 }
 
+void meta_scheduler::punish_or_reward() {
+	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(prev)/curr));
+	this->normalize_choose_table();
+	prev = curr;
+}
+
+
+void meta_scheduler::normalize_choose_table() {
+	float sum = 0;
+	for (int i = 0; i < choose_table.size(); i++) {
+		sum += choose_table[i].first;
+	}
+
+	for (int i = 0; i < choose_table.size(); i++) {
+		choose_table[i].first /= sum;
+	}
+}
+
+std::set<const channel*> meta_scheduler::choose_random() {
+	util::srand();
+
+	std::set<const channel*> ret;
+	int cnt = util::rand() % (int) (0.1 * this->n.channels().size());
+	cnt = util::max(cnt, 2);
+
+	while (ret.size() < cnt) {
+		const int idx = util::rand() % this->n.channels().size();
+		ret.insert(&(this->n.channels()[idx]));
+	}
+
+	return ret;
+}
+
+std::set<const channel*> meta_scheduler::find_dom_paths()
+{
+	std::set<const channel*> dom;
+	timeslot p = this->n.p();
+
+	// Find the dominating paths first
+	for_each(this->n.links(), [&](link_t* t) {
+		if (t->local_schedule.has(p - 1)) {
+			assert(t->local_schedule.max_time() <= p - 1);
+			const channel *c = t->local_schedule.get(p - 1);
+			assert(c != NULL);
+			dom.insert(c);
+		}
+	});
+
+	return dom;
+}
+
+std::set<const channel*> meta_scheduler::choose_dom_paths() 
+{
+	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
+	std::set<const channel*> ret = dom; // the dominating path + its "dependencies"
+	
+	for_each(dom, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->find_depend_path(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
+
+	return ret;
+}
+
+std::set<const channel*> meta_scheduler::choose_dom_rectangle() 
+{
+	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
+	std::set<const channel*> ret = dom;
+	
+	for_each(dom, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->find_depend_rectangle(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
+
+	return ret;
+}
+
+std::set<const channel*> meta_scheduler::find_depend_path(const channel* dom) 
+{
+	router_id curr = dom->from;
+	std::set<const channel*> ret;
+	
+	for (int i = 0; i < __NUM_PORTS; i++) {
+		port_id p = (port_id)i;
+		
+		if (!n.router(curr)->out(p).has_link()) continue;
+		auto time = n.router(curr)->out(p).link().local_schedule.time(dom);
+		if (!time) continue;
+		
+		timeslot max = *time;
+		for (timeslot t = 0; t <= max; t++) {
+			if (!n.router(curr)->out(p).link().local_schedule.has(t)) continue;
+			const channel *c = n.router(curr)->out(p).link().local_schedule.get(t);
+			ret.insert(c);
+		}
+		curr = n.router(curr)->out(p).link().sink.parent.address;
+	}
+	
+	return ret;
+}
+
+std::set<const channel*> meta_scheduler::find_depend_rectangle(const channel* c) {
+	std::set<const channel*> ret;
+	std::set<const link_t*> links;
+	
+	std::queue<router_t*> Q;
+	std::map<router_t*, bool> marked;
+	
+	Q.push(this->n.router(c->from));
+	marked[this->n.router(c->from)] = true;
+	
+	while(!Q.empty()) {
+		router_t *t = Q.front(); Q.pop();
+		if (t->address == c->to) continue; // we've reached the destination
+		auto &next = t->next.at(c->to);
+		
+		for_each(next, [&](port_out_t* p){
+			if(p->has_link()) {
+				Q.push(&(p->link().sink.parent));
+				links.insert(&(p->link()));
+			}
+		});
+	}
+	
+	for_each(links, [&](const link_t* l) {
+		std::set<const channel*> channels = l->local_schedule.channels();
+		for (auto it = channels.begin(); it != channels.end(); ++it ) {
+			ret.insert(c);
+		}
+	});
+	
+	return ret;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
+	assert(&_n == &n);
+	scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
+	
+	s->run(); // make initial solution
+	s->verify(false);
+	
+	best = curr = prev = n.p();
+	curr_status(best);
+	best_status(best);
+	
+	this->choose_table.push_back({0.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
+	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
+	this->normalize_choose_table();
+}
+
+
+void s_alns::run() 
+{
+	// noget := asdasdads
+	// choose:
+	//	1. random - Done
+	//  2. dense routers
+	//  3. dominating paths + dependencies
+	//  4. functor next_mutator: always route towards least dense router
+	//  5. finite lookahead
+
+	// destroy noget
+	// repair igen
+
+	std::set<time_t> best_occurences;
+	int iterations = 0;
+	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
+	{
+		this->destroy();
+		this->repair();
+		this->verify(false);
+
+		curr = n.p();
+		this->punish_or_reward();
+		curr_status(curr);
+
+		if (curr < best) {
+			best = curr;
+			this->n.updatebest();
+			best_status(best);
+			best_occurences.clear();
+			best_occurences.insert(time(NULL) - t0);
+		}
+		else if (curr == best) {
+			best_occurences.insert(time(NULL) - t0);
+		}
+		
+		iterations++;
+	}
+	metaheuristic_done();
+	
+	cout << "Time occurences of best solution: " << best_occurences << endl;
+	cout << "Iterations: " << iterations << endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
+	assert(&_n == &n);
+	scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
+	
+	s->run(); // make initial solution
+	s->verify(false);
+	
+	best = curr = prev = n.p();
+	curr_status(best);
+	best_status(best);
+	
+	this->choose_table.push_back({0.5, &s_grasp::choose_random});
+	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
+	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
+	this->normalize_choose_table();
+}
+
+
+void s_grasp::run() 
+{
+	// noget := asdasdads
+	// choose:
+	//	1. random - Done
+	//  2. dense routers
+	//  3. dominating paths + dependencies
+	//  4. functor next_mutator: always route towards least dense router
+	//  5. finite lookahead
+
+	// destroy noget
+	// repair igen
+	
+	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
+	{
+		this->destroy();
+		this->repair();
+		this->verify(false);
+
+		curr = n.p();
+		this->punish_or_reward();
+		curr_status(curr);
+
+		if (curr < best) {
+			best = curr;
+			this->n.updatebest();
+			best_status(best);
+		}
+	}
+	metaheuristic_done();
+	cout << this->choose_table;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -476,7 +550,8 @@ scheduler* get_heuristic(options::meta_t meta_id, network_t& n)
 		case options::rGREEDY	: s = new s_greedy(n, true);	break;
 		case options::RANDOM	: s = new s_random(n);			break;
 		case options::BAD_RANDOM: s = new s_bad_random(n);		break;
-		case options::ALNS		: s = new s_lns(n);				break;
+		case options::ALNS		: s = new s_alns(n);			break;
+		case options::GRASP		: s = new s_grasp(n);			break;
 		default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 	}	
 	assert(s != NULL);
