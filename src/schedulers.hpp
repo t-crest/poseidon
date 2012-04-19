@@ -78,6 +78,9 @@ class s_lns : public scheduler {
 	int curr;
     int prev;
 	int chosen_adaptive;
+    time_t first_spot;
+    time_t last_spot;
+    
 
 #define MEM_FUNC_T std::set<const channel*>(s_lns::*)()
 	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;

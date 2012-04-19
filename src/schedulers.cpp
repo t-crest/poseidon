@@ -263,11 +263,13 @@ void s_lns::run()
 	// destroy noget
 	// repair igen
 	
+	std::set<time_t> spottings;	
+	int iterations = 0;
 	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
 	{
 		this->destroy();
 		this->repair();
-		this->verify(false);
+//		this->verify(false);
 
 		curr = n.p();
 		this->punish_or_reward();
@@ -277,10 +279,22 @@ void s_lns::run()
 			best = curr;
 			this->n.updatebest();
 			best_status(best);
+			spottings.clear();
+			spottings.insert(time(NULL) - t0);
+//			first_spot = time(NULL) - t0;
 		}
+		else if (curr == best) {
+			spottings.insert(time(NULL) - t0);
+//			last_spot = time(NULL) - t0;
+		}
+		
+		iterations++;
 	}
 	metaheuristic_done();
-	cout << this->choose_table;
+//	cout << "Best solution first spotted: " << first_spot << endl;
+//	cout << "Best solution last spotted: " << last_spot << endl;
+	cout << "Best solution spotted at times: " << spottings << endl;
+	cout << "Number of iterations: " << iterations << endl;
 }
 
 std::set<const channel*> s_lns::choose_random() {
