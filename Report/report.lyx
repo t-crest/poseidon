@@ -114,15 +114,8 @@ status collapsed
 
 \end_inset
 
-Participating in the course 42137 
-\noun on
-Optimization using metaheuristics
-\noun default
-
-\begin_inset Newline newline
-\end_inset
-
-At the Technical University of Denmark
+Technical University of Denmark, Kgs.
+ Lyngby
 \begin_inset ERT
 status collapsed
 
@@ -133,15 +126,34 @@ status collapsed
 
 \end_inset
 
-s072089@student.dtu.dk
-\begin_inset Newline newline
+{
+\begin_inset CommandInset href
+LatexCommand href
+name "s072095"
+target "s072095@student.dtu.dk"
+type "mailto:"
+
 \end_inset
 
-s072069@student.dtu.dk
-\begin_inset Newline newline
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "s072069"
+target "s072069@student.dtu.dk"
+type "mailto:"
+
 \end_inset
 
-s072080@student.dtu.dk
+, 
+\begin_inset CommandInset href
+LatexCommand href
+name "s072080"
+target "s072080@student.dtu.dk"
+type "mailto:"
+
+\end_inset
+
+}@student.dtu.dk
 \begin_inset Note Note
 status collapsed
 
@@ -195,8 +207,11 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-This paper is part of the work carried out in the course 42137 Optimization
- using metaheuristics.
+This paper is part of the work carried out in the course 42137
+\noun on
+ Optimization using metaheuristics
+\noun default
+.
  Besides each section heading we have in margin the name of the author which
  has contributed the most to that section.
  All three authors has contributed equally to this project and report.
