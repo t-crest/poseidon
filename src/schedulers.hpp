@@ -115,6 +115,8 @@ public:
 	virtual void run() = 0;
 	void destroy();
 	void repair();
+	void print_stats(time_t t0);
+	
 };
 
 class s_alns : public meta_scheduler {

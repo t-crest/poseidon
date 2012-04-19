@@ -487,6 +487,15 @@ std::set<const channel*> meta_scheduler::find_depend_rectangle(const channel* c)
 	return ret;
 }
 
+void meta_scheduler::print_stats(time_t t0) {
+	static time_t prev = 0;
+	time_t now = time(NULL);
+	if (prev + 1 <= now) {
+		prev = now;
+		global::opts->stat_file << (now-t0) << "\t" << this->curr << "\t" << this->best << "\t" << this->choose_table << endl; 
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -502,6 +511,7 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	best_status(best);
 	
 	this->choose_table.push_back({0.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
 	this->normalize_choose_table();
@@ -544,6 +554,7 @@ void s_alns::run()
 			best_occurences.insert(time(NULL) - t0);
 		}
 		
+		this->print_stats(t0);
 		iterations++;
 	}
 	metaheuristic_done();
@@ -564,8 +575,8 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 //	
 //	this->choose_table.push_back({0.5, &s_grasp::choose_random});
 	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
-//	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
-//	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
+	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
+	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
 	this->normalize_choose_table();
 }
 
@@ -573,10 +584,10 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 void s_grasp::run() 
 {
 	int iterations = 0;
-	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; iterations++) 
+	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; ) 
 	{
 		this->n.clear(); // ensure nothing has been scheduled
-		s_cross s(this->n, 0.2); 
+		s_cross s(this->n, 0.1); 
 		s.run(); // make initial solution
 		
 		// Also check initial sol
@@ -606,8 +617,8 @@ void s_grasp::run()
 		}
 		
 		
-		
-		
+		this->print_stats(t0);
+		iterations++;
 	}
 	debugf(iterations);
 }
