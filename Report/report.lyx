@@ -689,8 +689,8 @@ How a problem is modelled and represented, affects code-cleanliness and
 \end_layout
 
 \begin_layout Standard
-In our problem domain, there is basically two ways to represent the time-expande
-d graph; time-centric or network-centric.
+In our problem domain, there is basically two ways to represent the schedule;
+ time-centric or network-centric.
  
 \end_layout
 

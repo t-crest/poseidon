@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "schedulers.hpp"
 
 
@@ -67,7 +69,7 @@ void scheduler::best_status(const int best){
 void scheduler::curr_status(const int curr){
 	this->print_cnt++;
 	this->curr_for_print = curr;
-	if(print_cnt == 10){
+	if(print_cnt >= 10){
 		print_cnt = 0;
 		print_status();
 	}
@@ -89,41 +91,90 @@ s_greedy::s_greedy(network_t& _n, bool _random) : scheduler(_n), random(_random)
 void s_greedy::run() {
 	util::srand();
 
-
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
-
 
 	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
 		int hops = n.router(c.from)->hops[c.to];
 		pq.push(make_pair(hops, &c));
 	});
-//	debugf(pq.size());
-
-	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
 	
+	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
 	percent_set(pq.size(), "Creating initial solution:");
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
-		channel *c = (channel*) pq.top().second;
-		pq.pop(); // ignore .first
+		channel *c = (channel*) pq.top().second; pq.pop(); 
 
 		for (timeslot t = 0;; t++) {
-			if (n.router(c->from)->local_in_schedule.available(t) == false)
-				continue;
-
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-//				n.router(c->from)->local_in_schedule.add(c, t);
 				break;
 			}
 		}
 		percent_up(pq.size());
 	}
+	n.updatebest();
 	curr_status(n.p());
 	best_status(n.p_best());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+s_cross::s_cross(network_t& _n, float _beta) : scheduler(_n), beta(_beta)
+{
+}
+
+void s_cross::run() 
+{
+	util::srand();
+
+	assert(0.0 <= beta && beta <= 1.0);
+	const int k = beta * n.channels().size(); // the number of swaps to perform
+	assert(k >= 0);
+	
+	const int size = n.channels().size();
+	
+	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
+	vector<int> length;
+	length.resize(size);
+	
+	for (int i = 0; i < size; i++) {
+		const channel& c = n.channels()[i];
+		length[i] = n.router(c.from)->hops[c.to];
+	}
+
+	// swap lengths, k times
+	for (int i = 0; i < k; i++) {
+		const int a = util::rand() % size;
+		const int b = util::rand() % size;
+		std::swap(length[a], length[b]);
+	}
+	
+	// Add all channels to a priority queue, sorting by their length
+	for (int i = 0; i < n.channels().size(); i++) {
+		const channel& c = n.channels()[i];
+		pq.push(make_pair(length[i], &c));
+	}
+	
+	auto next_mutator = get_next_mutator();
+//	percent_set(pq.size(), "Creating initial solution:");
+	
+	// Routes channels and mutates the network. Long channels routed first.
+	while (!pq.empty()) {
+		channel *c = (channel*) pq.top().second; pq.pop(); 
+
+		for (timeslot t = 0;; t++) {
+			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
+			if (path_routed) {
+				break;
+			}
+		}
+//		percent_up(pq.size());
+	}
 	n.updatebest();
+//	curr_status(n.p());
+//	best_status(n.p_best());	
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -319,22 +370,40 @@ std::set<const channel*> meta_scheduler::choose_random() {
 
 std::set<const channel*> meta_scheduler::find_dom_paths()
 {
-	std::set<const channel*> dom;
+	return this->find_late_paths(this->n.p()-1);
+}
+
+std::set<const channel*> meta_scheduler::find_late_paths(timeslot top)
+{
+	std::set<const channel*> late; // set of late-ending paths
 	timeslot p = this->n.p();
 
-	// Find the dominating paths first
-	for_each(this->n.links(), [&](link_t* t) {
-		if (t->local_schedule.has(p - 1)) {
-			assert(t->local_schedule.max_time() <= p - 1);
-			const channel *c = t->local_schedule.get(p - 1);
-			assert(c != NULL);
-			dom.insert(c);
+	for_each(this->n.links(), [&](link_t* l) {
+		for (timeslot t = top; t < p; t++) { // this loop is iterated maybe once or twice only, since top should be close to p
+			if (l->local_schedule.has(t)) {
+				assert(l->local_schedule.max_time() <= p - 1);
+				const channel *c = l->local_schedule.get(t);
+				assert(c != NULL);
+				late.insert(c);
+			}
 		}
 	});
 
-	return dom;
+	return late;
 }
 
+std::set<const channel*> meta_scheduler::choose_late_paths() 
+{
+	std::set<const channel*> late = this->find_late_paths(this->n.p()-2);
+	std::set<const channel*> ret = late; 
+	
+	for_each(late, [&](const channel *dom_c){
+		std::set<const channel*> chns = this->find_depend_path(dom_c);
+		ret.insert(chns.begin(), chns.end());
+	});
+
+	return ret;
+}
 std::set<const channel*> meta_scheduler::choose_dom_paths() 
 {
 	std::set<const channel*> dom = this->find_dom_paths(); // the dominating path + its "dependencies"
@@ -418,6 +487,15 @@ std::set<const channel*> meta_scheduler::find_depend_rectangle(const channel* c)
 	return ret;
 }
 
+void meta_scheduler::print_stats(time_t t0) {
+	static time_t prev = 0;
+	time_t now = time(NULL);
+	if (prev + 1 <= now) {
+		prev = now;
+		global::opts->stat_file << (now-t0) << "\t" << this->curr << "\t" << this->best << "\t" << this->choose_table << endl; 
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -433,6 +511,7 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	best_status(best);
 	
 	this->choose_table.push_back({0.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
 	this->normalize_choose_table();
@@ -451,7 +530,9 @@ void s_alns::run()
 
 	// destroy noget
 	// repair igen
-	
+
+	std::set<time_t> best_occurences;
+	int iterations = 0;
 	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
 	{
 		this->destroy();
@@ -466,26 +547,34 @@ void s_alns::run()
 			best = curr;
 			this->n.updatebest();
 			best_status(best);
+			best_occurences.clear();
+			best_occurences.insert(time(NULL) - t0);
 		}
+		else if (curr == best) {
+			best_occurences.insert(time(NULL) - t0);
+		}
+		
+		this->print_stats(t0);
+		iterations++;
 	}
 	metaheuristic_done();
-	cout << this->choose_table;
+	
+	cout << "Time occurences of best solution: " << best_occurences << endl;
+	cout << "Iterations: " << iterations << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 	assert(&_n == &n);
-	scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
+	curr = 0;
+	best = ::numeric_limits<int>::max();
 	
-	s->run(); // make initial solution
-	s->verify(false);
-	
-	best = curr = prev = n.p();
-	curr_status(best);
-	best_status(best);
-	
-	this->choose_table.push_back({0.5, &s_grasp::choose_random});
+//	curr_status(best);
+//	best_status(best);
+//	
+//	this->choose_table.push_back({0.5, &s_grasp::choose_random});
+	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
 	this->normalize_choose_table();
@@ -494,35 +583,44 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 
 void s_grasp::run() 
 {
-	// noget := asdasdads
-	// choose:
-	//	1. random - Done
-	//  2. dense routers
-	//  3. dominating paths + dependencies
-	//  4. functor next_mutator: always route towards least dense router
-	//  5. finite lookahead
-
-	// destroy noget
-	// repair igen
-	
-	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
+	int iterations = 0;
+	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; ) 
 	{
-		this->destroy();
-		this->repair();
-		this->verify(false);
-
+		this->n.clear(); // ensure nothing has been scheduled
+		s_cross s(this->n, 0.03);
+		s.run(); // make initial solution
+		
+		// Also check initial sol
 		curr = n.p();
-		this->punish_or_reward();
-		curr_status(curr);
+//		debugf(curr);
 
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-			best_status(best);
+			cout << "\r" << "Best solution is: " << best << endl;
 		}
+
+
+		
+		// Local search: TODO
+		this->destroy();
+		this->repair();
+		this->punish_or_reward();
+
+		curr = n.p();
+//		debugf(curr);
+		
+		if (curr < best) {
+			best = curr;
+			this->n.updatebest();
+			cout << "\r" << "Best solution is: " << best << endl;
+		}
+		
+		
+		this->print_stats(t0);
+		iterations++;
 	}
-	metaheuristic_done();
-	cout << this->choose_table;
+	debugf(iterations);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

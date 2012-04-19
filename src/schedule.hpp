@@ -87,6 +87,7 @@ public:
 	void add(const channel *c, timeslot t);
 	void remove(timeslot t);
 	void remove(channel *c);
+	void clear();
     schedule& operator == (const schedule& rhs);
 };
 
@@ -201,6 +202,7 @@ public:
 	void print_channel_specification();
 	float link_utilization(bool best);
 	void updatebest();
+	void clear(); // clears
 	
 	bool route_channel_wrapper(channel* c, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	void ripup_channel(const channel* c);

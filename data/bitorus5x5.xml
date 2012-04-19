@@ -2,14 +2,6 @@
 
   <topology width="5" height="5">
     <graph type="bitorus"></graph>
-
-    <!--
-    <graph type="arbitary">
-      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
-      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
-      ...      
-    </graph>
-    -->
   </topology>
   <channels type="all2all">
   </channels>
