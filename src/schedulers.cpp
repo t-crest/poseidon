@@ -25,21 +25,22 @@ get_next_mutator()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-scheduler::scheduler(network_t& _n) : n(_n) {
+singleshot_scheduler::singleshot_scheduler(network_t& _n) : n(_n) {
+	this->t0 = time(NULL);
 	percent = 0.0;
-	best_for_print = 0;
-	curr_for_print = 0;
-	print_cnt = 0;
+//	best_for_print = 0;
+//	curr_for_print = 0;
+//	print_cnt = 0;
 	initial = 0;
 }
 
-void scheduler::percent_set(const int init, const string text){
+void singleshot_scheduler::percent_set(const int init, const string text){
 	percent = 0.0;
 	initial = init;
 	cout << text << endl;
 }
 
-void scheduler::percent_up(const int curr){
+void singleshot_scheduler::percent_up(const int curr){
 	
 	float curr_percent = 100-(curr*100)/initial;
 	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
@@ -52,7 +53,14 @@ void scheduler::percent_up(const int curr){
 
 }
 
-void scheduler::verify(const bool best){
+void singleshot_scheduler::main_run() {
+	util::srand();
+	this->run();
+	this->print_stats();
+	this->print_stats_linkutil();
+}
+
+void singleshot_scheduler::verify(const bool best){
 	if (best)
 		ensure(global::opts->save_best, "Can not check best solution, if it is not stored!");
 		
@@ -61,36 +69,46 @@ void scheduler::verify(const bool best){
 	});
 }
 
-void scheduler::best_status(const int best){
-	this->best_for_print = best;
-	print_status();
+//void scheduler::best_status(const int best){
+//	this->best_for_print = best;
+//	print_status();
+//}
+
+//void scheduler::curr_status(const int curr){
+//	this->print_cnt++;
+//	this->curr_for_print = curr;
+//	if(print_cnt >= 10){
+//		print_cnt = 0;
+//		print_status();
+//	}
+//}
+
+//void scheduler::print_status(){
+//	(cout << "\r" << "Current solution: p = " << this->curr_for_print << " \tBest solution: p = " << this->best_for_print).flush() << " ";
+//}
+
+//void scheduler::metaheuristic_done(){
+//	cout << " Metahueristic ran out of time." << endl;
+//}
+
+void singleshot_scheduler::print_stats() {
+	time_t now = time(NULL);
+	global::opts->stat_file 
+		<< (now - this->t0) << "\t" 
+		<< this->curr << endl;
 }
 
-void scheduler::curr_status(const int curr){
-	this->print_cnt++;
-	this->curr_for_print = curr;
-	if(print_cnt >= 10){
-		print_cnt = 0;
-		print_status();
-	}
-}
-
-void scheduler::print_status(){
-	(cout << "\r" << "Current solution: p = " << this->curr_for_print << " \tBest solution: p = " << this->best_for_print).flush() << " ";
-}
-
-void scheduler::metaheuristic_done(){
-	cout << " Metahueristic ran out of time." << endl;
+void singleshot_scheduler::print_stats_linkutil() {
+	global::opts->stat_file << "# Link_util_best\t" << this->n.link_utilization(true) << endl;
+//	global::opts->stat_file << "# best\t" << this->best_for_print << endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_greedy::s_greedy(network_t& _n, bool _random) : scheduler(_n), random(_random) {
+s_greedy::s_greedy(network_t& _n, bool _random) : singleshot_scheduler(_n), random(_random) {
 }
 
 void s_greedy::run() {
-	util::srand();
-
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
 	// Add all channels to a priority queue, sorting by their length
@@ -115,20 +133,17 @@ void s_greedy::run() {
 		percent_up(pq.size());
 	}
 	n.updatebest();
-	curr_status(n.p());
-	best_status(n.p_best());
+	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_cross::s_cross(network_t& _n, float _beta) : scheduler(_n), beta(_beta)
+s_cross::s_cross(network_t& _n, float _beta) : singleshot_scheduler(_n), beta(_beta)
 {
 }
 
 void s_cross::run() 
 {
-	util::srand();
-
 	assert(0.0 <= beta && beta <= 1.0);
 	const int k = beta * n.channels().size(); // the number of swaps to perform
 	assert(k >= 0);
@@ -158,7 +173,7 @@ void s_cross::run()
 	}
 	
 	auto next_mutator = get_next_mutator();
-//	percent_set(pq.size(), "Creating initial solution:");
+	percent_set(pq.size(), "Creating initial solution:");
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
@@ -170,21 +185,19 @@ void s_cross::run()
 				break;
 			}
 		}
-//		percent_up(pq.size());
+		percent_up(pq.size());
 	}
 	n.updatebest();
-//	curr_status(n.p());
-//	best_status(n.p_best());	
+	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_random::s_random(network_t& _n) : scheduler(_n) {
+s_random::s_random(network_t& _n) : singleshot_scheduler(_n) {
 }
 
-void s_random::run() {
-	util::srand();
-
+void s_random::run() 
+{
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
 	// Add all channels to a priority queue, sorting by their length
@@ -192,8 +205,6 @@ void s_random::run() {
 		pq.push(make_pair(util::rand(), &c));
 	});
 	debugf(pq.size());
-
-
 
 	auto next_mutator = get_next_mutator();
 
@@ -216,28 +227,24 @@ void s_random::run() {
 		percent_up(pq.size());
 	}
 	n.updatebest();
+	curr = n.p();
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_bad_random::s_bad_random(network_t& _n) : scheduler(_n) {
+s_bad_random::s_bad_random(network_t& _n) : singleshot_scheduler(_n) {
 }
 
-void s_bad_random::run() {
-	util::srand();
-
+void s_bad_random::run() 
+{
 	priority_queue< pair<int/*only for sorting*/, const channel*> > pq;
 
 	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
-//		int hops = n.router(c.from)->hops[c.to];
-//		pq.push(make_pair(hops, &c));
 		pq.push(make_pair(util::rand(), &c));
 	});
 	debugf(pq.size());
-
-
 
 	auto next_mutator = get_next_mutator();
 	percent_set(pq.size(), "Creating initial solution:");
@@ -253,7 +260,6 @@ void s_bad_random::run() {
 
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-//				n.router(c->from)->local_in_schedule.add(c, t);
 				t_start = t + n.router(c->from)->hops.at(c->to) + 1;
 				break;
 			}
@@ -261,12 +267,19 @@ void s_bad_random::run() {
 		percent_up(pq.size());
 	}
 	n.updatebest();
+	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-meta_scheduler::meta_scheduler(network_t& _n) : scheduler(_n), iterations(0) {
+meta_scheduler::meta_scheduler(network_t& _n) : singleshot_scheduler(_n), iterations(0) {
 	
+}
+		
+void meta_scheduler::main_run() {
+	util::srand();
+	this->run();
+	this->print_stats_linkutil();
 }
 
 void meta_scheduler::destroy() {
@@ -354,8 +367,6 @@ void meta_scheduler::normalize_choose_table() {
 }
 
 std::set<const channel*> meta_scheduler::choose_random() {
-	util::srand();
-
 	std::set<const channel*> ret;
 	int cnt = util::rand() % (int) (0.1 * this->n.channels().size());
 	cnt = util::max(cnt, 2);
@@ -487,14 +498,14 @@ std::set<const channel*> meta_scheduler::find_depend_rectangle(const channel* c)
 	return ret;
 }
 
-void meta_scheduler::print_stats(time_t t0) {
+void meta_scheduler::print_stats() {
 	static time_t prev = 0;
 	time_t now = time(NULL);
 	if (prev + 1 <= now) {
 		prev = now;
 
 		global::opts->stat_file 
-			<< (now-t0) << "\t" 
+			<< (now - this->t0) << "\t" 
 			<< this->curr << "\t" 
 			<< this->best << "\t" 
 			<< this->iterations << "\t" 
@@ -502,19 +513,15 @@ void meta_scheduler::print_stats(time_t t0) {
 	}
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////
 
 s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	assert(&_n == &n);
-	scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
-	
+	singleshot_scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
 	s->run(); // make initial solution
-	s->verify(false);
+//	s->verify(false);
 	
 	best = curr = prev = n.p();
-	curr_status(best);
-	best_status(best);
 	
 	this->choose_table.push_back({0.5, &s_alns::choose_random});
 	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
@@ -537,32 +544,22 @@ void s_alns::run()
 	// destroy noget
 	// repair igen
 
-	std::set<time_t> best_occurences;
-	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for;  ) 
+	for (; time(NULL) <= this->t0 + global::opts->run_for;  ) 
 	{
 		this->destroy();
 		this->repair();
-//		this->verify(false);
 
 		curr = n.p();
 		this->punish_or_reward();
-//		curr_status(curr);
 
 		if (curr < best) {
 			best = curr;
 			this->n.updatebest();
-//			best_status(best);
-//			best_occurences.clear();
-//			best_occurences.insert(time(NULL) - t0);
 		}
-//		else if (curr == best) {
-//			best_occurences.insert(time(NULL) - t0);
-//		}
 		
-		this->print_stats(t0);
+		this->print_stats();
 		this->iterations++;
 	}
-//	metaheuristic_done();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -581,12 +578,12 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 
 void s_grasp::run() 
 {
-	for (time_t t0 = time(NULL);  time(NULL) <= t0 + global::opts->run_for; ) 
+	for (; time(NULL) <= this->t0 + global::opts->run_for; ) 
 	{
-		this->n.clear(); // ensure nothing has been scheduled
-		s_cross s(this->n, 0); 
+		this->n.clear(); // make sure nothing has been scheduled
+
+		s_cross s(this->n, global::opts->beta_percent); 
 		s.run(); // make initial solution
-		
 
 		// Also check initial sol
 		curr = n.p();
@@ -606,7 +603,7 @@ void s_grasp::run()
 			this->n.updatebest();
 		}
 		
-		this->print_stats(t0);
+		this->print_stats();
 		this->iterations++;
 	}
 }
@@ -614,9 +611,9 @@ void s_grasp::run()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-scheduler* get_heuristic(options::meta_t meta_id, network_t& n) 
+singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n) 
 {
-	scheduler *s;
+	singleshot_scheduler *s;
 	switch (meta_id) 
 	{
 		case options::GREEDY	: s = new s_greedy(n, false);	break;

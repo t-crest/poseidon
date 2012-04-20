@@ -32,8 +32,8 @@ int main(int argc, char* argv[])
 	if (global::opts->draw) draw_network(n); // draw network before scheduling anything
 	
 	{
-		scheduler *s = ::get_heuristic(global::opts->metaheuristic, n);
-		s->run();
+		singleshot_scheduler *s = ::get_heuristic(global::opts->metaheuristic, n);
+		s->main_run();
 		s->verify( global::opts->save_best );
 		cout << "Schedule verified." << endl;
 		debugf(n.link_utilization( global::opts->save_best ));

@@ -30,31 +30,31 @@ using namespace std;
 
 std::function<void(vector<port_out_t*>&) > get_next_mutator();
 
-class scheduler {
+
+
+class singleshot_scheduler {
 private:
 	float percent;
-	int best_for_print;
-	int curr_for_print;
-	int print_cnt;
 	int initial;
 
 protected:
+	int curr;
+	time_t t0;
 	network_t& n;
-	void print_status();
 
-	void curr_status(const int curr);
-	void best_status(const int best);
-	void metaheuristic_done();
 	void percent_set(const int init, const string);
 	void percent_up(const int curr);
-
+	void print_stats_linkutil();
+	void print_stats();
+	
 public:
-	scheduler(network_t& _n);
+	singleshot_scheduler(network_t& _n);
 	virtual void run() = 0;
+	virtual void main_run();
 	void verify(const bool best);
 };
 
-class s_greedy : public scheduler {
+class s_greedy : public singleshot_scheduler {
 	bool random;
 public:
 	s_greedy(network_t& _n, bool _random);
@@ -63,38 +63,36 @@ public:
 
 /** A cross between greedy and random, chosen by k
  */
-class s_cross : public scheduler {
+class s_cross : public singleshot_scheduler {
 	float beta;
 public:
 	s_cross(network_t& _n, float _beta);
 	void run();
 };
 
-class s_random : public scheduler {
+class s_random : public singleshot_scheduler {
 public:
 	s_random(network_t& _n);
 	void run();
 };
 
-class s_bad_random : public scheduler {
+class s_bad_random : public singleshot_scheduler {
 public:
 	s_bad_random(network_t& _n);
 	void run();
 };
 
 
-class meta_scheduler : public scheduler {
+class meta_scheduler : public singleshot_scheduler {
 private:
 	std::set<const channel*> find_depend_path(const channel* dom);
 	std::set<const channel*> find_depend_rectangle(const channel* c);
 	std::set<const channel*> find_dom_paths();
 	std::set<const channel*> find_late_paths(timeslot top);
 
-	
 protected:
 	std::set<std::pair<int, const channel*> > unrouted_channels;
 	int best;
-	int curr;
 	int prev;
 	int chosen_adaptive;
 	int iterations;
@@ -112,11 +110,10 @@ protected:
 
 public:
 	meta_scheduler(network_t& _n);
-	virtual void run() = 0;
+	void main_run();
 	void destroy();
 	void repair();
-	void print_stats(time_t t0);
-	
+	void print_stats();
 };
 
 class s_alns : public meta_scheduler {
@@ -131,8 +128,8 @@ public:
 	void run();
 };
 
-scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
 
+singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
 
 
 #endif	/* SCHEDULERS_HPP */

@@ -4,25 +4,26 @@
 string get_stat_name(int argc, char *argv[]) 
 {
 	string ret;
+	ret += "stat";
+
 	for (int i = 1; i < argc; i++) {
 		string tmp = string(argv[i]);
 		for (int i = 0; i < tmp.size(); i++) if (tmp[i] == '/' || tmp[i] =='\\') tmp[i] = '_';
 		ret += tmp;
 	}
-	ret += " ";
+	ret += "__";
 
 	{
 		char buff[30];
 		time_t now = time(NULL);
-		strftime(buff, 30, "%Y-%m-%d %H:%M:%S", localtime(&now));	
+		strftime(buff, 30, "%Y-%m-%d_%H:%M:%S", localtime(&now));	
 		ret += string(buff);
 	}
+	ret += "__";
 	
-	ret += "_";
 	std::random_device get_rand;
 	ret += ::lex_cast<string>(get_rand());
 	
-	ret += ".stat";
 	return ret;
 }
 
@@ -34,16 +35,18 @@ options::options(int argc, char *argv[])
 	meta_inital(ERR),
 	save_best(true), // normally, we want to remember the best globally solution
 	run_for(0),
+	beta_percent(-1.0),
 	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
 {
 	/* Set options as specified by user */
-	for (int c; (c = getopt(argc, argv, "f:m:di:qt:")) != -1;) {
+	for (int c; (c = getopt(argc, argv, "f:m:di:qt:b:")) != -1;) {
 		switch (c) {
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
 			case 'f':	input_file = optarg;							break; // f for xml input file
 			case 'd':	draw = true;									break; // d for draw
 			case 'i':	meta_inital = parse_meta_t(string(optarg));		break; // i for initial sol
 			case 'q':	save_best = false;								break; // q for quick
+			case 'b':	beta_percent = ::lex_cast<float>(string(optarg)); break; // b for beta_percent
 			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
@@ -62,6 +65,9 @@ options::options(int argc, char *argv[])
 
 	if (metaheuristic == GRASP || metaheuristic == ALNS)
 		ensure(run_for != 0, "Not specified how long the metaheuristic should run");
+
+	if (metaheuristic == GRASP)
+		ensure(0.0 <= beta_percent && beta_percent <= 1.0, "Beta not from 0.0 to 1.0");
 }
 
 options::meta_t options::parse_meta_t(string str) 
@@ -79,8 +85,7 @@ options::meta_t options::parse_meta_t(string str)
 
 options::~options()
 {
-//	debugf("CLOSED");
-//	this->stat_file.close();
+	this->stat_file.close();
 }
 
 

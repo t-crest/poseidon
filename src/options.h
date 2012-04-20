@@ -28,6 +28,7 @@ public:
 	bool save_best;
 	time_t run_for;
 	ofstream stat_file;
+	float beta_percent;
 	
 private:
 	meta_t parse_meta_t(string str);
