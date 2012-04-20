@@ -95,7 +95,7 @@ void singleshot_scheduler::print_stats() {
 	time_t now = time(NULL);
 	global::opts->stat_file 
 		<< (now - this->t0) << "\t" 
-		<< this->curr << endl;
+		<< this->n.curr << endl;
 }
 
 void singleshot_scheduler::print_stats_linkutil() {
@@ -133,7 +133,6 @@ void s_greedy::run() {
 		percent_up(pq.size());
 	}
 	n.updatebest();
-	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -185,10 +184,9 @@ void s_cross::run()
 				break;
 			}
 		}
-		percent_up(pq.size());
+		//percent_up(pq.size());
 	}
 	n.updatebest();
-	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -227,7 +225,6 @@ void s_random::run()
 		percent_up(pq.size());
 	}
 	n.updatebest();
-	curr = n.p();
 }
 
 
@@ -267,7 +264,6 @@ void s_bad_random::run()
 		percent_up(pq.size());
 	}
 	n.updatebest();
-	curr = n.p();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -349,9 +345,9 @@ void meta_scheduler::repair() {
 }
 
 void meta_scheduler::punish_or_reward() {
-	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(prev)/curr));
+	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(n.prev)/n.curr));
 	this->normalize_choose_table();
-	prev = curr;
+	n.prev = n.curr;
 }
 
 
@@ -506,8 +502,8 @@ void meta_scheduler::print_stats() {
 
 		global::opts->stat_file 
 			<< (now - this->t0) << "\t" 
-			<< this->curr << "\t" 
-			<< this->best << "\t" 
+			<< this->n.curr << "\t" 
+			<< this->n.best << "\t" 
 			<< this->iterations << "\t" 
 			<< this->choose_table << endl; 
 	}
@@ -519,9 +515,8 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	assert(&_n == &n);
 	singleshot_scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
 	s->run(); // make initial solution
+	n.updatebest();
 //	s->verify(false);
-	
-	best = curr = prev = n.p();
 	
 	this->choose_table.push_back({0.5, &s_alns::choose_random});
 	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
@@ -549,13 +544,9 @@ void s_alns::run()
 		this->destroy();
 		this->repair();
 
-		curr = n.p();
 		this->punish_or_reward();
-
-		if (curr < best) {
-			best = curr;
-			this->n.updatebest();
-		}
+		
+		this->n.updatebest();
 		
 		this->print_stats();
 		this->iterations++;
@@ -566,8 +557,6 @@ void s_alns::run()
 
 s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 	assert(&_n == &n);
-	curr = 0;
-	best = ::numeric_limits<int>::max();
 	
 	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
@@ -586,26 +575,21 @@ void s_grasp::run()
 		s.run(); // make initial solution
 
 		// Also check initial sol
-		curr = n.p();
-		if (curr < best) {
-			best = curr;
-			this->n.updatebest();
-		}
+		this->n.updatebest();
+		
 		
 		// Local search
 		this->destroy();
 		this->repair();
 		this->punish_or_reward();
 
-		curr = n.p();
-		if (curr < best) {
-			best = curr;
-			this->n.updatebest();
-		}
+		this->n.updatebest();
+
 		
 		this->print_stats();
 		this->iterations++;
 	}
+	debugf(n.p_best());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

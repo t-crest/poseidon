@@ -38,7 +38,7 @@ private:
 	int initial;
 
 protected:
-	int curr;
+//	int curr;
 	time_t t0;
 	network_t& n;
 
@@ -92,8 +92,8 @@ private:
 
 protected:
 	std::set<std::pair<int, const channel*> > unrouted_channels;
-	int best;
-	int prev;
+//	int best;
+//	int prev;
 	int chosen_adaptive;
 	int iterations;
 

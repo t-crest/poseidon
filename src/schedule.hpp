@@ -183,8 +183,15 @@ class network_t {
 	vector<link_t*> link_ts;
 	vector<channel> specification;
 	friend class parser;
+        
+        
+        
 public:
-	network_t(uint rows, uint cols);
+        int curr;
+        int best;
+        int prev;
+
+        network_t(uint rows, uint cols);
 	timeslot p() const;
 	timeslot p_best() const;
 	uint rows() const;
@@ -204,6 +211,7 @@ public:
 	void updatebest();
 	void clear(); // clears
 	
+        
 	bool route_channel_wrapper(channel* c, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
 	void ripup_channel(const channel* c);
 	void check_channel(const channel* c, const bool best);
