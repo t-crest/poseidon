@@ -474,6 +474,19 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
+We expect that metaheuristics will perform good on improving already existing
+ solutions.
+ This is because 
+\end_layout
+
+\begin_layout Standard
+To construct at good solution we expect that a greedy solution will give
+ fairly good results, but as we want to do better we will try to improve
+ the greedy solution.
+ To get intuition of how a solution can be improved we look to nature
+\end_layout
+
+\begin_layout Standard
 \begin_inset Note Note
 status open
 
@@ -498,8 +511,9 @@ The problem is NP-complet problem
 Our scheduling problem is large and combinatorial in nature with both dependenci
 es and constraints.
  A natural constraint is that any directed link can only transfer a single
- packet at any timeslot.
- Another is that packets must arrive in the same order as they were sent.
+ packet at any time-slot.
+ Another constraint is that packets must arrive in the same order as they
+ were sent.
  To avoid excessive feasibility-checking of the schedule due this in-order
  requirement of packets, we make the simplifying decision that all paths
  should be a shortest path.
