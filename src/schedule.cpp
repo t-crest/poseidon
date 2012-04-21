@@ -1,3 +1,5 @@
+#include <limits>
+
 #include "schedule.hpp"
 #include "options.h"
 
@@ -267,7 +269,9 @@ void router_t::updatebest() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-network_t::network_t(uint rows, uint cols) : m_routers(rows, cols) {
+network_t::network_t(uint rows, uint cols) : m_routers(rows, cols) 
+{
+	this->curr = this->best = this->prev = ::numeric_limits<int>::max();
 }
 
 uint network_t::rows() const {
@@ -424,18 +428,28 @@ float network_t::link_utilization(bool best) {
 
 void network_t::updatebest() {
 	if (global::opts->save_best == false) return;
+	
 
-	for_each(this->links(), [&](link_t* l){
-		l->updatebest();
-	});
+	this->curr = this->p();
 	
-	for_each(this->routers(), [&](router_t* r) {
-		r->updatebest();
-	});
-	
-	for_each(this->specification, [&](channel& c){
-		c.t_best_start = c.t_start;
-	});
+
+	if (this->curr < this->best) {
+		this->best = this->curr;
+
+		for_each(this->links(), [&](link_t* l){
+			l->updatebest();
+		});
+
+		for_each(this->routers(), [&](router_t* r) {
+			r->updatebest();
+		});
+
+		for_each(this->specification, [&](channel& c){
+			c.t_best_start = c.t_start;
+		});
+
+	}
+		
 }
 
 void network_t::clear() {

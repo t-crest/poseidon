@@ -125,10 +125,10 @@ element draw::link(link_t *l) {
 	} else {
 		string hsv = "grey";
 
-		if (l->local_schedule.has(*t)) {
+		if (l->best_schedule.has(*t)) {
 			const float hue_step = 360.0 / this->n.channels().size();
 			for (int i = 0; i < this->n.channels().size(); i++) {
-				if (&this->n.channels()[i] == l->local_schedule.get(*this->t)) {
+				if (&this->n.channels()[i] == l->best_schedule.get(*this->t)) {
 					char buf[10] = {0};
 					sprintf(buf, "#%06x", this->hsv(i * hue_step, 1.0, 1.0));
 					hsv = buf;
