@@ -181,7 +181,7 @@ At least one autor is required.
 
 \begin_layout Abstract
 This paper shows how metaheuristics can be applied to optimize scheduling
- of traffic in a Real time Network-on-Chip.
+ of of inter-processo communication in a Real time Network-on-Chip.
  This scheduling problem is an NP-complete multi-commodity flow problem,
  which we optimize using the metaheuristics Adaptive Large Neighborhood
  Search (ALNS) and Greedy Randomized Adaptive Search Procedure (GRASP).
@@ -208,7 +208,7 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-This paper is part of the work carried out in the course 42137
+This report is part of the work carried out in the course 42137
 \noun on
  Optimization using metaheuristics
 \noun default
@@ -219,31 +219,18 @@ This paper is part of the work carried out in the course 42137
 
 \begin_layout Standard
 The goal of this project is to implement a scheduler for Time-Division-Multiplex
-ed inter-processor communication in a real-time Multi-Processor System-on-Chip
- (MPSoC).
- Scheduling is done at compile-time to simplify Worst-Case Execution Time
- (WCET) analysis.
+ed (TDM) inter-processor communication in a real-time Multi-Processor System-on-
+Chip (MPSoC).
+ In a Real-time system scheduling is done at compile-time to simplify Worst-Case
+ Execution Time (WCET) analysis.
+ In real-time systems, performance depends purely on the Worst-Case Execution
+ Time (WCET) -- therefore the analyzability of the system is very important
+ to obtain good performance.
  
 \end_layout
 
 \begin_layout Standard
-Our scheduling problem, has multiple sources and sinks making it a multi-commodi
-ty flow problem.
- We do not allow fractional flows on edges, thus the multi-commodity flow
- problem becomes NP-complete[ref: Karp].
- For improving a greedy solution to our problem, metaheuristics can be applied.
-\end_layout
-
-\begin_layout Standard
-The topology of the NoC of these MPSoCs are limited to routers with maximum
- 5 output ports.
-\end_layout
-
-\begin_layout Standard
-In real-time systems, performance depends purely on the Worst-Case Execution
- Time (WCET) -- therefore the analyzability of the system is very important
- to obtain good performance.
- A NoC is built of 
+An MPSoC is built of 
 \emph on
 tiles
 \emph default
@@ -293,7 +280,7 @@ name "fig:Tile-concept"
 
 \end_inset
 
-A tile contains a processor, a Network Interface (NI), a local instruction
+A tile contains a processor, a Network Adapter (NA), a local instruction
  and data cache and possibly some I/O.
 \end_layout
 
@@ -308,20 +295,23 @@ A tile contains a processor, a Network Interface (NI), a local instruction
 \end_layout
 
 \begin_layout Standard
-A communication channel is a point-to-point connection from one tile to
- another, this point-to-point connection can route packets along different
- paths.
+An inter-process communication channel is a point-to-point connection from
+ one tile to another, this point-to-point connection can route packets along
+ different paths.
  A path is the sequence of links, on which the packet travels to reach the
- end point of the connection.
- Two communication channels can not affect each other -- they are decoupled.
- Decoupling is required to make the NoC-interconnect analyzable.
- To decouple communication channels, the traffic in the network can be scheduled
- statically at compile time.
- Generating this routing schedule is a hard problem to solve.
+ end-point of the connection.
+ Communication on two channels can not interfere with each other, because
+ the communication is scheduled statically -- two communication channels
+ are decoupled.
+ Decoupling is required to make the NoC-interconnect analyzable with respect
+ to WCET.
  The schedule is periodic, and thus for performance reasons (bandwidth and
  latency) it is important to have the schedule as short as possible.
  For a given use-case, we therefore want to optimize towards the shortest
  schedule.
+ Generating an optimal routing schedule is a hard problem to solve, for
+ network topologies of a certain size generating an optimal schedule becomes
+ impossible on the computer systems of today.
 \end_layout
 
 \begin_layout Standard
@@ -340,8 +330,6 @@ reference "fig:Double-torus-graphs"
 \end_inset
 
 .
- In this figure, some of the links are very long which does not scale well
- in hardware implementations.
 \end_layout
 
 \begin_layout Standard
@@ -351,15 +339,11 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
 \align center
 \begin_inset Graphics
 	filename figures/simple-double-torus.pdf
 	lyxscale 20
-	scale 30
+	scale 25
 
 \end_inset
 
@@ -398,8 +382,19 @@ Figure of the system
 \end_layout
 
 \begin_layout Standard
-Our scheduler supports application specific topologies and bandwidth requirement
-s.
+Our goal for this project is to make a scheduler usable for research purposes,
+ thus we have constructed it very generic.
+ Our scheduler can schedule arbitrary communication graphs on arbitrary
+ interconnect topologies, the topologies are limited to routers with out
+ degree 5, where one of the output ports always are connected to a CPU.
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem, has multiple sources and sinks making it a multi-commodi
+ty flow problem.
+ We do not allow fractional flows on edges, thus the multi-commodity flow
+ problem becomes NP-complete[ref: Karp].
+ For improving a greedy solution to our problem, metaheuristics can be applied.
 \end_layout
 
 \begin_layout Section
