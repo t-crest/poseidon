@@ -737,6 +737,16 @@ reference "fig:movebend"
 
 \begin_layout Subsubsection
 Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1057,19 +1067,11 @@ operators
 
 \begin_layout Subsubsection
 Operators
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
+\begin_inset Marginal
 status open
 
 \begin_layout Plain Layout
-We consider the neighborhood of one feasible solution, to be all other feasible
- solutions where 
-\begin_inset Formula $k$
-\end_inset
-
- paths are permuted.
+Mark
 \end_layout
 
 \end_inset
@@ -1078,16 +1080,6 @@ We consider the neighborhood of one feasible solution, to be all other feasible
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Itemize
-Non-trivial to reach feasible solution, by routing channels randomly on
- links.
-\end_layout
-
-\end_inset
-
 
 \end_layout
 
