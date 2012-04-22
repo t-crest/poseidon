@@ -337,7 +337,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -372,7 +372,7 @@ Mesh
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -416,7 +416,8 @@ name "fig:First-time-slot"
 
 \end_inset
 
-The first time slot 
+The first time slot of the schedule.
+ The color indicates which communication channel is routed on the link.
 \end_layout
 
 \end_inset
@@ -447,6 +448,29 @@ Our goal for this project is to make a scheduler that makes as good schedules
 It is trivial to construct a greedy solution for the scheduling problem.
  To improve schedules compared to this greedy solution, we can apply metaheurist
 ics.
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any time-slot.
+ Another constraint is that packets must arrive in the same order as they
+ were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
+ Due to the regularity of the graph, this shortest path routing is simple.
+ Always taking the shortest path will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is NP-complete, thus we need metaheuristics to improve
+ schedule periods from greedy algorithms.
+ For most relevant network sizes it is practically impossible to search
+ though the whole solution space.
 \end_layout
 
 \begin_layout Standard
@@ -532,39 +556,31 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-Our scheduling problem is large and combinatorial in nature with both dependenci
-es and constraints.
- A natural constraint is that any directed link can only transfer a single
- packet at any time-slot.
- Another constraint is that packets must arrive in the same order as they
- were sent.
- To avoid excessive feasibility-checking of the schedule due this in-order
- requirement of packets, we make the simplifying decision that all paths
- should be a shortest path.
- Due to the regularity of the graph, this shortest path routing is simple.
- Always taking the shortest path will automatically guarantee causality
- of received packets.
+To construct at good solution we expect that a greedy algorithm will give
+ fairly good results, to improve the greedy solution metaheuristics can
+ be used.
+ A given greedy solution might not be a good target for optimization, due
+ to the high density of the solution.
+ A less dense solution might lead to a better solution.
+\end_layout
+
+\begin_layout Standard
+Our intuition on how a dense solution can be improved, tells us that it
+ has to be spread out before it can be compressed further.
  
 \end_layout
 
 \begin_layout Standard
-Our scheduling problem is NP-complete, thus we need metaheuristics to improve
- schedule periods from greedy algorithms.
- For most network sizes we there is no chance of searching though the whole
- solution space.
- Metaheuristics find an initial solution and try to improve it, 
-\end_layout
-
-\begin_layout Standard
-To construct at good solution we expect that a greedy solution will give
- fairly good results, but as we want to do better we will try to improve
- the greedy solution.
- To get intuition of how a solution can be improved we look to nature
+Mimicking nature we think of the free links in the network as air bubbles.
+ We then need to make room for the air bubbles to surface, this can be done
+ by decompressing the schedule.
+ To conclude, we should not only accept better solutions than our current.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Why we expect metaheuristics to perform well:
@@ -598,10 +614,10 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-For any optimization problem, naturally some initial solution to be optimized
- is required.
- Four different approaches in creating initial solutions to run the optimization
- on is to mainly use a greedy approach.
+For any optimization problem, we require an initial feasible solution to
+ optimize.
+ Four different approaches to create an initial feasible solution to optimize
+ are:
 \end_layout
 
 \begin_layout Description
@@ -612,7 +628,8 @@ Basic
 (BAD_RANDOM) This initial solution creates a feasible schedule by randomly
  picking channels to be scheduled onto the NoC, and then schedules them
  on timeslots one after another.
- This initial solution therefore only has one channel sheduled at each timeslot.
+ This initial solution therefore only has one channel scheduled at each
+ timeslot.
  The advantage using this approach, is that the schedule is not dense and
  thus the applied metaheuristic will perform all the work in optimizing
  the solution.
@@ -1133,7 +1150,7 @@ Mark
 \begin_layout Standard
 Which element from our neighborhood to jump to next, is determined by our
  operators.
- Several operators has been implemented, as this is required to make LNS
+ Several operators have been implemented, as this is required to make LNS
  adaptive.
  Since our primitive functions are always 
 \family typewriter
@@ -1161,7 +1178,7 @@ paths Recall that our main objective is minimize the schedule period.
 dominating paths
 \emph default
 .
- However simply rerouting only the dominating paths, are likely to not improve
+ However simply rerouting only the dominating paths, is likely to not improve
  the period: All paths are rerouted in a greedy fashion, starting as early
  as possible.
  We therefore consider more than just the dominating paths, we would also
@@ -1201,7 +1218,8 @@ rectangle Rather than just selecting the channels below
 \end_inset
 
 .
- This is written as BFS search, only taking links which are on the shortest-path.
+ This is written as a BFS search, only taking links which are on the shortest-pa
+th.
  
 \end_layout
 
@@ -1227,28 +1245,6 @@ paths This is exactly like dominating paths, but also considering the paths
 Random Simply selects a random set of paths.
  Also the number of selected paths is random: At least 2 paths are always
  selected, but up to 10% of all existing paths may be selected.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-We can use the above approach to 
-\begin_inset Quotes eld
-\end_inset
-
-make room
-\begin_inset Quotes erd
-\end_inset
-
- in the schedule such that the latest-finishing path may be moved to an
- earlier starting timeslot -- thus reducing the overall schedule period.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
@@ -1328,6 +1324,11 @@ Instead of building the initial solution randomly and adaptively, the initial
  This number, is the number of times two channels are to be chosen in the
  sorted list and switched thereby partially ruining the sorted order of
  the channels.
+ This float input is looked upon as a 
+\begin_inset Formula $\beta$
+\end_inset
+
+, only instead of being a number between 1 and number of candidates
 \end_layout
 
 \begin_layout Standard
@@ -1621,6 +1622,78 @@ route_channel can be parallelized with OMP, for determining t_start
 
 \end_layout
 
+\begin_layout Subsection
+Source access
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We provide the C++ code of our scheduler as open source.
+ The source can be found at
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/rbscloud/SNTs 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The source can be downloaded via a zip file or with 
+\family typewriter
+git
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+git clone git://github.com/rbscloud/SNTs.git
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The project uses the boost C++ libraries from 
+\begin_inset CommandInset href
+LatexCommand href
+target "boost.org"
+
+\end_inset
+
+.
+ To build the scheduler, create a project in your favorite IDE, include
+ boost and build.
+\end_layout
+
 \begin_layout Section
 Parameter tuning
 \begin_inset Marginal
@@ -1651,8 +1724,11 @@ time Is time that is given to the metaheuristic to try and optimize the
 \end_layout
 
 \begin_layout Description
-Beta The parameter determining the randomness of the initial solution when
- running GRASP
+\begin_inset Formula $\beta$
+\end_inset
+
+ The parameter determining the randomness of the initial solution when running
+ GRASP
 \end_layout
 
 \begin_layout Description
@@ -1692,7 +1768,10 @@ The time, the
 \end_layout
 
 \begin_layout Subsection
-Beta 
+\begin_inset Formula $\beta$
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1794,56 +1873,7 @@ Our scheduler has been tested with custom topologies besides mesh and bi-torus,
 
 \begin_layout Standard
 In [Schoeberl2012] lower bounds for the schedule period are given.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-Graph of lower bound the for scheduling period.
- 
-\begin_inset Newline newline
-\end_inset
-
-Very
-\begin_inset Newline newline
-\end_inset
-
-nice
-\begin_inset Newline newline
-\end_inset
-
-Figure
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Lower bound for the scheduling period of mesh and bi-torus topologies.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In the article [Brandner2012] a heuristic scheduler is proposed, this scheduler
+ In the article [Brandner2012] a heuristic scheduler is proposed, this scheduler
  has the constraint compared to our scheduler that the scheduler in each
  router must be the same.
  This is done to simplify hardware.
@@ -3094,7 +3124,15 @@ Results compared to the heuristic results of [Brandner2012].
 \end_layout
 
 \begin_layout Standard
-Link utilization: The schedule becomes more dens as the network size increases.
+All our runs of our metaheuristic ran two hours.
+\end_layout
+
+\begin_layout Standard
+To evaluate the how good our metaheuristics work in the 
+\end_layout
+
+\begin_layout Standard
+Link utilization: The schedule becomes more dense as the network size increases.
 \end_layout
 
 \begin_layout Standard
