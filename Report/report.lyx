@@ -1593,7 +1593,7 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We provide the C++ code of our scheduler in open source.
+We provide the C++ code of our scheduler as open source.
  The source can be found at
 \end_layout
 
@@ -1665,8 +1665,8 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-Parameter tuning is vital, in order to get the most optimization from th
- emetaheuristics.
+Parameter tuning is vital, in order to get the most optimization from the
+ metaheuristics.
  During our tuning
 \end_layout
 
@@ -1758,56 +1758,7 @@ Our scheduler has been tested with custom topologies besides mesh and bi-torus,
 
 \begin_layout Standard
 In [Schoeberl2012] lower bounds for the schedule period are given.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Float figure
-wide false
-sideways false
-status open
-
-\begin_layout Plain Layout
-\align center
-Graph of lower bound the for scheduling period.
- 
-\begin_inset Newline newline
-\end_inset
-
-Very
-\begin_inset Newline newline
-\end_inset
-
-nice
-\begin_inset Newline newline
-\end_inset
-
-Figure
-\end_layout
-
-\begin_layout Plain Layout
-\begin_inset Caption
-
-\begin_layout Plain Layout
-Lower bound for the scheduling period of mesh and bi-torus topologies.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-In the article [Brandner2012] a heuristic scheduler is proposed, this scheduler
+ In the article [Brandner2012] a heuristic scheduler is proposed, this scheduler
  has the constraint compared to our scheduler that the scheduler in each
  router must be the same.
  This is done to simplify hardware.
@@ -3058,7 +3009,15 @@ Results compared to the heuristic results of [Brandner2012].
 \end_layout
 
 \begin_layout Standard
-Link utilization: The schedule becomes more dens as the network size increases.
+All our runs of our metaheuristic ran two hours.
+\end_layout
+
+\begin_layout Standard
+To evaluate the how good our metaheuristics work in the 
+\end_layout
+
+\begin_layout Standard
+Link utilization: The schedule becomes more dense as the network size increases.
 \end_layout
 
 \begin_layout Standard
