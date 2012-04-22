@@ -345,12 +345,15 @@ void meta_scheduler::repair() {
 }
 
 void meta_scheduler::punish_or_reward() {
-	this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(n.prev)/n.curr));
-	this->normalize_choose_table();
+	if (this->iterations > 2) {
+		this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(n.prev)/n.curr));
+		this->normalize_choose_table();
+	} 
 	n.prev = n.curr;
 }
 
 void meta_scheduler::normalize_choose_table() {
+	debugf(this->choose_table);
 	float sum = 0;
 	for (int i = 0; i < choose_table.size(); i++) {
 		sum += choose_table[i].first;
@@ -359,6 +362,7 @@ void meta_scheduler::normalize_choose_table() {
 	for (int i = 0; i < choose_table.size(); i++) {
 		choose_table[i].first /= sum;
 	}
+	debugf(this->choose_table);
 }
 
 std::set<const channel*> meta_scheduler::choose_random() {
@@ -543,9 +547,8 @@ void s_alns::run()
 		this->destroy();
 		this->repair();
 
-		this->punish_or_reward();
-		
 		this->n.updatebest();
+		this->punish_or_reward();
 		
 		this->print_stats();
 		this->iterations++;

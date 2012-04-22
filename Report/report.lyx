@@ -337,7 +337,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -365,10 +365,14 @@ Mesh
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -441,7 +445,8 @@ Our goal for this project is to make a scheduler that makes as good schedules
 
 \begin_layout Standard
 It is trivial to construct a greedy solution for the scheduling problem.
- To improve this greedy solution, we can apply metaheuristics.
+ To improve schedules compared to this greedy solution, we can apply metaheurist
+ics.
 \end_layout
 
 \begin_layout Standard
@@ -527,9 +532,27 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We expect that metaheuristics will perform good on improving already existing
- solutions.
- This is because 
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any time-slot.
+ Another constraint is that packets must arrive in the same order as they
+ were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
+ Due to the regularity of the graph, this shortest path routing is simple.
+ Always taking the shortest path will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is NP-complete, thus we need metaheuristics to improve
+ schedule periods from greedy algorithms.
+ For most network sizes we there is no chance of searching though the whole
+ solution space.
+ Metaheuristics find an initial solution and try to improve it, 
 \end_layout
 
 \begin_layout Standard
@@ -560,22 +583,6 @@ The problem is NP-complet problem
 
 \end_layout
 
-\begin_layout Standard
-Our scheduling problem is large and combinatorial in nature with both dependenci
-es and constraints.
- A natural constraint is that any directed link can only transfer a single
- packet at any time-slot.
- Another constraint is that packets must arrive in the same order as they
- were sent.
- To avoid excessive feasibility-checking of the schedule due this in-order
- requirement of packets, we make the simplifying decision that all paths
- should be a shortest path.
- Due to the regularity of the graph, this shortest path routing is simple.
- Always taking the shortest path will automatically guarantee causality
- of received packets.
- 
-\end_layout
-
 \begin_layout Subsection
 Initial solution
 \begin_inset Marginal
@@ -593,7 +600,7 @@ Jaspur
 \begin_layout Standard
 For any optimization problem, naturally some initial solution to be optimized
  is required.
- Four different approach in creating initial solutions to run the optimization
+ Four different approaches in creating initial solutions to run the optimization
  on is to mainly use a greedy approach.
 \end_layout
 
@@ -724,11 +731,44 @@ Our scheduling problem is to map a collection of channels to paths throughout
  The neighborhood is the search space around a current feasible solution
  when taking a small step away from it, i.e.
  incremental perturbations.
+ Small perturbations of a current solution could be swapping pairs of links
+ (Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:swap_links"
+
+\end_inset
+
+) or moving bends (Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:movebend"
+
+\end_inset
+
+).
 \end_layout
 
-\begin_layout Standard
-A small permutation of a current solution could be swapping pairs of links
- (FIG) or moving bends (FIG).
+\begin_layout Subsubsection
+Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -783,6 +823,30 @@ From
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
@@ -821,7 +885,15 @@ To
 \begin_inset Caption
 
 \begin_layout Plain Layout
-asdasd
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:swap_links"
+
+\end_inset
+
+Swapping pairs of links.
+ This does not destroy feasibility, but has no advantage if both channels
+ are present.
 \end_layout
 
 \end_inset
@@ -835,77 +907,219 @@ asdasd
 \end_layout
 
 \begin_layout Standard
-While Applying the FIG1 always leads to another feasible, FIg2 does not.
- Regardless, these small local perturbations alone can not change the period.
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/loc_bendmove_from.pdf
+	lyxscale 25
+	width 2cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+From
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/loc_bendmove_to.pdf
+	lyxscale 25
+	width 2cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+To
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:movebend"
+
+\end_inset
+
+Moving bends.
+ This may not be feasible.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
-Due to schedule-density, we expect that taking such small steps are very
- likely to result in conflicts.
+Swapping pairs of links is always possible, but moving bends can lead to
+ an infeasible schedule.
+ Note that very little can be gained by swapping pairs of links -- only
+ if one of the channels of Figure
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:swap_links"
+
+\end_inset
+
+ is absent may there be a slight advantage.
+ As the bend-moving example hints at, there is very limited freedom of movement
+ in dense schedules.
+ Hence we expect most local perturbations lead to infeasible schedules.
+ Even if such small local perturbations could make room for other channels
+ to be scheduled earlier, these small local perturbations alone are unable
+ to change period of the schedule.
+ So instead of taking small steps, we would rather take large jumps.
+ Instead of swapping of pairs or moving-bends as our primitive functions,
+ we consider removing entire already-scheduled channels (
+\family typewriter
+rip-up
+\family default
+) and rebuilding (
+\family typewriter
+route
+\family default
+) them.
+ Given a channel, 
+\family typewriter
+rip-up
+\family default
+ deletes the entire already-scheduled channel from the schedule.
+ Given an unscheduled channel, 
+\family typewriter
+route
+\family default
+ will greedily (making randomized shortest-path routing decisions) try to
+ schedule the channel as early as possible.
  
+\family typewriter
+route
+\family default
+ does this via a simple depth-first search.
 \end_layout
 
 \begin_layout Standard
-Hence we expect most of the neighborhood-schedules formed by taking small
- steps to be infeasible.
- Our expectation can be justified with a thought-experiment: Imagine a compact
- schedule where most links are already occupied.
- There is very little freedom of movement room 
-\end_layout
-
-\begin_layout Standard
-So instead of taking small steps, we would rather take large jumps.
- No real neighborhood of feasible solutions.
- The neighborhood is formed by applying operators resulting in feasible
- solutions.
-\end_layout
-
-\begin_layout Standard
-Thus 
-\end_layout
-
-\begin_layout Standard
-make the schedule infeasible.
-\end_layout
-
-\begin_layout Standard
-steps vs jumps
-\end_layout
-
-\begin_layout Standard
-Given a feasible solution, 
-\end_layout
-
-\begin_layout Standard
-we expect small changes like swapping individual links to result in a lot
- of infeasible schedules.
- Instead we consider removing entire paths and rebuilding them: Patching
- an existing path versus rerouting it, the rerouting-approach will obviously
- be a superset, as the patching-approach makes only locally limited changes.
- The rerouting-approach greatly increases our neighborhood and increases
+This approach of rerouting entire channels is obviously a superset of the
+ small local perturbations.
+ Thus the rerouting-approach greatly increases our neighborhood and increases
  our chances of finding a new and feasible path.
- It is also possible to reroute part of an existing path.
-\end_layout
+ Thus our neighborhood of a current schedule is the space formed by how
+ many and which channels we can reroute.
+ The 
+\begin_inset Quotes eld
+\end_inset
 
-\begin_layout Subsubsection
-Primitives
+intelligent
+\begin_inset Quotes erd
+\end_inset
+
+ selection of which channels to reroute is the job of our 
+\emph on
+operators
+\emph default
+.
 \end_layout
 
 \begin_layout Subsubsection
 Operators
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
+\begin_inset Marginal
 status open
 
 \begin_layout Plain Layout
-We consider the neighborhood of one feasible solution, to be all other feasible
- solutions where 
-\begin_inset Formula $k$
-\end_inset
-
- paths are permuted.
+Mark
 \end_layout
 
 \end_inset
@@ -914,17 +1128,60 @@ We consider the neighborhood of one feasible solution, to be all other feasible
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Itemize
-Non-trivial to reach feasible solution, by routing channels randomly on
- links.
+Which element from our neighborhood to jump to next, is determined by our
+ operators.
+ Several operators has been implemented, as this is required to make LNS
+ adaptive.
+ Since our primitive functions are always 
+\family typewriter
+rip-up
+\family default
+ and 
+\family typewriter
+route
+\family default
+, the operators are reduced to simply selecting which channels should be
+ rerouted.
+ 
 \end_layout
 
+\begin_layout Description
+Dominating
+\begin_inset space ~
 \end_inset
 
+paths Recall that our main objective is minimize the schedule period.
+ It is therefore natural to attack the paths which finish last, since they
+ prevent the schedule from finishing earlier.
+ We call these paths for the 
+\emph on
+dominating paths
+\emph default
+.
+ However simply rerouting the dominating paths, will not improve the period:
+ All paths are rerouted in a greedy fashion, starting as early as possible.
+ Hence we are very likely to get exactly the same period as before, since
+ the randomized shortest-path routing decisions 
+\end_layout
 
+\begin_layout Description
+Dominating
+\begin_inset space ~
+\end_inset
+
+rectangle 
+\end_layout
+
+\begin_layout Description
+Late
+\begin_inset space ~
+\end_inset
+
+paths
+\end_layout
+
+\begin_layout Description
+Random
 \end_layout
 
 \begin_layout Standard
