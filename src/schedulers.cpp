@@ -218,7 +218,6 @@ void s_random::run()
 
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
-//				n.router(c->from)->local_in_schedule.add(c, t);
 				break;
 			}
 		}
@@ -349,7 +348,6 @@ void meta_scheduler::punish_or_reward() {
 	this->normalize_choose_table();
 	n.prev = n.curr;
 }
-
 
 void meta_scheduler::normalize_choose_table() {
 	float sum = 0;
@@ -518,7 +516,7 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	n.updatebest();
 //	s->verify(false);
 	
-	this->choose_table.push_back({0.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.5, &s_alns::choose_random});
 	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
