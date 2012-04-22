@@ -337,7 +337,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -372,7 +372,7 @@ Mesh
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -416,7 +416,8 @@ name "fig:First-time-slot"
 
 \end_inset
 
-The first time slot 
+The first time slot of the schedule.
+ The color indicates which communication channel is routed on the link.
 \end_layout
 
 \end_inset
@@ -447,6 +448,29 @@ Our goal for this project is to make a scheduler that makes as good schedules
 It is trivial to construct a greedy solution for the scheduling problem.
  To improve schedules compared to this greedy solution, we can apply metaheurist
 ics.
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any time-slot.
+ Another constraint is that packets must arrive in the same order as they
+ were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
+ Due to the regularity of the graph, this shortest path routing is simple.
+ Always taking the shortest path will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is NP-complete, thus we need metaheuristics to improve
+ schedule periods from greedy algorithms.
+ For most relevant network sizes it is practically impossible to search
+ though the whole solution space.
 \end_layout
 
 \begin_layout Standard
@@ -529,29 +553,6 @@ Rasmus
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Our scheduling problem is large and combinatorial in nature with both dependenci
-es and constraints.
- A natural constraint is that any directed link can only transfer a single
- packet at any time-slot.
- Another constraint is that packets must arrive in the same order as they
- were sent.
- To avoid excessive feasibility-checking of the schedule due this in-order
- requirement of packets, we make the simplifying decision that all paths
- should be a shortest path.
- Due to the regularity of the graph, this shortest path routing is simple.
- Always taking the shortest path will automatically guarantee causality
- of received packets.
- 
-\end_layout
-
-\begin_layout Standard
-Our scheduling problem is NP-complete, thus we need metaheuristics to improve
- schedule periods from greedy algorithms.
- For most relevant network sizes it is practically impossible to search
- though the whole solution space.
 \end_layout
 
 \begin_layout Standard
@@ -1575,6 +1576,78 @@ route_channel can be parallelized with OMP, for determining t_start
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsection
+Source access
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We provide the C++ code of our scheduler in open source.
+ The source can be found at
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+https://github.com/rbscloud/SNTs 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The source can be downloaded via a zip file or with 
+\family typewriter
+git
+\end_layout
+
+\begin_layout Standard
+
+\family typewriter
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+git clone git://github.com/rbscloud/SNTs.git
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The project uses the boost C++ libraries from 
+\begin_inset CommandInset href
+LatexCommand href
+target "boost.org"
+
+\end_inset
+
+.
+ To build the scheduler, create a project in your favorite IDE, include
+ boost and build.
 \end_layout
 
 \begin_layout Section
