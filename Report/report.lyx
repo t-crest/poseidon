@@ -462,7 +462,32 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-The initial solution...
+For any optimization problem, some initial solution to be optimized is required.
+ Our approach in creating initial solutions to run the optimization on is
+ to mainly use a greedy approach.
+ To observe different patterns and to satisfy different 
+\end_layout
+
+\begin_layout Description
+Deterministic The problem consists of a collection of channels to be scheduled
+ onto the NoC.
+ 
+\end_layout
+
+\begin_layout Description
+Randomized-routing df
+\end_layout
+
+\begin_layout Description
+Randomized-routing
+\begin_inset space ~
+\end_inset
+
+and
+\begin_inset space ~
+\end_inset
+
+order sdf
 \end_layout
 
 \begin_layout Standard
@@ -527,12 +552,6 @@ No real neighborhood of feasible solutions.
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-The problem consists of a collection of channels to be scheduled onto the
- NoC.
- 
 \end_layout
 
 \begin_layout Standard
@@ -626,6 +645,30 @@ Jaspur
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+With the nature of our problem, where there is not a clear neighborhood,
+ diversifying the search for solutions may be an advantage.
+ This is a property of the GRASP metaheuristic.
+ 
+\end_layout
+
+\begin_layout Standard
+The GRASP metaheuristic consists of the phases, greedy randomized adaptive
+ phase followed by a local serch phase.
+ The greedy randomized adaptive phase creates an initial greedy randomized
+ solution.
+ After creating the initial greedy randomized solution, the solution is
+ improved iteratively using a local search.
+ When the solution can not be improved locally, the best solution is stored,
+ if it is the best seen so far.
+ These steps of creating an initial solution and performing a local search
+ are then repeated for a set period of time.
+\end_layout
+
+\begin_layout Standard
+In our case, this means that 
 \end_layout
 
 \begin_layout Standard
@@ -904,6 +947,12 @@ Jaspur
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Parameter tuning is vital, in order to get the most optimization from th
+ emetaheuristics.
+ During our tuning
 \end_layout
 
 \begin_layout Standard
