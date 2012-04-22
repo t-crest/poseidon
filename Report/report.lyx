@@ -32,7 +32,17 @@
 \float_placement tbh
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_title "Scheduling in a Real-time Network-on-Chip"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -784,20 +794,6 @@ reference "fig:movebend"
 ).
 \end_layout
 
-\begin_layout Subsubsection
-Primitives
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 \begin_inset Float figure
 wide false
@@ -1067,6 +1063,20 @@ Moving bends.
 
 \end_layout
 
+\begin_layout Subsubsection
+Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 Swapping pairs of links is always possible, but moving bends can lead to
  an infeasible schedule.
@@ -1136,11 +1146,7 @@ intelligent
 \begin_inset Quotes erd
 \end_inset
 
- selection of which channels to reroute is the job of our 
-\emph on
-operators
-\emph default
-.
+ selection of which channels to reroute is the job of our operators.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1528,23 +1534,31 @@ reference "enu:select_op"
 
  the current solution is shorter than the previous, so we reward by increasing
  the probability of the same operator being selected in the next iteration.
+ Experimentation showed that dominating-paths was much better than random,
+ so probability of random-selection drops quickly.
+ To combat quick convergence we actually multiply by 
+\begin_inset Formula $\sqrt{r}$
+\end_inset
+
+ rather than 
+\begin_inset Formula $r$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard
-Simulated annealing-like
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+In case of equal solutions, punish or reward by schedule homogenity.
 \end_layout
 
-\begin_layout Standard
-Initial solution, many different.
- GREEDY may be too dense to begin with, so we also have BAD-RANDOM, etc.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-destroy and repair, chosen adaptively
-\end_layout
 
-\begin_layout Standard
-repair is done using a greedy heuristic
 \end_layout
 
 \begin_layout Section
@@ -1568,39 +1582,92 @@ C++11
 \family default
 , using 
 \family sans
-BOOST
-\family default
- and 
-\family sans
-pugixml
-\family default
- as 3rd party libraries.
- However our discussion will remain language-agnostic.
-\end_layout
-
-\begin_layout Subsection
-Data-structure organization
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
+BOOST 1.49
+\begin_inset Foot
+status collapsed
 
 \begin_layout Plain Layout
-How a problem is modeled and represented, affects code-cleanliness and can
- have large impact on performance.
- 
-\end_layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.boost.org/doc/libs/1_49_0/"
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\family default
+ and 
+\family sans
+pugixml 1.0
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://pugixml.googlecode.com/files/pugixml-1.0.zip"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\family default
+ as 3rd party libraries.
+ The source code of our schedule is provided as open source software.
+ The source is available at 
+\family typewriter
+
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/rbscloud/SNTs"
+
+\end_inset
+
+
+\family default
+.
+ The source code builds successfully on 
+\family sans
+Linux
+\family default
+ and 
+\family sans
+Cygwin
+\family default
+ with 
+\family sans
+GCC 4.5.2
+\family default
+ or later with 
+\family typewriter
+--std=c++0x
+\family default
+ flag enabled.
+\end_layout
+
+\begin_layout Standard
+The rest of this section will remain language agnostic.
+\end_layout
+
+\begin_layout Subsection
+Data-structure organization and delta-evaluation
+\end_layout
+
 \begin_layout Standard
 In our problem domain, there are basically two ways to represent the schedule;
- time-centric or network-centric.
- 
+ time-centric or network-centric:
 \end_layout
 
 \begin_layout Description
@@ -1625,8 +1692,8 @@ Time-centric We could consider grouping all routing-decisions made in the
 \begin_layout Description
 Network-centric In reality, links are resources for which communication
  must contend.
- Thus is its more intuitive to only have 1 of each link and router represented
- -- rather than as a layer of frames.
+ Thus is its more intuitive to have each link and router represented once
+ only -- rather than multiple times in each frame.
  This means we localize the schedule, storing a local schedule on each link.
  In this representation, this means we do not have to go up one timeslot
  and index again to check if something has been scheduled -- this information
@@ -1634,65 +1701,58 @@ Network-centric In reality, links are resources for which communication
  Splitting the schedule up into such localized schedules, also allows us
  to make fast successor queries.
  A drawback is that determining global schedule length now takes 
-\begin_inset Formula $O(n)$
+\begin_inset Formula $\mathcal{O}(n)$
 \end_inset
 
- time (which is reducible to 
-\begin_inset Formula $O(p)$
+ time where 
+\begin_inset Formula $n$
 \end_inset
 
- using delta-evaluation) rather than 
-\begin_inset Formula $O(1)$
+ is the number of routers, rather than 
+\begin_inset Formula $\mathcal{O}(1)$
 \end_inset
 
  time as in the time-centric representation.
+ However using delta-evaluation this is reducible to average-case 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time.
+\end_layout
+
+\begin_layout Standard
+The goal of delta-evaluation is to reuse as much of what is known about
+ the previous solution, so the evaluation function becomes quick.
+ In our case, we could store a dynamically re-sizable array which for each
+ index (representing a timeslot), stores how many links is scheduled in
+ that timeslot.
+ Whenever we mutate our schedule, the array is updated correspondingly.
+ Traversing backwards from the end of the array until hitting a non-zero,
+ reveals the schedule length.
+ Since the period of neighboring schedules is quite close to each other,
+ traversing the array will take 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time in the average case, but 
+\begin_inset Formula $\mathcal{O}(p)$
+\end_inset
+
+ time in the worst-case.
+ Finally, resizing the array dynamically takes amortized constant time.
  
 \end_layout
 
 \begin_layout Standard
-In reality, the overall performance depends on channel routing and very
- little on the 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-internal representation
-\end_layout
-
-\end_inset
-
-.
- Hence we chose the more Object Orientation-friendly network-centric representat
-ion.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-is to store all the physical links which are actually present only once,
- and then layer time on top of each link.
-\end_layout
-
-\begin_layout Plain Layout
-In the-time centric representation, the interconnect network has to be encoded
- several times.
-\end_layout
-
-\begin_layout Plain Layout
-Current and best solution: We only copy current into best, when we know
- that we have found a better solution.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-delta-evaluation
+In reality, the overall performance depends on channel-routing and very
+ little on our evaluation function, which is very simple and quick enough.
+ Hence we have chosen the more Object Orientation-friendly network-centric
+ representation.
+ If further performance improvements are sought, our 
+\family typewriter
+route
+\family default
+ primitive can be easily parallelized.
 \end_layout
 
 \begin_layout Subsection
@@ -1700,134 +1760,80 @@ Calculating shortest paths
 \end_layout
 
 \begin_layout Standard
-All-pair shortest paths via BFS.
- N^2 time and space.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-We have implemented the program in C++ for speed considerations.
-\end_layout
+One of our simplifying decisions is to only route channels along shortest
+ paths, as this will automatically guarantee in-order packet arrival.
+ For this, we need to compute local routing decisions for the all-pair shortest
+ paths.
+ Since our network graph is very regular as each router only has max out-degree
+ 4
+\begin_inset Foot
+status collapsed
 
 \begin_layout Plain Layout
-Infrastructure.
-\end_layout
-
-\begin_layout Itemize
-Data structures
-\end_layout
-
-\begin_layout Itemize
-Ensuring feasible solutions
-\end_layout
-
-\begin_layout Itemize
-Shortest path calculation
-\end_layout
-
-\begin_layout Itemize
-Primitives for creating a solution
-\end_layout
-
-\begin_layout Itemize
-Initial solutions
-\end_layout
-
-\begin_layout Itemize
-Operators of metaheuristics
+For routing we only care about the 4 non-local ports of routers.
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-route_channel can be parallelized with OMP, for determining t_start 
-\end_layout
-
+ and all links have unit cost, we can easily find the shortest path via
+ a breadth-first search: We simply start at the destination 
+\begin_inset Formula $b$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Subsection
-Source access
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
+ and do a BFS -- as we encounter another router 
+\begin_inset Formula $a$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-We provide the C++ code of our scheduler as open source.
- The source can be found at
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-https://github.com/rbscloud/SNTs 
-\end_layout
-
+, we now know a shortest path from 
+\begin_inset Formula $a$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-The source can be downloaded via a zip file or with 
-\family typewriter
-git
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-git clone git://github.com/rbscloud/SNTs.git
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The project uses the boost C++ libraries from 
-\begin_inset CommandInset href
-LatexCommand href
-target "boost.org"
-
+ to 
+\begin_inset Formula $b$
 \end_inset
 
 .
- To build the scheduler, create a project in your favorite IDE, include
- boost and build.
+ That the path is a shortest path is guaranteed by the nature of BFS.
+ Encountering 
+\begin_inset Formula $a$
+\end_inset
+
+, we simply store which port the BFS-wave reached 
+\begin_inset Formula $a$
+\end_inset
+
+ from, and associate 
+\begin_inset Formula $b$
+\end_inset
+
+ with that port in a local (perfect) hashmap, 
+\begin_inset Formula $next$
+\end_inset
+
+.
+ So 
+\begin_inset Formula $a.next[b]$
+\end_inset
+
+ returns a set of output ports of 
+\begin_inset Formula $a$
+\end_inset
+
+, which lie on one of the shortest paths towards 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ Computing all these shortest-paths can be done in 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ time and 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ space.
+ 
 \end_layout
 
 \begin_layout Section
