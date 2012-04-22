@@ -550,21 +550,36 @@ es and constraints.
 \begin_layout Standard
 Our scheduling problem is NP-complete, thus we need metaheuristics to improve
  schedule periods from greedy algorithms.
- For most network sizes we there is no chance of searching though the whole
- solution space.
- Metaheuristics find an initial solution and try to improve it, 
+ For most relevant network sizes it is practically impossible to search
+ though the whole solution space.
 \end_layout
 
 \begin_layout Standard
-To construct at good solution we expect that a greedy solution will give
- fairly good results, but as we want to do better we will try to improve
- the greedy solution.
- To get intuition of how a solution can be improved we look to nature
+To construct at good solution we expect that a greedy algorithm will give
+ fairly good results, to improve the greedy solution metaheuristics can
+ be used.
+ A given greedy solution might not be a good target for optimization, due
+ to the high density of the solution.
+ A less dense solution might lead to a better solution.
+\end_layout
+
+\begin_layout Standard
+Our intuition on how a dense solution can be improved, tells us that it
+ has to be spread out before it can be compressed further.
+ 
+\end_layout
+
+\begin_layout Standard
+Mimicking nature we think of the free links in the network as air bubbles.
+ We then need to make room for the air bubbles to surface, this can be done
+ by decompressing the scheduler.
+ To conclude, we should not only accept better solutions than our current.
+ 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Why we expect metaheuristics to perform well:
