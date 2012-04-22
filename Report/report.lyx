@@ -744,6 +744,16 @@ reference "fig:movebend"
 
 \begin_layout Subsubsection
 Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1039,9 +1049,35 @@ reference "fig:swap_links"
  to change period of the schedule.
  So instead of taking small steps, we would rather take large jumps.
  Instead of swapping of pairs or moving-bends as our primitive functions,
- we consider removing entire already-scheduled channels (rip-up) and rebuilding
- (route) them.
- This approach of rerouting entire channels is obviously a superset of the
+ we consider removing entire already-scheduled channels (
+\family typewriter
+rip-up
+\family default
+) and rebuilding (
+\family typewriter
+route
+\family default
+) them.
+ Given a channel, 
+\family typewriter
+rip-up
+\family default
+ deletes the entire already-scheduled channel from the schedule.
+ Given an unscheduled channel, 
+\family typewriter
+route
+\family default
+ will greedily (making randomized shortest-path routing decisions) try to
+ schedule the channel as early as possible.
+ 
+\family typewriter
+route
+\family default
+ does this via a simple depth-first search.
+\end_layout
+
+\begin_layout Standard
+This approach of rerouting entire channels is obviously a superset of the
  small local perturbations.
  Thus the rerouting-approach greatly increases our neighborhood and increases
  our chances of finding a new and feasible path.
@@ -1064,19 +1100,11 @@ operators
 
 \begin_layout Subsubsection
 Operators
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
+\begin_inset Marginal
 status open
 
 \begin_layout Plain Layout
-We consider the neighborhood of one feasible solution, to be all other feasible
- solutions where 
-\begin_inset Formula $k$
-\end_inset
-
- paths are permuted.
+Mark
 \end_layout
 
 \end_inset
@@ -1085,17 +1113,52 @@ We consider the neighborhood of one feasible solution, to be all other feasible
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Itemize
-Non-trivial to reach feasible solution, by routing channels randomly on
- links.
+Which schedule from our neighborhood to jump to next, is determined by our
+ operators.
+ Several operators has been implemented, as this is required to make LNS
+ adaptive.
+ Since our primitive functions are always 
+\family typewriter
+rip-up
+\family default
+ and 
+\family typewriter
+route
+\family default
+ 
 \end_layout
 
+\begin_layout Standard
+the operators are reduced to simply selecting which channels should be rerouted.
+ 
+\end_layout
+
+\begin_layout Description
+Dominating
+\begin_inset space ~
 \end_inset
 
+paths 
+\end_layout
 
+\begin_layout Description
+Dominating
+\begin_inset space ~
+\end_inset
+
+rectangle 
+\end_layout
+
+\begin_layout Description
+Late
+\begin_inset space ~
+\end_inset
+
+paths
+\end_layout
+
+\begin_layout Description
+Random
 \end_layout
 
 \begin_layout Standard
