@@ -1286,8 +1286,8 @@ Jaspur
 \begin_layout Standard
 With the nature of our problem, where there is not a clear neighborhood,
  diversifying the search for solutions may be an advantage.
- This is a property of the GRASP metaheuristic.
- 
+ Also, the problem is very large, and these properties favor the GRASP metaheuri
+stic.
 \end_layout
 
 \begin_layout Standard
@@ -1328,7 +1328,14 @@ Instead of building the initial solution randomly and adaptively, the initial
 \begin_inset Formula $\beta$
 \end_inset
 
-, only instead of being a number between 1 and number of candidates
+, only instead of being a number between 1 and number of candidates it is
+ fractional and then normalized.
+ Setting 
+\begin_inset Formula $\beta$
+\end_inset
+
+ to zero will mean that the initial solution used is that of the randomized
+ routing.
 \end_layout
 
 \begin_layout Standard
