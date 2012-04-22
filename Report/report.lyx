@@ -3,12 +3,6 @@
 \begin_document
 \begin_header
 \textclass sigplanconf
-\begin_preamble
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd{\maketitle}{\@copyrightspace}{}{}{}
-\makeatother
-\end_preamble
 \options natbib, nocopyrightspace
 \use_default_options false
 \maintain_unincluded_children false
@@ -589,23 +583,135 @@ Mark
 Our scheduling problem is to map a collection of channels to paths throughout
  time, without communication conflicts on any links at any time.
  A schedule with such conflicts is not feasible.
- Normally, the neighborhood is the search space of a current feasible solution
- when taking a small step away from the current solution, i.e.
+ The neighborhood is the search space around a current feasible solution
+ when taking a small step away from it, i.e.
  incremental perturbations.
- Due to schedule-density, we expect that taking such small steps are very
+\end_layout
+
+\begin_layout Standard
+A small permutation of a current solution could be swapping pairs of links
+ (FIG) or moving bends (FIG).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/loc_change_from.dia
+	lyxscale 25
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+From
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/loc_change_to.dia
+	lyxscale 25
+	width 3cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+To
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+asdasd
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+While Applying the FIG1 always leads to another feasible, FIg2 does not.
+ Regardless, these small local perturbations alone can not change the period.
+\end_layout
+
+\begin_layout Standard
+Due to schedule-density, we expect that taking such small steps are very
  likely to result in conflicts.
- Hence we expect most of the neighborhood-schedules formed by taking small
- steps to be infeasible.
  
 \end_layout
 
 \begin_layout Standard
-Our expectation can be justified with a thought-experiment
+Hence we expect most of the neighborhood-schedules formed by taking small
+ steps to be infeasible.
+ Our expectation can be justified with a thought-experiment: Imagine a compact
+ schedule where most links are already occupied.
+ There is very little freedom of movement room 
 \end_layout
 
 \begin_layout Standard
 So instead of taking small steps, we would rather take large jumps.
- Thus 
+ No real neighborhood of feasible solutions.
+ The neighborhood is formed by applying operators resulting in feasible
+ solutions.
+\end_layout
+
+\begin_layout Standard
+Thus 
 \end_layout
 
 \begin_layout Standard
@@ -621,20 +727,8 @@ Given a feasible solution,
 \end_layout
 
 \begin_layout Standard
-No real neighborhood of feasible solutions.
- The neighborhood is formed by applying operators resulting in feasible
- solutions.
-\end_layout
-
-\begin_layout Standard
-A permutation of a path could be patching a part of it (local changes, eg.
- swapping individual links), or rerouting it in a randomized greedy fashion.
-\end_layout
-
-\begin_layout Standard
-Imagine a compact schedule where most links are already occupied, we expect
- small changes like swapping individual links to result in a lot of infeasible
- schedules.
+we expect small changes like swapping individual links to result in a lot
+ of infeasible schedules.
  Instead we consider removing entire paths and rebuilding them: Patching
  an existing path versus rerouting it, the rerouting-approach will obviously
  be a superset, as the patching-approach makes only locally limited changes.
