@@ -337,7 +337,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -365,10 +365,14 @@ Mesh
 \end_inset
 
 
+\begin_inset space ~
+\end_inset
+
+
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -441,7 +445,8 @@ Our goal for this project is to make a scheduler that makes as good schedules
 
 \begin_layout Standard
 It is trivial to construct a greedy solution for the scheduling problem.
- To improve this greedy solution, we can apply metaheuristics.
+ To improve schedules compared to this greedy solution, we can apply metaheurist
+ics.
 \end_layout
 
 \begin_layout Standard
@@ -527,9 +532,27 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We expect that metaheuristics will perform good on improving already existing
- solutions.
- This is because 
+Our scheduling problem is large and combinatorial in nature with both dependenci
+es and constraints.
+ A natural constraint is that any directed link can only transfer a single
+ packet at any time-slot.
+ Another constraint is that packets must arrive in the same order as they
+ were sent.
+ To avoid excessive feasibility-checking of the schedule due this in-order
+ requirement of packets, we make the simplifying decision that all paths
+ should be a shortest path.
+ Due to the regularity of the graph, this shortest path routing is simple.
+ Always taking the shortest path will automatically guarantee causality
+ of received packets.
+ 
+\end_layout
+
+\begin_layout Standard
+Our scheduling problem is NP-complete, thus we need metaheuristics to improve
+ schedule periods from greedy algorithms.
+ For most network sizes we there is no chance of searching though the whole
+ solution space.
+ Metaheuristics find an initial solution and try to improve it, 
 \end_layout
 
 \begin_layout Standard
@@ -560,22 +583,6 @@ The problem is NP-complet problem
 
 \end_layout
 
-\begin_layout Standard
-Our scheduling problem is large and combinatorial in nature with both dependenci
-es and constraints.
- A natural constraint is that any directed link can only transfer a single
- packet at any time-slot.
- Another constraint is that packets must arrive in the same order as they
- were sent.
- To avoid excessive feasibility-checking of the schedule due this in-order
- requirement of packets, we make the simplifying decision that all paths
- should be a shortest path.
- Due to the regularity of the graph, this shortest path routing is simple.
- Always taking the shortest path will automatically guarantee causality
- of received packets.
- 
-\end_layout
-
 \begin_layout Subsection
 Initial solution
 \begin_inset Marginal
@@ -593,7 +600,7 @@ Jaspur
 \begin_layout Standard
 For any optimization problem, naturally some initial solution to be optimized
  is required.
- Four different approach in creating initial solutions to run the optimization
+ Four different approaches in creating initial solutions to run the optimization
  on is to mainly use a greedy approach.
 \end_layout
 
