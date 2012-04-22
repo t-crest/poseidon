@@ -314,7 +314,7 @@ ity flow problem.
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "fig:Fiirst-time-slot"
+reference "fig:First-time-slot"
 
 \end_inset
 
@@ -334,9 +334,68 @@ status open
 
 \begin_layout Plain Layout
 \align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
 \begin_inset Graphics
-	filename figures/Timeslot0.pdf
-	scale 50
+	filename figures/Timeslot0-mesh.pdf
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Mesh
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename figures/Timeslot0-bitorus.pdf
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Bi-torus
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
 
 \end_inset
 
@@ -349,7 +408,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "fig:Fiirst-time-slot"
+name "fig:First-time-slot"
 
 \end_inset
 
@@ -1737,7 +1796,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-32
+25
 \end_layout
 
 \end_inset
@@ -1953,7 +2012,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-86
+66
 \end_layout
 
 \end_inset
@@ -2169,7 +2228,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-183
+135
 \end_layout
 
 \end_inset
@@ -2216,7 +2275,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-92
+90
 \end_layout
 
 \end_inset
@@ -2389,7 +2448,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-844
+600
 \end_layout
 
 \end_inset
@@ -2438,7 +2497,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-422
+420
 \end_layout
 
 \end_inset
