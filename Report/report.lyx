@@ -572,7 +572,7 @@ Our intuition on how a dense solution can be improved, tells us that it
 \begin_layout Standard
 Mimicking nature we think of the free links in the network as air bubbles.
  We then need to make room for the air bubbles to surface, this can be done
- by decompressing the scheduler.
+ by decompressing the schedule.
  To conclude, we should not only accept better solutions than our current.
  
 \end_layout
@@ -613,10 +613,10 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-For any optimization problem, naturally some initial solution to be optimized
- is required.
- Four different approaches in creating initial solutions to run the optimization
- on is to mainly use a greedy approach.
+For any optimization problem, we require an initial feasible solution to
+ optimize.
+ Four different approaches to create an initial feasible solution to optimize
+ are:
 \end_layout
 
 \begin_layout Description
@@ -627,7 +627,8 @@ Basic
 (BAD_RANDOM) This initial solution creates a feasible schedule by randomly
  picking channels to be scheduled onto the NoC, and then schedules them
  on timeslots one after another.
- This initial solution therefore only has one channel sheduled at each timeslot.
+ This initial solution therefore only has one channel scheduled at each
+ timeslot.
  The advantage using this approach, is that the schedule is not dense and
  thus the applied metaheuristic will perform all the work in optimizing
  the solution.
