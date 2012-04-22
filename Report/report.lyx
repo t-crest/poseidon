@@ -1895,13 +1895,27 @@ Initial
 solution The choice of what initial solution is chosen when running ALNS
 \end_layout
 
+\begin_layout Standard
+The tuning was done mainly based on observations from test runs.
+ During testing, we chose to focus on the mesh and bi-torus topologies
+\end_layout
+
 \begin_layout Subsection
 Running time
 \end_layout
 
 \begin_layout Standard
 The time, the metaheuristic needs to optimize a problem depends a lot on
- the number of channels to be scheduled
+ the number of channels to be scheduled and on the size of the NoC.
+ 
+\end_layout
+
+\begin_layout Subsection
+Starting parameter of choose table 
+\end_layout
+
+\begin_layout Standard
+The starting parameters of the choose table denote the starting priorities
 \end_layout
 
 \begin_layout Subsection
@@ -1914,14 +1928,7 @@ The time, the metaheuristic needs to optimize a problem depends a lot on
 \begin_layout Standard
 The amount of randomness in the initial solutions when running the GRASP
  metaheuristic.
-\end_layout
-
-\begin_layout Subsection
-Starting parameter of choose table 
-\end_layout
-
-\begin_layout Standard
-The starting parameters of the choose table denote the starting priorities
+ When running optimization using GRASP, 
 \end_layout
 
 \begin_layout Subsection
@@ -1929,7 +1936,9 @@ Initial solution
 \end_layout
 
 \begin_layout Standard
-When running ALNS, 
+The optimization achieved by the ALNS metaheuristic depends somewhat on
+ the inital solution, although the random operator compensates somewhat
+ 
 \end_layout
 
 \begin_layout Standard
