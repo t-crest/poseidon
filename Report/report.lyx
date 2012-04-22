@@ -600,6 +600,12 @@ The problem is NP-complet problem
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Initial-solution"
+
+\end_inset
+
 Initial solution
 \begin_inset Marginal
 status open
@@ -1119,6 +1125,12 @@ operators
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Operators"
+
+\end_inset
+
 Operators
 \begin_inset Marginal
 status open
@@ -1331,6 +1343,119 @@ Mark
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Contrary to GRASP, ALNS continually works on the same solution.
+ ALNS repeatedly destroys a part of a solution and rebuilds it again into
+ a feasible solution.
+ Since we always rebuild with route, what we punish and reward are the selection
+ operators described above.
+ The operators fit into this scheme perfectly, so our implementation of
+ ALNS is simple.
+ Our ALNS implementation is as follows:
+\end_layout
+
+\begin_layout Enumerate
+An initial solution is constructed using one of the specified algorithms
+ described in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Initial-solution"
+
+\end_inset
+
+.
+ This is specified by the user.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:select_op"
+
+\end_inset
+
+One of the selection operators described in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Operators"
+
+\end_inset
+
+ is chosen stochastically.
+ Each operator has an associated probability of it being chosen.
+ To achieve some kind of Simulated Annealing-like behavior we give the random-se
+lection operator a higher probability initially: Initial probabilities are
+ 33% for the random operator and 22% each for the rest, dominating-{path,rectang
+le} and late-path.
+ Since we have not performed any kind of extensive parameter tuning, we
+ do not know how much these initial probabilities affect the solution.
+ 
+\end_layout
+
+\begin_layout Enumerate
+The selection operator is executed, which returns a set of paths.
+ This set of paths is ripped-up and re-routed again.
+ As mentioned before, re-routing paths is done greedily: We first sort the
+ ripped-up paths by length and route them according to this ordering.
+ Any path is routed in a first-fit fashion, meaning we schedule it as early
+ as possible.
+ Also note that tie-breaking for shortest-path routing decisions is done
+ stochastically.
+\end_layout
+
+\begin_layout Enumerate
+The new schedule length is found, and if it the shortest seen until now,
+ we copy it and remember it as our best solution thus far.
+\end_layout
+
+\begin_layout Enumerate
+The selection operator we chose in step
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:select_op"
+
+\end_inset
+
+ is punished or rewarded according to a simple scheme: We calculate the
+ ratio 
+\begin_inset Formula $r$
+\end_inset
+
+ between the period of the previous schedule and the new current schedule;
+ 
+\begin_inset Formula $r=prev/curr$
+\end_inset
+
+.
+ Thus multiplying the probability of selected operator by 
+\begin_inset Formula $r$
+\end_inset
+
+ will automatically punished or reward it.
+ If 
+\begin_inset Formula $r>1$
+\end_inset
+
+ the current solution is shorter than the previous, so we reward by increasing
+ the probability of the same operator being selected in the next iteration.
+\end_layout
+
+\begin_layout Standard
+Simulated annealing-like
 \end_layout
 
 \begin_layout Standard
