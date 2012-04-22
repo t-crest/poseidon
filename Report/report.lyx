@@ -1106,7 +1106,7 @@ Mark
 \end_layout
 
 \begin_layout Standard
-Which schedule from our neighborhood to jump to next, is determined by our
+Which element from our neighborhood to jump to next, is determined by our
  operators.
  Several operators has been implemented, as this is required to make LNS
  adaptive.
@@ -1118,11 +1118,8 @@ rip-up
 \family typewriter
 route
 \family default
- 
-\end_layout
-
-\begin_layout Standard
-the operators are reduced to simply selecting which channels should be rerouted.
+, the operators are reduced to simply selecting which channels should be
+ rerouted.
  
 \end_layout
 
@@ -1131,7 +1128,18 @@ Dominating
 \begin_inset space ~
 \end_inset
 
-paths 
+paths Recall that our main objective is minimize the schedule period.
+ It is therefore natural to attack the paths which finish last, since they
+ prevent the schedule from finishing earlier.
+ We call these paths for the 
+\emph on
+dominating paths
+\emph default
+.
+ However simply rerouting the dominating paths, will not improve the period:
+ All paths are rerouted in a greedy fashion, starting as early as possible.
+ Hence we are very likely to get exactly the same period as before, since
+ the randomized shortest-path routing decisions 
 \end_layout
 
 \begin_layout Description
