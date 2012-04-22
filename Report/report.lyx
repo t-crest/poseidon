@@ -1836,60 +1836,6 @@ For routing we only care about the 4 non-local ports of routers.
  
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-We have implemented the program in C++ for speed considerations.
-\end_layout
-
-\begin_layout Plain Layout
-Infrastructure.
-\end_layout
-
-\begin_layout Itemize
-Data structures
-\end_layout
-
-\begin_layout Itemize
-Ensuring feasible solutions
-\end_layout
-
-\begin_layout Itemize
-Shortest path calculation
-\end_layout
-
-\begin_layout Itemize
-Primitives for creating a solution
-\end_layout
-
-\begin_layout Itemize
-Initial solutions
-\end_layout
-
-\begin_layout Itemize
-Operators of metaheuristics
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-route_channel can be parallelized with OMP, for determining t_start 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Section
 Parameter tuning
 \begin_inset Marginal
