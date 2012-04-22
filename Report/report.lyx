@@ -181,7 +181,7 @@ At least one autor is required.
 
 \begin_layout Abstract
 This paper shows how metaheuristics can be applied to optimize scheduling
- of of inter-processo communication in a Real time Network-on-Chip.
+ of of inter-processor communication in a real-time Network-on-Chip.
  This scheduling problem is an NP-complete multi-commodity flow problem,
  which we optimize using the metaheuristics Adaptive Large Neighborhood
  Search (ALNS) and Greedy Randomized Adaptive Search Procedure (GRASP).
@@ -189,7 +189,7 @@ This paper shows how metaheuristics can be applied to optimize scheduling
 \end_layout
 
 \begin_layout Terms
-Static scheduling, metaheuristics, Network-on-Chip, Real-time, Multi-commodity
+Static scheduling, Metaheuristics, Network-on-Chip, Real-time, Multi-commodity
  flow problem
 \end_layout
 
