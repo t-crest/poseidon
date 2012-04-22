@@ -1748,7 +1748,11 @@ In reality, the overall performance depends on channel-routing and very
  little on our evaluation function, which is very simple and quick enough.
  Hence we have chosen the more Object Orientation-friendly network-centric
  representation.
- 
+ If further performance improvements are sought, our 
+\family typewriter
+route
+\family default
+ primitive can be easily parallelized.
 \end_layout
 
 \begin_layout Subsection
@@ -1756,8 +1760,80 @@ Calculating shortest paths
 \end_layout
 
 \begin_layout Standard
-All-pair shortest paths via BFS.
- N^2 time and space.
+One of our simplifying decisions is to only route channels along shortest
+ paths, as this will automatically guarantee in-order packet arrival.
+ For this, we need to compute local routing decisions for the all-pair shortest
+ paths.
+ Since our network graph is very regular as each router only has max out-degree
+ 4
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+For routing we only care about the 4 non-local ports of routers.
+\end_layout
+
+\end_inset
+
+ and all links have unit cost, we can easily find the shortest path via
+ a breadth-first search: We simply start at the destination 
+\begin_inset Formula $b$
+\end_inset
+
+ and do a BFS -- as we encounter another router 
+\begin_inset Formula $a$
+\end_inset
+
+, we now know a shortest path from 
+\begin_inset Formula $a$
+\end_inset
+
+ to 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ That the path is a shortest path is guaranteed by the nature of BFS.
+ Encountering 
+\begin_inset Formula $a$
+\end_inset
+
+, we simply store which port the BFS-wave reached 
+\begin_inset Formula $a$
+\end_inset
+
+ from, and associate 
+\begin_inset Formula $b$
+\end_inset
+
+ with that port in a local (perfect) hashmap, 
+\begin_inset Formula $next$
+\end_inset
+
+.
+ So 
+\begin_inset Formula $a.next[b]$
+\end_inset
+
+ returns a set of output ports of 
+\begin_inset Formula $a$
+\end_inset
+
+, which lie on one of the shortest paths towards 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ Computing all these shortest-paths can be done in 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ time and 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ space.
+ 
 \end_layout
 
 \begin_layout Standard
