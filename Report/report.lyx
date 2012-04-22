@@ -1726,8 +1726,8 @@ Running
 \begin_inset space ~
 \end_inset
 
-time Is time that is given to the metaheuristic to try and optimize the
- problem
+time Is the time that is given to the metaheuristic to try and optimize
+ the problem
 \end_layout
 
 \begin_layout Description
@@ -1771,7 +1771,8 @@ Running time
 \end_layout
 
 \begin_layout Standard
-The time, the 
+The time, the metaheuristic needs to optimize a problem depends a lot on
+ the number of channels to be scheduled
 \end_layout
 
 \begin_layout Subsection
@@ -1782,7 +1783,8 @@ The time, the
 \end_layout
 
 \begin_layout Standard
-The amount of randomness 
+The amount of randomness in the initial solutions when running the GRASP
+ metaheuristic.
 \end_layout
 
 \begin_layout Subsection
@@ -1790,7 +1792,7 @@ Starting parameter of choose table
 \end_layout
 
 \begin_layout Standard
-asdas
+The starting parameters of the choose table denote the starting priorities
 \end_layout
 
 \begin_layout Subsection
@@ -1798,7 +1800,7 @@ Initial solution
 \end_layout
 
 \begin_layout Standard
-sadasds
+When running ALNS, 
 \end_layout
 
 \begin_layout Standard
