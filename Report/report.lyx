@@ -1253,18 +1253,17 @@ With the nature of our problem, where there is not a clear neighborhood,
 The GRASP metaheuristic consists of the phases, greedy randomized adaptive
  phase followed by a local serch phase.
  The greedy randomized adaptive phase creates an initial greedy randomized
- solution.
+ solution adaptively.
  After creating the initial greedy randomized solution, the solution is
  improved iteratively using a local search.
  When the solution can not be improved locally, the best solution is stored,
  if it is the best seen so far.
- These steps of creating an initial solution and performing a local search
+ These phases of creating an initial solution and performing a local search
  are then repeated for a set period of time.
 \end_layout
 
 \begin_layout Standard
-In our case, this means that the initial solution is going to be a cross
- between randomized routing and the randomized routing and oredering 
+adfs
 \end_layout
 
 \begin_layout Standard
@@ -1546,9 +1545,9 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-Parameter tuning is vital, in order to get the most optimization from th
- emetaheuristics.
- During our tuning
+Parameter tuning is vital, in order to get the most optimization from the
+ metaheuristics.
+ In our case the main parameters to consider were:
 \end_layout
 
 \begin_layout Standard
