@@ -639,7 +639,12 @@ Randomized-routing
  and the channels are scheduled at the earliest possible timeslot.
  The difference from the deterministic greedy algorithm is in how each channel
  is routed.
- Where the deterministic 
+ Where the deterministic algorithm will always route the channels in the
+ same way, the priority of possible links at each router is random, and
+ thus if some routes can be routed better by using a different shortest
+ path, this initial solution may find that route.
+ Also, this gives an initial solution to the metaheuristic that is not always
+ the same.
 \end_layout
 
 \begin_layout Description
@@ -655,7 +660,17 @@ order
 \begin_inset space ~
 \end_inset
 
-(RANDOM) sdf
+(RANDOM) Here, again, the channels are scheduled as early as possible, but
+ now the order is random in which the channels are scheduled.
+ This is another initial solution, where the starting point for the metaheuristi
+c is a somewhat dense schedule, but since the routing ordering is random,
+ using this initial solution will explore solutions different than those
+ when deterministic or only randomized routing is used.
+\end_layout
+
+\begin_layout Standard
+The main motivation in having four different ways of obtaining initial solution
+ is to explore different neighborhoods with having different starting points.
 \end_layout
 
 \begin_layout Standard
@@ -727,7 +742,7 @@ status open
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
