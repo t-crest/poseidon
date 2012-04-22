@@ -586,29 +586,69 @@ Mark
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Itemize
-Non-trivial to reach feasible solution, by routing channels randomly on
- links.
+Our scheduling problem is to map a collection of channels to paths throughout
+ time, without communication conflicts on any links at any time.
+ A schedule with such conflicts is not feasible.
+ Normally, the neighborhood is the search space of a current feasible solution
+ when taking a small step away from the current solution, i.e.
+ incremental perturbations.
+ Due to schedule-density, we expect that taking such small steps are very
+ likely to result in conflicts.
+ Hence we expect most of the neighborhood-schedules formed by taking small
+ steps to be infeasible.
+ 
 \end_layout
 
-\begin_layout Itemize
+\begin_layout Standard
+Our expectation can be justified with a thought-experiment
+\end_layout
+
+\begin_layout Standard
+So instead of taking small steps, we would rather take large jumps.
+ Thus 
+\end_layout
+
+\begin_layout Standard
+make the schedule infeasible.
+\end_layout
+
+\begin_layout Standard
+steps vs jumps
+\end_layout
+
+\begin_layout Standard
+Given a feasible solution, 
+\end_layout
+
+\begin_layout Standard
 No real neighborhood of feasible solutions.
  The neighborhood is formed by applying operators resulting in feasible
  solutions.
 \end_layout
 
-\end_inset
-
-
+\begin_layout Standard
+A permutation of a path could be patching a part of it (local changes, eg.
+ swapping individual links), or rerouting it in a randomized greedy fashion.
 \end_layout
 
 \begin_layout Standard
-The problem consists of a collection of channels to be scheduled onto the
- NoC.
- 
+Imagine a compact schedule where most links are already occupied, we expect
+ small changes like swapping individual links to result in a lot of infeasible
+ schedules.
+ Instead we consider removing entire paths and rebuilding them: Patching
+ an existing path versus rerouting it, the rerouting-approach will obviously
+ be a superset, as the patching-approach makes only locally limited changes.
+ The rerouting-approach greatly increases our neighborhood and increases
+ our chances of finding a new and feasible path.
+ It is also possible to reroute part of an existing path.
+\end_layout
+
+\begin_layout Subsubsection
+Primitives
+\end_layout
+
+\begin_layout Subsubsection
+Operators
 \end_layout
 
 \begin_layout Standard
@@ -630,20 +670,17 @@ We consider the neighborhood of one feasible solution, to be all other feasible
 \end_layout
 
 \begin_layout Standard
-A permutation of a path could be patching a part of it (local changes, eg.
- swapping individual links), or rerouting it in a randomized greedy fashion.
+\begin_inset Note Note
+status open
+
+\begin_layout Itemize
+Non-trivial to reach feasible solution, by routing channels randomly on
+ links.
 \end_layout
 
-\begin_layout Standard
-Imagine a compact schedule where most links are already occupied, we expect
- small changes like swapping individual links to result in a lot of infeasible
- schedules.
- Instead we consider removing entire paths and rebuilding them: Patching
- an existing path versus rerouting it, the rerouting-approach will obviously
- be a superset, as the patching-approach makes only locally limited changes.
- The rerouting-approach greatly increases our neighborhood and increases
- our chances of finding a new and feasible path.
- It is also possible to reroute part of an existing path.
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -745,16 +782,16 @@ Mark
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-
+Initial solution, many different.
+ GREEDY may be too dense to begin with, so we also have BAD-RANDOM, etc.
 \end_layout
 
-\end_inset
+\begin_layout Standard
+destroy and repair, chosen adaptively
+\end_layout
 
-
+\begin_layout Standard
+repair is done using a greedy heuristic
 \end_layout
 
 \begin_layout Section
