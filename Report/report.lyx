@@ -32,7 +32,17 @@
 \float_placement tbh
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_title "Scheduling in a Real-time Network-on-Chip"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -784,20 +794,6 @@ reference "fig:movebend"
 ).
 \end_layout
 
-\begin_layout Subsubsection
-Primitives
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Standard
 \begin_inset Float figure
 wide false
@@ -1067,6 +1063,20 @@ Moving bends.
 
 \end_layout
 
+\begin_layout Subsubsection
+Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 Swapping pairs of links is always possible, but moving bends can lead to
  an infeasible schedule.
@@ -1136,11 +1146,7 @@ intelligent
 \begin_inset Quotes erd
 \end_inset
 
- selection of which channels to reroute is the job of our 
-\emph on
-operators
-\emph default
-.
+ selection of which channels to reroute is the job of our operators.
 \end_layout
 
 \begin_layout Subsubsection
@@ -1528,23 +1534,31 @@ reference "enu:select_op"
 
  the current solution is shorter than the previous, so we reward by increasing
  the probability of the same operator being selected in the next iteration.
+ Experimentation showed that dominating-paths was much better than random,
+ so probability of random-selection drops quickly.
+ To combat quick convergence we actually multiply by 
+\begin_inset Formula $\sqrt{r}$
+\end_inset
+
+ rather than 
+\begin_inset Formula $r$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard
-Simulated annealing-like
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+In case of equal solutions, punish or reward by schedule homogenity.
 \end_layout
 
-\begin_layout Standard
-Initial solution, many different.
- GREEDY may be too dense to begin with, so we also have BAD-RANDOM, etc.
-\end_layout
+\end_inset
 
-\begin_layout Standard
-destroy and repair, chosen adaptively
-\end_layout
 
-\begin_layout Standard
-repair is done using a greedy heuristic
 \end_layout
 
 \begin_layout Section
@@ -1568,14 +1582,83 @@ C++11
 \family default
 , using 
 \family sans
-BOOST
+BOOST 1.49
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.boost.org/doc/libs/1_49_0/"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \family default
  and 
 \family sans
-pugixml
+pugixml 1.0
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://pugixml.googlecode.com/files/pugixml-1.0.zip"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \family default
  as 3rd party libraries.
- However our discussion will remain language-agnostic.
+ The source code of our schedule is provided as open source software.
+ The source is available at 
+\family typewriter
+
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/rbscloud/SNTs"
+
+\end_inset
+
+
+\family default
+.
+ The source code builds successfully on 
+\family sans
+Linux
+\family default
+ and 
+\family sans
+Cygwin
+\family default
+ with 
+\family sans
+GCC 4.5.2
+\family default
+ or later with 
+\family typewriter
+--std=c++0x
+\family default
+ flag enabled.
+\end_layout
+
+\begin_layout Standard
+The rest of this section will remain language agnostic.
 \end_layout
 
 \begin_layout Subsection
@@ -1756,78 +1839,6 @@ route_channel can be parallelized with OMP, for determining t_start
 \end_inset
 
 
-\end_layout
-
-\begin_layout Subsection
-Source access
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-We provide the C++ code of our scheduler as open source.
- The source can be found at
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-https://github.com/rbscloud/SNTs 
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The source can be downloaded via a zip file or with 
-\family typewriter
-git
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-git clone git://github.com/rbscloud/SNTs.git
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The project uses the boost C++ libraries from 
-\begin_inset CommandInset href
-LatexCommand href
-target "boost.org"
-
-\end_inset
-
-.
- To build the scheduler, create a project in your favorite IDE, include
- boost and build.
 \end_layout
 
 \begin_layout Section
