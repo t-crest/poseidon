@@ -1135,7 +1135,7 @@ Mark
 \begin_layout Standard
 Which element from our neighborhood to jump to next, is determined by our
  operators.
- Several operators has been implemented, as this is required to make LNS
+ Several operators have been implemented, as this is required to make LNS
  adaptive.
  Since our primitive functions are always 
 \family typewriter
@@ -1163,7 +1163,7 @@ paths Recall that our main objective is minimize the schedule period.
 dominating paths
 \emph default
 .
- However simply rerouting only the dominating paths, are likely to not improve
+ However simply rerouting only the dominating paths, is likely to not improve
  the period: All paths are rerouted in a greedy fashion, starting as early
  as possible.
  We therefore consider more than just the dominating paths, we would also
@@ -1203,7 +1203,8 @@ rectangle Rather than just selecting the channels below
 \end_inset
 
 .
- This is written as BFS search, only taking links which are on the shortest-path.
+ This is written as a BFS search, only taking links which are on the shortest-pa
+th.
  
 \end_layout
 
@@ -1229,28 +1230,6 @@ paths This is exactly like dominating paths, but also considering the paths
 Random Simply selects a random set of paths.
  Also the number of selected paths is random: At least 2 paths are always
  selected, but up to 10% of all existing paths may be selected.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-We can use the above approach to 
-\begin_inset Quotes eld
-\end_inset
-
-make room
-\begin_inset Quotes erd
-\end_inset
-
- in the schedule such that the latest-finishing path may be moved to an
- earlier starting timeslot -- thus reducing the overall schedule period.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Subsection
