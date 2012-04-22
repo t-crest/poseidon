@@ -1662,28 +1662,12 @@ The rest of this section will remain language agnostic.
 \end_layout
 
 \begin_layout Subsection
-Data-structure organization
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-How a problem is modeled and represented, affects code-cleanliness and can
- have large impact on performance.
- 
-\end_layout
-
-\end_inset
-
-
+Data-structure organization and delta-evaluation
 \end_layout
 
 \begin_layout Standard
 In our problem domain, there are basically two ways to represent the schedule;
- time-centric or network-centric.
- 
+ time-centric or network-centric:
 \end_layout
 
 \begin_layout Description
@@ -1708,8 +1692,8 @@ Time-centric We could consider grouping all routing-decisions made in the
 \begin_layout Description
 Network-centric In reality, links are resources for which communication
  must contend.
- Thus is its more intuitive to only have 1 of each link and router represented
- -- rather than as a layer of frames.
+ Thus is its more intuitive to have each link and router represented once
+ only -- rather than multiple times in each frame.
  This means we localize the schedule, storing a local schedule on each link.
  In this representation, this means we do not have to go up one timeslot
  and index again to check if something has been scheduled -- this information
@@ -1717,65 +1701,54 @@ Network-centric In reality, links are resources for which communication
  Splitting the schedule up into such localized schedules, also allows us
  to make fast successor queries.
  A drawback is that determining global schedule length now takes 
-\begin_inset Formula $O(n)$
+\begin_inset Formula $\mathcal{O}(n)$
 \end_inset
 
- time (which is reducible to 
-\begin_inset Formula $O(p)$
+ time where 
+\begin_inset Formula $n$
 \end_inset
 
- using delta-evaluation) rather than 
-\begin_inset Formula $O(1)$
+ is the number of routers, rather than 
+\begin_inset Formula $\mathcal{O}(1)$
 \end_inset
 
  time as in the time-centric representation.
+ However using delta-evaluation this is reducible to average-case 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time.
+\end_layout
+
+\begin_layout Standard
+The goal of delta-evaluation is to reuse as much of what is known about
+ the previous solution, so the evaluation function becomes quick.
+ In our case, we could store a dynamically re-sizable array which for each
+ index (representing a timeslot), stores how many links is scheduled in
+ that timeslot.
+ Whenever we mutate our schedule, the array is updated correspondingly.
+ Traversing backwards from the end of the array until hitting a non-zero,
+ reveals the schedule length.
+ Since the period of neighboring schedules is quite close to each other,
+ traversing the array will take 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time in the average case, but 
+\begin_inset Formula $\mathcal{O}(p)$
+\end_inset
+
+ time in the worst-case.
+ Finally, resizing the array dynamically takes amortized constant time.
  
 \end_layout
 
 \begin_layout Standard
-In reality, the overall performance depends on channel routing and very
- little on the 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-internal representation
-\end_layout
-
-\end_inset
-
-.
- Hence we chose the more Object Orientation-friendly network-centric representat
-ion.
+In reality, the overall performance depends on channel-routing and very
+ little on our evaluation function, which is very simple and quick enough.
+ Hence we have chosen the more Object Orientation-friendly network-centric
+ representation.
  
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-is to store all the physical links which are actually present only once,
- and then layer time on top of each link.
-\end_layout
-
-\begin_layout Plain Layout
-In the-time centric representation, the interconnect network has to be encoded
- several times.
-\end_layout
-
-\begin_layout Plain Layout
-Current and best solution: We only copy current into best, when we know
- that we have found a better solution.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-delta-evaluation
 \end_layout
 
 \begin_layout Subsection
