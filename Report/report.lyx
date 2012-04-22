@@ -1060,8 +1060,8 @@ reference "fig:swap_links"
  in dense schedules.
  Hence we expect most local perturbations lead to infeasible schedules.
  Even if such small local perturbations could make room for other channels
- to be scheduled earlier, these small local perturbations alone are unable
- to change period of the schedule.
+ to be scheduled earlier, these small changes alone are unable to change
+ period of the schedule.
  So instead of taking small steps, we would rather take large jumps.
  Instead of swapping of pairs or moving-bends as our primitive functions,
  we consider removing entire already-scheduled channels (
@@ -1089,6 +1089,9 @@ route
 route
 \family default
  does this via a simple depth-first search.
+ Of the paths which has just been ripped-up, the longest paths are routed
+ first.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1152,16 +1155,35 @@ Dominating
 
 paths Recall that our main objective is minimize the schedule period.
  It is therefore natural to attack the paths which finish last, since they
- prevent the schedule from finishing earlier.
+ prolong the schedule.
  We call these paths for the 
 \emph on
 dominating paths
 \emph default
 .
- However simply rerouting the dominating paths, will not improve the period:
- All paths are rerouted in a greedy fashion, starting as early as possible.
- Hence we are very likely to get exactly the same period as before, since
- the randomized shortest-path routing decisions 
+ However simply rerouting only the dominating paths, are likely to not improve
+ the period: All paths are rerouted in a greedy fashion, starting as early
+ as possible.
+ We therefore consider more than just the dominating paths, we would also
+ like to select the paths that prevents the dominating paths from starting
+ earlier.
+ An approximation of those paths preventing a dominating path 
+\begin_inset Formula $P$
+\end_inset
+
+ from starting earlier, is simply the paths below 
+\begin_inset Formula $P$
+\end_inset
+
+ over all time.
+ I.e.
+ we select all the paths that goes through a link before 
+\begin_inset Formula $P$
+\end_inset
+
+ goes through it.
+ Even through this is a gross approximation, this operator has shown to
+ be the most popular in ALNS.
 \end_layout
 
 \begin_layout Description
@@ -1169,7 +1191,18 @@ Dominating
 \begin_inset space ~
 \end_inset
 
-rectangle 
+rectangle Rather than just selecting the channels below 
+\begin_inset Formula $P$
+\end_inset
+
+ in time, we select all paths in the shortest-path rectangle containing
+ all of 
+\begin_inset Formula $P$
+\end_inset
+
+.
+ This is written as BFS search, only taking links which are on the shortest-path.
+ 
 \end_layout
 
 \begin_layout Description
@@ -1177,11 +1210,23 @@ Late
 \begin_inset space ~
 \end_inset
 
-paths
+paths This is exactly like dominating paths, but also considering the paths
+ finishing next-to-last, i.e.
+ the paths finishing at time 
+\begin_inset Formula $p-1$
+\end_inset
+
+ and 
+\begin_inset Formula $p-2$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Description
-Random
+Random Simply selects a random set of paths.
+ Also the number of selected paths is random: At least 2 paths are always
+ selected, but up to 10% of all existing paths may be selected.
 \end_layout
 
 \begin_layout Standard
