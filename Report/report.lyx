@@ -7908,6 +7908,19 @@ key "Schoeberl2011"
 
 .
  These results have all run for two hours.
+ It takes 504
+\begin_inset space ~
+\end_inset
+
+CPU-hours (or 21
+\begin_inset space ~
+\end_inset
+
+CPU-days) in total to run all our test-runs; on gramme this takes just 15
+\begin_inset space ~
+\end_inset
+
+hours.
 \end_layout
 
 \begin_layout Standard
