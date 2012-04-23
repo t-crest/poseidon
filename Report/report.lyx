@@ -8429,17 +8429,50 @@ Our scheduler has been tested with custom topologies besides mesh and bi-torus,
 \end_layout
 
 \begin_layout Standard
-In [Schoeberl2012] lower bounds for the schedule period are given.
- In the article [Brandner2012] a heuristic scheduler is proposed, this scheduler
- has the constraint compared to our scheduler that the scheduler in each
- router must be the same.
- This is done to simplify hardware.
- We compare the results of our scheduler to the heuristic scheduler of [Brandner
-2012] in table
+In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2012"
+
+\end_inset
+
+ lower bounds for the schedule period are given.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ a heuristic scheduler is proposed, this scheduler has the constraint compared
+ to our scheduler that the scheduler in each router must be the same.
+ This constraint is made to simplify hardware.
+ Table
 \begin_inset space ~
 \end_inset
 
- and the lower bound
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-compared-to"
+
+\end_inset
+
+compares our results to the results of the heuristic scheduler in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ and the lower bounds given in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Standard
@@ -8579,7 +8612,14 @@ Bi-torus
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bound
+Bounds
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -8588,7 +8628,13 @@ Bound
 \begin_inset Text
 
 \begin_layout Plain Layout
-[Brandner2012]
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -8624,7 +8670,14 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-Bound
+Bounds
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -8633,7 +8686,13 @@ Bound
 \begin_inset Text
 
 \begin_layout Plain Layout
-[Brandner2012]
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -8822,7 +8881,9 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-22
+
+\series bold
+21
 \end_layout
 
 \end_inset
@@ -9256,7 +9317,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-143
+144
 \end_layout
 
 \end_inset
@@ -9267,7 +9328,7 @@ GRASP
 \begin_layout Plain Layout
 
 \series bold
-139
+138
 \end_layout
 
 \end_inset
@@ -9364,7 +9425,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-200
+201
 \end_layout
 
 \end_inset
@@ -9375,7 +9436,7 @@ GRASP
 \begin_layout Plain Layout
 
 \series bold
-196
+195
 \end_layout
 
 \end_inset
@@ -9597,7 +9658,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-900
+899
 \end_layout
 
 \end_inset
@@ -9663,7 +9724,20 @@ GRASP
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Results compared to the heuristic results of [Brandner2012].
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Results-compared-to"
+
+\end_inset
+
+Results compared to the heuristic results of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -9677,7 +9751,63 @@ Results compared to the heuristic results of [Brandner2012].
 \end_layout
 
 \begin_layout Standard
-All our runs of our metaheuristic ran two hours.
+In table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-compared-to"
+
+\end_inset
+
+ we see that our scheduler performs very well, we are better than the results
+ of 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ in all cases except 
+\begin_inset Formula $5\times5$
+\end_inset
+
+ bi-torus.
+ We are much better than 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ for all sizes of mesh networks.
+ The reason for this is the constraint, that all routers should have the
+ same schedule.
+\end_layout
+
+\begin_layout Standard
+Comparing our greedy solution to our metaheuristic solutions, we see that
+ our metaheuristics can improve our greedy solution for most cases.
+ Only for the large networks the improvement by the metaheuristics diminish.
+ This may be caused by the increasing link utilization, the link utilization
+ for the greedy solution increases for 
+\end_layout
+
+\begin_layout Standard
+The results of the metaheuristics we see in table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-compared-to"
+
+\end_inset
+
+ have all run for two hours.
 \end_layout
 
 \begin_layout Standard
@@ -9709,21 +9839,12 @@ Appendix, only when needed, can also be started behind the bibliography.
 \labelwidthstring References
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "ahmed02"
+key "Schoeberl2011"
 
 \end_inset
 
-Amal
-\begin_inset space ~
-\end_inset
-
-J.
- Ahmed, Andrew
-\begin_inset space ~
-\end_inset
-
-W.
- Appel, and Roberto Virga.
+Martin Schoeberl et.
+ al.
 \begin_inset ERT
 status collapsed
 
@@ -9736,8 +9857,8 @@ newblock
 
 \end_inset
 
- A stratified semantics of general references embeddable in higher-order
- logic.
+ A Statically Scheduled Time-Division-Multiplexed Network-on-Chip for Real-Time
+ Systems
 \begin_inset ERT
 status collapsed
 
@@ -9750,24 +9871,12 @@ newblock
 
 \end_inset
 
- I
+ To be published at 
 \emph on
-n Proceedings of the 17th Annual IEEE Symposium on Logic in Computer Science
- (LICS 2002)
-\emph default
-, July 2002.
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Reference parts have to be separated by 
-\series bold
-
-\backslash
-newblock
-\series default
-.
-\end_layout
+IEEE International Symposium om Networks-on-Chip 2012(NOCS '01) 
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.jopdesign.com/doc/s4noc.pdf"
 
 \end_inset
 
@@ -9778,16 +9887,12 @@ newblock
 \labelwidthstring References
 \begin_inset CommandInset bibitem
 LatexCommand bibitem
-key "appel01:fpcc"
+key "Brandner2012"
 
 \end_inset
 
-Andrew
-\begin_inset space ~
-\end_inset
-
-W.
- Appel.
+Florian Brandner et.
+ al.
 \begin_inset ERT
 status collapsed
 
@@ -9800,7 +9905,7 @@ newblock
 
 \end_inset
 
- Foundational proof-carrying code.
+ Static Routing in Symmetric Real-Time Network-on-Chips
 \begin_inset ERT
 status collapsed
 
@@ -9813,12 +9918,15 @@ newblock
 
 \end_inset
 
- In 
-\emph on
-Symposium on Logic in Computer Science (LICS ’01)
-\emph default
-, pages 247--258.
- IEEE, 2001.
+ Not yet accepted, 
+\begin_inset CommandInset href
+LatexCommand href
+target "flbr@imm.dtu.dk"
+type "mailto:"
+
+\end_inset
+
+
 \end_layout
 
 \end_body
