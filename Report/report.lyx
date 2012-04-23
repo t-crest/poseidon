@@ -1305,11 +1305,11 @@ The GRASP metaheuristic consists of the phases, greedy randomized adaptive
 \begin_layout Standard
 Our use of the GRASP metaheuristics is not completely in correspondence
  with its definition.
- The adaptive function that is to be used when constructing the initial
- greedy solution is not present in that phase, instead some adaptiveness
- in selecting operators when performing local search is added.
- Also, the iterative improvement in the local searchonly performs one step
- in our case.
+ The adaptive phase when constructing the initial greedy solution is not
+ present.
+ Instead, operators ar eselected adaptively when performing local search.
+ Also, the iterative improvement in the local search performs only a single
+ step in our case.
 \end_layout
 
 \begin_layout Standard
@@ -1369,7 +1369,7 @@ This means that dependent on how much an operator improves an initial solution,
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Explanation of GRASP
@@ -1960,7 +1960,7 @@ GRASP randomness
 
 \begin_layout Standard
 When running optimization using GRASP, we tested the algorithm by running
- for two hours with
+ for two hours with:
 \end_layout
 
 \begin_layout Standard
@@ -1972,22 +1972,26 @@ When running optimization using GRASP, we tested the algorithm by running
 \end_layout
 
 \begin_layout Standard
-Varying the 
-\begin_inset Formula $\beta$
+Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-bitorus"
+
 \end_inset
 
- did not seem to matter that much if it was between 0 and 0.5.
- When running for two hour, almost all the values were the same.
- As the width and heigth increased to 10 and 15 though, a 
-\begin_inset Formula $\beta$
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-mesh"
+
 \end_inset
 
- less than 0.1 gave the best results.
- 
+ show the best found schedule length for each 
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float table
+placement t
 wide true
 sideways false
 status open
@@ -2534,6 +2538,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.55 
 \end_layout
@@ -2727,6 +2732,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.57 
 \end_layout
@@ -2986,6 +2992,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.69 
 \end_layout
@@ -3009,6 +3016,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.69 
 \end_layout
@@ -3224,6 +3232,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.86 
 \end_layout
@@ -3483,6 +3492,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 0.95 
 \end_layout
@@ -3698,6 +3708,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 1.15 
 \end_layout
@@ -3979,6 +3990,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 1.44 
 \end_layout
@@ -4216,6 +4228,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 1.90 
 \end_layout
@@ -4387,6 +4400,7 @@ min
 
 \begin_layout Plain Layout
 
+\series bold
 \size scriptsize
 6.81 
 \end_layout
