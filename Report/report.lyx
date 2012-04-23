@@ -579,7 +579,7 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-To construct at good solution we expect that a greedy algorithm will give
+To construct a good solution we expect that a greedy algorithm will give
  fairly good results, to improve the greedy solution metaheuristics can
  be used.
  A given greedy solution might not be a good target for optimization, due
@@ -643,8 +643,8 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-Four different approaches to create a feasible initial solution to optimize
- are:
+We created multiple approaches to create a feasible initial solution to
+ optimize and they are:
 \end_layout
 
 \begin_layout Description
