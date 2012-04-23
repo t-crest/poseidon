@@ -1992,8 +1992,8 @@ reference "tab:Beta-for-mesh"
 \end_inset
 
 .
- The standard deviation is calculated from a sample of the of all the iterations
-, with
+ The standard deviation is calculated from a sample from the iterations,
+ with each sample point given with one second intervals.
 \end_layout
 
 \begin_layout Standard
