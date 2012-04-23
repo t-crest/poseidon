@@ -1932,19 +1932,22 @@ Starting parameter of choose table
 The starting parameters of the choose table denote the starting priorities
  of the available operators for the metaheuristic.
  The nature of the operators dominating-{path,rectangle} and late-path implies
- that they should be given equal weight at the start of optimization.
+ that they should be weighted equally at the start of optimization.
  The adaptive function will favor those that give good results and punish
  the others.
- We have not tested other scenarios than equal weighting of the starting
+ We have not tested other scenarios than equal weighting of these starting
  parameter in the choose table.
  We have assigned different values to the random operator in ALNS.
- The reason is that it is not very likely that the random operator is going
- to increase the
-\end_layout
-
-\begin_layout Standard
-We ended up setting the starting parameter for the random operator to 1.5,
- while the others are set to 1.0.
+ The reason is that it is not as likely that the random operator is going
+ to improve the schedule.
+ Therefore, in order to force the ALNS metaheuristic to explore different
+ neighborhoods, we ended up setting the starting parameter for the random
+ operator to 33%, while the others are set to 22%, thus slightly favoring
+ random initially.
+ Preferably, with more time, we would vary the starting weights of the operators
+ an observe the performance of the metaheuristics.
+ We could also elaborate our punish and reward system of operators, by also
+ taking into account if the same schedule length is found.
 \end_layout
 
 \begin_layout Subsection
