@@ -579,7 +579,7 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-To construct a good solution we expect that a greedy algorithm will give
+To construct at good solution we expect that a greedy algorithm will give
  fairly good results, to improve the greedy solution metaheuristics can
  be used.
  A given greedy solution might not be a good target for optimization, due
@@ -643,8 +643,8 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-We created multiple approaches to create a feasible initial solution to
- optimize and they are:
+Four different approaches to create a feasible initial solution to optimize
+ are:
 \end_layout
 
 \begin_layout Description
@@ -5963,10 +5963,6 @@ For the mesh topology, table
 \begin_inset space ~
 \end_inset
 
-.
- This is still close to the greedy solution, but leaves some room for randomness
-, that may improve the solution.
-\end_layout
 
 \begin_inset CommandInset ref
 LatexCommand ref
