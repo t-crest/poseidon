@@ -416,7 +416,7 @@ float network_t::link_utilization(bool best) {
 	for_each(this->link_ts, [&](link_t *l){
 		schedule* sched = (best ? &l->best_schedule : &l->local_schedule);
 
-		for (timeslot i = 0; i < sched->max_time(); i++) {
+		for (timeslot i = 0; i <= sched->max_time(); i++) {
 			if (sched->has(i))
 				links_used++;
 		}
