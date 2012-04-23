@@ -1894,10 +1894,11 @@ solution The choice of what initial solution is chosen when running ALNS
 
 \begin_layout Standard
 The tuning was done mainly based on observations from test runs.
- During testing, we chose to focused on the mesh and bi-torus topologies
- and the scenario where each router communicates a packet of length one
- to every other router in the network.
- We focused on the mesh and bi-torus with height and width 3-10 and 15.
+ During testing, we chose to focus on the mesh and bi-torus topologies and
+ the scenario, where each router communicates a packet of length one to
+ every other router in the network.
+ We focused on instances with height and width 3-10 and 15 of the mesh and
+ bi-torus topologies.
  Also, there was not enough time for thorough testing, so possible scenarios
  such as running a metaheuristic on very large networks for e.g.
  24 hours for getting test results to then do reruns was not an option.
