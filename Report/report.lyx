@@ -1857,14 +1857,6 @@ time Is the time that is given to the metaheuristic to try and optimize
 \end_layout
 
 \begin_layout Description
-\begin_inset Formula $\beta$
-\end_inset
-
- The parameter determining the randomness of the initial solution when running
- GRASP
-\end_layout
-
-\begin_layout Description
 Starting
 \begin_inset space ~
 \end_inset
@@ -1881,7 +1873,15 @@ choose
 \begin_inset space ~
 \end_inset
 
-table The priorities of operators chosen during the 
+table The initial priorities of the operators applied by the metaheuristics
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $\beta$
+\end_inset
+
+ The parameter determining the randomness of the initial solution when running
+ GRASP
 \end_layout
 
 \begin_layout Description
@@ -1894,10 +1894,11 @@ solution The choice of what initial solution is chosen when running ALNS
 
 \begin_layout Standard
 The tuning was done mainly based on observations from test runs.
- During testing, we chose to focused on the mesh and bi-torus topologies
- and the scenario where each router communicates a packet of length one
- to every other router in the network.
- We focused on the mesh and bi-torus with height and width 3-10 and 15.
+ During testing, we chose to focus on the mesh and bi-torus topologies and
+ the scenario, where each router communicates a packet of length one to
+ every other router in the network.
+ We focused on instances with height and width 3-10 and 15 of the mesh and
+ bi-torus topologies.
  Also, there was not enough time for thorough testing, so possible scenarios
  such as running a metaheuristic on very large networks for e.g.
  24 hours for getting test results to then do reruns was not an option.
@@ -1917,7 +1918,7 @@ The time, the metaheuristic needs to optimize a problem depends on the size
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "tab:Rounded-numbers-of"
+reference "tab:Number-of-iterations"
 
 \end_inset
 
@@ -1956,7 +1957,7 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-ALNS (RANDOM)
+ALNS
 \end_layout
 
 \end_inset
@@ -1974,11 +1975,7 @@ ALNS (RANDOM)
 \begin_inset Text
 
 \begin_layout Plain Layout
-GRASP 
-\begin_inset Formula $\left(\beta=0.1\right)$
-\end_inset
-
-
+GRASP
 \end_layout
 
 \end_inset
@@ -2003,7 +2000,7 @@ GRASP
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2012,7 +2009,7 @@ Bi-torus
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2021,7 +2018,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2030,7 +2027,7 @@ Bi-torus
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2071,7 +2068,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2080,7 +2077,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2121,7 +2118,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2130,7 +2127,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2171,7 +2168,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2180,7 +2177,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2221,7 +2218,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2230,7 +2227,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2271,7 +2268,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2280,7 +2277,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2321,7 +2318,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2330,7 +2327,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2371,7 +2368,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2380,7 +2377,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2421,7 +2418,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2430,7 +2427,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" usebox="none">
+<cell alignment="right" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2471,7 +2468,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2480,7 +2477,7 @@ Mesh
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
@@ -2503,11 +2500,16 @@ Mesh
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "tab:Rounded-numbers-of"
+name "tab:Number-of-iterations"
 
 \end_inset
 
-Rounded numbers of iterations when running for two hours on gramme.ebar.dtu.dk
+Numbers of iterations, for a single run for two hours on gramme.ebar.dtu.dk.
+ The initial solution used by ALNS is RANDOM and GRASP uses 
+\begin_inset Formula $\beta=0.1$
+\end_inset
+
+.
 \end_layout
 
 \end_inset
@@ -2521,20 +2523,20 @@ Rounded numbers of iterations when running for two hours on gramme.ebar.dtu.dk
 \end_layout
 
 \begin_layout Standard
-When we look at the values in table
+Looking at the values in table
 \begin_inset space ~
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "tab:Rounded-numbers-of"
+reference "tab:Number-of-iterations"
 
 \end_inset
 
 , we see that the number of iterations for alns 
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Some short comment on the numbers, possibly also some info on how fast the
@@ -2646,6 +2648,8 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 Size 
 \backslash
  
@@ -2853,6 +2857,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2874,6 +2880,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2895,6 +2903,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2916,6 +2926,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2937,6 +2949,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2958,6 +2972,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -2979,6 +2995,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -3000,6 +3018,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -3021,6 +3041,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -3042,6 +3064,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -3064,6 +3088,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $3\times3$
 \end_inset
 
@@ -3076,6 +3102,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -3085,6 +3113,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.48
 \end_layout
 
@@ -3094,6 +3124,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -3103,6 +3135,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.48
 \end_layout
 
@@ -3112,6 +3146,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 10
 \end_layout
 
@@ -3121,6 +3158,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 0.57
 \end_layout
 
@@ -3130,6 +3170,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3139,6 +3181,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.58
 \end_layout
 
@@ -3148,6 +3192,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3157,6 +3203,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.58
 \end_layout
 
@@ -3166,6 +3214,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3175,6 +3225,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.58
 \end_layout
 
@@ -3184,6 +3236,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3193,6 +3247,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.59
 \end_layout
 
@@ -3202,6 +3258,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3211,6 +3269,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.60
 \end_layout
 
@@ -3220,6 +3280,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3229,6 +3291,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.60
 \end_layout
 
@@ -3238,6 +3302,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 10
 \end_layout
 
@@ -3247,6 +3313,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 0.61
 \end_layout
 
@@ -3258,6 +3326,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $4\times4$
 \end_inset
 
@@ -3270,6 +3340,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 19
 \end_layout
 
@@ -3280,6 +3353,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+0.61
 \end_layout
 
 \end_inset
@@ -3288,6 +3364,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3298,6 +3376,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.66
 \end_layout
 
 \end_inset
@@ -3306,6 +3386,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3316,6 +3398,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.64
 \end_layout
 
 \end_inset
@@ -3324,6 +3408,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3334,6 +3420,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.65
 \end_layout
 
 \end_inset
@@ -3342,6 +3430,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3352,6 +3442,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.70
 \end_layout
 
 \end_inset
@@ -3360,6 +3452,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3370,6 +3464,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.69
 \end_layout
 
 \end_inset
@@ -3378,6 +3474,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3388,6 +3486,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.75
 \end_layout
 
 \end_inset
@@ -3396,6 +3496,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3406,6 +3508,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.71
 \end_layout
 
 \end_inset
@@ -3414,6 +3518,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3424,6 +3530,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.74
 \end_layout
 
 \end_inset
@@ -3432,6 +3540,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 19
 \end_layout
 
@@ -3442,6 +3552,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.73
 \end_layout
 
 \end_inset
@@ -3452,6 +3564,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $5\times5$
 \end_inset
 
@@ -3464,6 +3578,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3474,6 +3590,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.79
 \end_layout
 
 \end_inset
@@ -3482,6 +3600,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 30
 \end_layout
 
@@ -3492,6 +3613,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+0.78
 \end_layout
 
 \end_inset
@@ -3500,6 +3624,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 30
 \end_layout
 
@@ -3510,6 +3637,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+0.78
 \end_layout
 
 \end_inset
@@ -3518,6 +3648,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3528,6 +3660,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.83
 \end_layout
 
 \end_inset
@@ -3536,6 +3670,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3546,6 +3682,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.85
 \end_layout
 
 \end_inset
@@ -3554,6 +3692,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3564,6 +3704,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.90
 \end_layout
 
 \end_inset
@@ -3572,6 +3714,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3582,6 +3726,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.88
 \end_layout
 
 \end_inset
@@ -3590,6 +3736,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3600,6 +3748,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.87
 \end_layout
 
 \end_inset
@@ -3608,6 +3758,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3618,6 +3770,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.88
 \end_layout
 
 \end_inset
@@ -3626,6 +3780,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 30
 \end_layout
 
@@ -3636,6 +3792,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+0.88
 \end_layout
 
 \end_inset
@@ -3646,6 +3804,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $6\times6$
 \end_inset
 
@@ -3658,6 +3818,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 43
 \end_layout
 
@@ -3668,6 +3830,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.02
 \end_layout
 
 \end_inset
@@ -3676,6 +3840,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 43
 \end_layout
 
@@ -3686,6 +3853,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+1.01
 \end_layout
 
 \end_inset
@@ -3694,6 +3864,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 43
 \end_layout
 
@@ -3704,6 +3876,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.12
 \end_layout
 
 \end_inset
@@ -3712,6 +3886,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 43
 \end_layout
 
@@ -3722,6 +3898,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.08
 \end_layout
 
 \end_inset
@@ -3730,6 +3908,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3740,6 +3920,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.11
 \end_layout
 
 \end_inset
@@ -3748,6 +3930,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3758,6 +3942,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.10
 \end_layout
 
 \end_inset
@@ -3766,6 +3952,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3776,6 +3964,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.11
 \end_layout
 
 \end_inset
@@ -3784,6 +3974,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3794,6 +3986,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.07
 \end_layout
 
 \end_inset
@@ -3802,6 +3996,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3812,6 +4008,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.09
 \end_layout
 
 \end_inset
@@ -3820,6 +4018,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 44
 \end_layout
 
@@ -3830,6 +4030,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.06
 \end_layout
 
 \end_inset
@@ -3840,6 +4042,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $7\times7$
 \end_inset
 
@@ -3852,6 +4056,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -3862,6 +4068,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.36
 \end_layout
 
 \end_inset
@@ -3870,6 +4078,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -3880,6 +4090,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.31
 \end_layout
 
 \end_inset
@@ -3888,6 +4100,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 61
 \end_layout
 
@@ -3898,6 +4113,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+1.20
 \end_layout
 
 \end_inset
@@ -3906,6 +4124,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -3916,6 +4136,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.31
 \end_layout
 
 \end_inset
@@ -3924,6 +4146,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -3934,6 +4158,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.35
 \end_layout
 
 \end_inset
@@ -3942,6 +4168,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -3952,6 +4180,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.32
 \end_layout
 
 \end_inset
@@ -3960,6 +4190,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -3970,6 +4202,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.33
 \end_layout
 
 \end_inset
@@ -3978,6 +4212,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -3988,6 +4224,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.32
 \end_layout
 
 \end_inset
@@ -3996,6 +4234,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -4006,6 +4246,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.36
 \end_layout
 
 \end_inset
@@ -4014,6 +4256,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -4024,6 +4268,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.34
 \end_layout
 
 \end_inset
@@ -4034,6 +4280,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $8\times8$
 \end_inset
 
@@ -4046,6 +4294,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4056,6 +4306,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.62
 \end_layout
 
 \end_inset
@@ -4064,6 +4316,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 85
 \end_layout
 
@@ -4074,6 +4329,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+1.54
 \end_layout
 
 \end_inset
@@ -4082,6 +4340,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4092,6 +4352,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.72
 \end_layout
 
 \end_inset
@@ -4100,6 +4362,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4110,6 +4374,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.68
 \end_layout
 
 \end_inset
@@ -4118,6 +4384,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4128,6 +4396,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.75
 \end_layout
 
 \end_inset
@@ -4136,6 +4406,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4146,6 +4418,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.79
 \end_layout
 
 \end_inset
@@ -4154,6 +4428,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4164,6 +4440,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.76
 \end_layout
 
 \end_inset
@@ -4172,6 +4450,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 85
 \end_layout
 
@@ -4182,6 +4462,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.77
 \end_layout
 
 \end_inset
@@ -4190,6 +4472,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 86
 \end_layout
 
@@ -4200,6 +4484,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.78
 \end_layout
 
 \end_inset
@@ -4208,6 +4494,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 86
 \end_layout
 
@@ -4218,6 +4506,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+1.70
 \end_layout
 
 \end_inset
@@ -4228,6 +4518,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $9\times9$
 \end_inset
 
@@ -4240,6 +4532,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 113
 \end_layout
 
@@ -4250,6 +4544,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.25
 \end_layout
 
 \end_inset
@@ -4258,6 +4554,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 113
 \end_layout
 
@@ -4268,6 +4566,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.10
 \end_layout
 
 \end_inset
@@ -4276,6 +4576,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 113
 \end_layout
 
@@ -4286,6 +4588,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.10
 \end_layout
 
 \end_inset
@@ -4294,6 +4598,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 113
 \end_layout
 
@@ -4304,6 +4611,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+1.98
 \end_layout
 
 \end_inset
@@ -4312,6 +4622,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 114
 \end_layout
 
@@ -4322,6 +4634,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.09
 \end_layout
 
 \end_inset
@@ -4330,6 +4644,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 114
 \end_layout
 
@@ -4340,6 +4656,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.14
 \end_layout
 
 \end_inset
@@ -4348,6 +4666,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 114
 \end_layout
 
@@ -4358,6 +4678,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.16
 \end_layout
 
 \end_inset
@@ -4366,6 +4688,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 115
 \end_layout
 
@@ -4376,6 +4700,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.07
 \end_layout
 
 \end_inset
@@ -4384,6 +4710,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 116
 \end_layout
 
@@ -4394,6 +4722,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.11
 \end_layout
 
 \end_inset
@@ -4402,6 +4732,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 116
 \end_layout
 
@@ -4412,6 +4744,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.07
 \end_layout
 
 \end_inset
@@ -4422,6 +4756,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $10\times10$
 \end_inset
 
@@ -4434,6 +4770,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 151
 \end_layout
 
@@ -4444,6 +4782,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.76
 \end_layout
 
 \end_inset
@@ -4452,6 +4792,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 151
 \end_layout
 
@@ -4462,6 +4804,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.70
 \end_layout
 
 \end_inset
@@ -4470,6 +4814,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 152
 \end_layout
 
@@ -4480,6 +4826,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.80
 \end_layout
 
 \end_inset
@@ -4488,6 +4836,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 151
 \end_layout
 
@@ -4498,6 +4849,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+2.64
 \end_layout
 
 \end_inset
@@ -4506,6 +4860,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 152
 \end_layout
 
@@ -4516,6 +4872,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.62
 \end_layout
 
 \end_inset
@@ -4524,6 +4882,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 152
 \end_layout
 
@@ -4534,6 +4894,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.61
 \end_layout
 
 \end_inset
@@ -4542,6 +4904,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 153
 \end_layout
 
@@ -4552,6 +4916,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.69
 \end_layout
 
 \end_inset
@@ -4560,6 +4926,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 153
 \end_layout
 
@@ -4570,6 +4938,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.72
 \end_layout
 
 \end_inset
@@ -4578,6 +4948,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 155
 \end_layout
 
@@ -4588,6 +4960,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.72
 \end_layout
 
 \end_inset
@@ -4596,6 +4970,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 155
 \end_layout
 
@@ -4606,6 +4982,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+2.70
 \end_layout
 
 \end_inset
@@ -4616,6 +4994,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $15\times15$
 \end_inset
 
@@ -4628,6 +5008,9 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
+\size scriptsize
 474
 \end_layout
 
@@ -4638,6 +5021,9 @@ Size
 
 \begin_layout Plain Layout
 
+\series bold
+\size scriptsize
+16.7
 \end_layout
 
 \end_inset
@@ -4646,6 +5032,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 477
 \end_layout
 
@@ -4656,6 +5044,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+15.1
 \end_layout
 
 \end_inset
@@ -4664,6 +5054,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 479
 \end_layout
 
@@ -4674,6 +5066,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+17.5
 \end_layout
 
 \end_inset
@@ -4682,6 +5076,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 481
 \end_layout
 
@@ -4692,6 +5088,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+14.5
 \end_layout
 
 \end_inset
@@ -4700,6 +5098,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 485
 \end_layout
 
@@ -4710,6 +5110,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+15.3
 \end_layout
 
 \end_inset
@@ -4718,6 +5120,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 491
 \end_layout
 
@@ -4728,6 +5132,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+15.53
 \end_layout
 
 \end_inset
@@ -4736,6 +5142,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 495
 \end_layout
 
@@ -4746,6 +5154,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+15.6
 \end_layout
 
 \end_inset
@@ -4754,6 +5164,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 501
 \end_layout
 
@@ -4764,6 +5176,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+15.5
 \end_layout
 
 \end_inset
@@ -4772,6 +5186,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 506
 \end_layout
 
@@ -4782,6 +5198,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+16.7
 \end_layout
 
 \end_inset
@@ -4790,6 +5208,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 506
 \end_layout
 
@@ -4800,6 +5220,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+14.8
 \end_layout
 
 \end_inset
@@ -4889,6 +5311,8 @@ status open
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 Size 
 \backslash
  
@@ -5096,6 +5520,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5117,6 +5543,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5138,6 +5566,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5159,6 +5589,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5180,6 +5612,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5201,6 +5635,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5222,6 +5658,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5243,6 +5681,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5264,6 +5704,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5285,6 +5727,8 @@ Size
 
 \begin_layout Plain Layout
 
+\size scriptsize
+min
 \end_layout
 
 \end_inset
@@ -5307,6 +5751,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $3\times3$
 \end_inset
 
@@ -5319,6 +5765,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5337,6 +5785,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5355,6 +5805,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5373,6 +5825,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5391,6 +5845,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5409,6 +5865,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5427,6 +5885,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5445,6 +5905,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5463,6 +5925,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5481,6 +5945,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 11
 \end_layout
 
@@ -5501,6 +5967,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $4\times4$
 \end_inset
 
@@ -5513,6 +5981,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 22
 \end_layout
 
@@ -5531,6 +6001,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 22
 \end_layout
 
@@ -5549,6 +6021,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5567,6 +6041,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5585,6 +6061,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5603,6 +6081,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5621,6 +6101,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5639,6 +6121,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5657,6 +6141,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5675,6 +6161,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 21
 \end_layout
 
@@ -5695,6 +6183,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $5\times5$
 \end_inset
 
@@ -5707,6 +6197,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 39
 \end_layout
 
@@ -5725,6 +6217,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 39
 \end_layout
 
@@ -5743,6 +6237,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 38
 \end_layout
 
@@ -5761,6 +6257,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 38
 \end_layout
 
@@ -5779,6 +6277,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 38
 \end_layout
 
@@ -5797,6 +6297,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 37
 \end_layout
 
@@ -5815,6 +6317,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 37
 \end_layout
 
@@ -5833,6 +6337,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 37
 \end_layout
 
@@ -5851,6 +6357,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 37
 \end_layout
 
@@ -5869,6 +6377,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 37
 \end_layout
 
@@ -5889,6 +6399,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $6\times6$
 \end_inset
 
@@ -5901,6 +6413,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 63
 \end_layout
 
@@ -5919,6 +6433,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 63
 \end_layout
 
@@ -5937,6 +6453,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 63
 \end_layout
 
@@ -5955,6 +6473,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -5973,6 +6493,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -5991,6 +6513,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -6009,6 +6533,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -6027,6 +6553,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 61
 \end_layout
 
@@ -6045,6 +6573,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -6063,6 +6593,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 62
 \end_layout
 
@@ -6083,6 +6615,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $7\times7$
 \end_inset
 
@@ -6095,6 +6629,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 97
 \end_layout
 
@@ -6113,6 +6649,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 97
 \end_layout
 
@@ -6131,6 +6669,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 96
 \end_layout
 
@@ -6149,6 +6689,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 96
 \end_layout
 
@@ -6167,6 +6709,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 95
 \end_layout
 
@@ -6185,6 +6729,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 94
 \end_layout
 
@@ -6203,6 +6749,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 94
 \end_layout
 
@@ -6221,6 +6769,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 95
 \end_layout
 
@@ -6239,6 +6789,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 95
 \end_layout
 
@@ -6257,6 +6809,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 95
 \end_layout
 
@@ -6277,6 +6831,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $8\times8$
 \end_inset
 
@@ -6289,6 +6845,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 141
 \end_layout
 
@@ -6307,6 +6865,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 141
 \end_layout
 
@@ -6325,6 +6885,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 140
 \end_layout
 
@@ -6343,6 +6905,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 140
 \end_layout
 
@@ -6361,6 +6925,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 139
 \end_layout
 
@@ -6381,6 +6947,7 @@ Size
 \begin_layout Plain Layout
 
 \series bold
+\size scriptsize
 138
 \end_layout
 
@@ -6399,6 +6966,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 139
 \end_layout
 
@@ -6417,6 +6986,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 139
 \end_layout
 
@@ -6435,6 +7006,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 140
 \end_layout
 
@@ -6453,6 +7026,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 139
 \end_layout
 
@@ -6473,6 +7048,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $9\times9$
 \end_inset
 
@@ -6485,6 +7062,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 199
 \end_layout
 
@@ -6503,6 +7082,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 198
 \end_layout
 
@@ -6521,6 +7102,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 198
 \end_layout
 
@@ -6539,6 +7122,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 197
 \end_layout
 
@@ -6557,6 +7142,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 196
 \end_layout
 
@@ -6575,6 +7162,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 195
 \end_layout
 
@@ -6593,6 +7182,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 195
 \end_layout
 
@@ -6611,6 +7202,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 196
 \end_layout
 
@@ -6629,6 +7222,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 197
 \end_layout
 
@@ -6647,6 +7242,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 198
 \end_layout
 
@@ -6667,6 +7264,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $10\times10$
 \end_inset
 
@@ -6679,6 +7278,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 270
 \end_layout
 
@@ -6697,6 +7298,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 270
 \end_layout
 
@@ -6715,6 +7318,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 269
 \end_layout
 
@@ -6733,6 +7338,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 268
 \end_layout
 
@@ -6751,6 +7358,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 267
 \end_layout
 
@@ -6769,6 +7378,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 267
 \end_layout
 
@@ -6787,6 +7398,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 267
 \end_layout
 
@@ -6805,6 +7418,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 268
 \end_layout
 
@@ -6823,6 +7438,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 269
 \end_layout
 
@@ -6841,6 +7458,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 269
 \end_layout
 
@@ -6861,6 +7480,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 \begin_inset Formula $15\times15$
 \end_inset
 
@@ -6873,6 +7494,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 903
 \end_layout
 
@@ -6891,6 +7514,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 903
 \end_layout
 
@@ -6909,6 +7534,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 903
 \end_layout
 
@@ -6927,6 +7554,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 900
 \end_layout
 
@@ -6945,6 +7574,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 899
 \end_layout
 
@@ -6963,6 +7594,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 899
 \end_layout
 
@@ -6981,6 +7614,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 902
 \end_layout
 
@@ -6999,6 +7634,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 905
 \end_layout
 
@@ -7017,6 +7654,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 912
 \end_layout
 
@@ -7035,6 +7674,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size scriptsize
 913
 \end_layout
 
@@ -7123,7 +7764,8 @@ When considering ALNS and the initial solutions used, we do not consider
  is based on the worst case execution time period and thus we are most intereste
 d in the initial solution giving the best solution.
  Also, the length of the initial solution and the first couple of iterations
- will be worse for the BASIC initial solution than for the others
+ will be worse for the BASIC initial solution than for the others and would
+ therefore give a worse average 
 \end_layout
 
 \begin_layout Standard
