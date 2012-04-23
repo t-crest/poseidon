@@ -707,7 +707,7 @@ and
 \begin_inset space ~
 \end_inset
 
-order
+-order
 \begin_inset space ~
 \end_inset
 
@@ -717,6 +717,59 @@ order
 c is a somewhat dense schedule, but since the routing ordering is random,
  using this initial solution will explore solutions different than those
  when deterministic or only randomized routing is used.
+\end_layout
+
+\begin_layout Description
+Mix
+\begin_inset space ~
+\end_inset
+
+between
+\begin_inset space ~
+\end_inset
+
+random
+\begin_inset space ~
+\end_inset
+
+and
+\begin_inset space ~
+\end_inset
+
+greedy
+\begin_inset space ~
+\end_inset
+
+(CROSS) Specially for GRASP, all the initial solutions we construct are
+ a mix between RANDOM and rGREEDY.
+ This is done by constructing a sorted list of the channels from the longest
+ to the shortest, as done in GREEDY and rGREEDY.
+ A float 
+\begin_inset Formula $\beta$
+\end_inset
+
+ between 0 and 1 is then passed as parameter.
+ 
+\begin_inset Formula $\beta$
+\end_inset
+
+ denotes the percentage of how how many paths should be swapped in the list
+ of sorted-by-length channels.
+ Hence 
+\begin_inset Formula $\beta$
+\end_inset
+
+ is a measure of how randomly the order in which channels should be routed;
+ if 
+\begin_inset Formula $\beta=1$
+\end_inset
+
+ we have essentially RANDOM, if 
+\begin_inset Formula $\beta=0$
+\end_inset
+
+ we have rGREEDY.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -1246,6 +1299,56 @@ Random Simply selects a random set of paths.
  selected, but up to 10% of all existing paths may be selected.
 \end_layout
 
+\begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:adaptive_choose"
+
+\end_inset
+
+Choosing operators adaptively
+\end_layout
+
+\begin_layout Standard
+For both ALNS and GRASP, the above operators are used to mutate our current
+ schedule to obtain the next.
+ Since it is not clear which operator is the best, we chose which operator
+ to execute adaptively -- this is done according to a simple scheme: We
+ calculate the ratio 
+\begin_inset Formula $r$
+\end_inset
+
+ between the period of the previous schedule and the new current schedule;
+ 
+\begin_inset Formula $r=prev/curr$
+\end_inset
+
+.
+ Thus multiplying the probability of the selected operator by 
+\begin_inset Formula $r$
+\end_inset
+
+ will automatically punish or reward it.
+ If 
+\begin_inset Formula $r>1$
+\end_inset
+
+, the current solution is shorter than the previous, so we reward by increasing
+ the probability of the same operator being selected in the next iteration.
+ Experimentation showed that dominating-paths was much better than random
+ and probability of random-selection dropped quickly.
+ To combat this quick convergence we actually multiply by 
+\begin_inset Formula $\sqrt{r}$
+\end_inset
+
+ rather than 
+\begin_inset Formula $r$
+\end_inset
+
+.
+ 
+\end_layout
+
 \begin_layout Subsection
 Proposed metaheuristics
 \end_layout
@@ -1283,88 +1386,55 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-With the nature of our problem, where there is not a clear neighborhood,
+With the nature of our problem, where there is not a clear local neighborhood,
  diversifying the search for solutions may be an advantage.
  Also, the problem is very large, and these properties favor the GRASP metaheuri
 stic.
 \end_layout
 
 \begin_layout Standard
-The GRASP metaheuristic consists of the phases, greedy randomized adaptive
- phase followed by a local serch phase.
- The greedy randomized adaptive phase creates an initial greedy randomized
- solution adaptively.
- After creating the initial greedy randomized solution, the solution is
- improved iteratively using a local search.
- When the solution can not be improved locally, the best solution is stored,
- if it is the best seen so far.
- These phases of creating an initial solution and performing a local search
- are then repeated for a set period of time.
+The GRASP metaheuristic consists of the steps, 1)
+\begin_inset space ~
+\end_inset
+
+greedy randomized adaptive construction of a feasible solution, followed
+ by 2)
+\begin_inset space ~
+\end_inset
+
+a local search on this solution.
+ These steps are iterated ad infinitum until time runs out.
+ The local search might not improve the solution, hence we also check if
+ the greedy initial solution is the best seen so far.
+ 
 \end_layout
 
 \begin_layout Standard
-Our use of the GRASP metaheuristics is not completely in correspondence
- with its definition.
- The adaptive phase when constructing the initial greedy solution is not
- present.
- Instead, operators ar eselected adaptively when performing local search.
+Our implementation of the GRASP metaheuristic is not completely in accordance
+ with the published version: Recall that our operators destroy and repair
+ a part of the solution and are chosen adaptively -- which is very similar
+ to the ALNS scheme.
+ Our GRASP can thus be seen as a layer on top of ALNS.
  Also, the iterative improvement in the local search performs only a single
- step in our case.
-\end_layout
+ iteration in our case.
+ Finally, instead of building the initial solution randomized and adaptively,
+ the initial solution is built using CROSS as described in Section
+\begin_inset space ~
+\end_inset
 
-\begin_layout Standard
-Instead of building the initial solution randomly and adaptively, the initial
- solution is built using a cross between approaches randomized routing and
- randomized routing and order.
- This is done by constructing a sorted list of the channels from longest
- to the shortest as done in the randomized routing approach.
- A float is then passed as parameter to our GRASP, that is between 0 and
- 1.
- It is normalized according to the number of channels to be scheduled.
- This number, is the number of times two channels are to be chosen in the
- sorted list and switched thereby partially ruining the sorted order of
- the channels.
- We may loop upon this float input as a variation of 
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Initial-solution"
+
+\end_inset
+
+.
+ This allows the user to tune 
 \begin_inset Formula $\beta$
 \end_inset
 
- only, instead of being a number between 1 and number of candidates, it
- is fractional and then normalized.
- Setting 
-\begin_inset Formula $\beta$
-\end_inset
-
- to zero will mean that the initial solution used is that of the randomized
- routing.
-\end_layout
-
-\begin_layout Standard
-The local search utilizes the operators dominating-{path,rectangle} and
- late-paths.
- One of these operators is chosen randomly according to a weighted random
- choice.
- After running the operator, the returned set of paths are ripped up and
- rerouted according to the same greedy appoach as the randomized routing.
- The weights 
-\begin_inset Formula $w$
-\end_inset
-
- of each operator vary adaptively on how they improve the initial solution.
- The operators start out equally weighted, and at each iteration that they
- are chosen they multiplied with the value 
-\end_layout
-
-\begin_layout Standard
-\align center
-\begin_inset Formula $\frac{\left[Schedule\, length\, after\, initial\right]}{\left[Schedule\, length\, after\, local\, search\right]}$
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-This means that dependent on how much an operator improves an initial solution,
- it is going to be that more favored to be selected again.
+.
 \end_layout
 
 \begin_layout Standard
@@ -1512,40 +1582,18 @@ reference "enu:select_op"
 
 \end_inset
 
- is punished or rewarded according to a simple scheme: We calculate the
- ratio 
-\begin_inset Formula $r$
+ is punished or rewarded as described in Section
+\begin_inset space ~
 \end_inset
 
- between the period of the previous schedule and the new current schedule;
- 
-\begin_inset Formula $r=prev/curr$
-\end_inset
 
-.
- Thus multiplying the probability of selected operator by 
-\begin_inset Formula $r$
-\end_inset
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:adaptive_choose"
 
- will automatically punished or reward it.
- If 
-\begin_inset Formula $r>1$
-\end_inset
-
- the current solution is shorter than the previous, so we reward by increasing
- the probability of the same operator being selected in the next iteration.
- Experimentation showed that dominating-paths was much better than random,
- so probability of random-selection drops quickly.
- To combat quick convergence we actually multiply by 
-\begin_inset Formula $\sqrt{r}$
-\end_inset
-
- rather than 
-\begin_inset Formula $r$
 \end_inset
 
 .
- 
 \end_layout
 
 \begin_layout Standard
@@ -1992,8 +2040,9 @@ reference "tab:Beta-for-mesh"
 \end_inset
 
 .
- The standard deviation is calculated from a sample of the of all the iterations
-, with
+ The standard deviation is calculated from a sample from the iterations,
+ with each sample point given with one second intervals, thus for 2 hour
+ runs
 \end_layout
 
 \begin_layout Standard
@@ -3921,7 +3970,8 @@ name "tab:Beta-for-bitorus"
 
 \end_inset
 
-Best found solution and standard deviation, for the different 
+Best found solution and standard deviation running GRASP, for the different
+ 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -3937,6 +3987,34 @@ Best found solution and standard deviation, for the different
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-bitorus"
+
+\end_inset
+
+ shows that when runnning the GRASP metaheuristic on the bi-torus topology,
+ a small amount of randomness is preferred.
+ This is seen, since the best solutions for all the bi-torus sizes are found
+ with 
+\begin_inset Formula $\beta\leq0.05$
+\end_inset
+
+.
+ The best solution here, is meant by the 
+\begin_inset Formula $\beta$
+\end_inset
+
+ value that gets the smallest schedule length, and secondly has the smallest
+ standard deviation.
 \end_layout
 
 \begin_layout Standard
@@ -5861,7 +5939,8 @@ name "tab:Beta-for-mesh"
 
 \end_inset
 
-Best found solution and standard deviation, for the different 
+Best found solution and standard deviation running GRASP, for the different
+ 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -5880,8 +5959,8 @@ Best found solution and standard deviation, for the different
 \end_layout
 
 \begin_layout Standard
-we could consider 0.1 as about optimal for 
-\begin_inset Formula $\beta$
+For the mesh topology, table
+\begin_inset space ~
 \end_inset
 
 .
@@ -5889,22 +5968,22 @@ we could consider 0.1 as about optimal for
 , that may improve the solution.
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Her skal vi helst have noget average data sat op imod best data, muligvis
- også en reference til hvor hurtigt de forskellige beta
-\end_layout
-
-\begin_layout Plain Layout
-Skal tabel ind her?? Den bliver stor...
-\end_layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-mesh"
 
 \end_inset
 
+ shows, that the best results can be found across the table.
+ For 
+\begin_inset Formula $\beta=0.2$
+\end_inset
 
+ we observe, that it consistantly for the best schedule length with a relatively
+ good standard deviations.
+ From this we gather, that in contrary to the bi-torus topology, the mesh
+ topology gets the best schedule length when some randomness is added to
+ the initial solutions.
 \end_layout
 
 \begin_layout Subsection
@@ -7184,7 +7263,7 @@ reference "tab:Best-found-period-1"
 
 .
  Therefore, if ALNS was to be run multiple times, RANDOM could be preferred
- instead of the deterministic GREEDY.
+ instead of the deterministic GREEDY for the mesh topology.
 \end_layout
 
 \begin_layout Section
