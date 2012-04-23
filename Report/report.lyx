@@ -5972,12 +5972,11 @@ reference "tab:Beta-for-mesh"
 \end_inset
 
  shows, that the best results can be found across the table.
- For 
+ We observe that 
 \begin_inset Formula $\beta=0.2$
 \end_inset
 
- we observe, that it consistantly for the best schedule length with a relatively
- good standard deviations.
+ results in the best schedule lengths with a relatively good standard deviations.
  From this we gather, that in contrary to the bi-torus topology, the mesh
  topology gets the best schedule length when some randomness is added to
  the initial solutions.
@@ -5988,18 +5987,11 @@ Initial solution
 \end_layout
 
 \begin_layout Standard
-When considering ALNS and the initial solutions used, we do not consider
- average value of the schedule length.
- This is because as already stated, the performance of a real-time system
- is based on the worst case execution time period and thus we are most intereste
-d in the initial solution giving the best solution.
- Also, the length of the initial solution and the first couple of iterations
- will be worse for the BASIC initial solution than for the others and would
- therefore give a worse average 
-\end_layout
-
-\begin_layout Standard
-When doing a test run for 2 hours, the found schedule length for the different
+ALNS starts with an initial solution and tries to improve it.
+ The length of the initial solution and the first couple of iterations will
+ be longer for the BASIC initial solution than for the others, this might
+ avoid falling in a local minimum.
+ When doing a test run for 2 hours, the schedule length for the different
  sizes of the bi-torus and mesh topologies are seen in table
 \begin_inset space ~
 \end_inset
@@ -8569,7 +8561,7 @@ Our scheduler has been tested with custom topologies besides mesh and bi-torus,
 Lower bound for the scheduling period are given in 
 \begin_inset CommandInset citation
 LatexCommand cite
-key "Schoeberl2012"
+key "Schoeberl2011"
 
 \end_inset
 
