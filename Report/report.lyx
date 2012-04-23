@@ -7278,74 +7278,8 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-Our scheduler has been tested with custom topologies besides mesh and bi-torus,
- to verify functionality.
- For evaluating the performance of our metaheuristics we only run our scheduler
- on use-cases with all-to-all communication and on either a mesh or a bi-torus
- topology these are the only examples for which we have results to compare
- with.
- For all-to-all communication in a mesh or bi-torus topology we also have
- theoretical lower bound on the scheduling period.
-\end_layout
-
-\begin_layout Standard
-Lower bound for the scheduling period are given in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Schoeberl2012"
-
-\end_inset
-
-.
- In 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Brandner2012"
-
-\end_inset
-
- a heuristic scheduler is proposed, this scheduler has the constraint compared
- to our scheduler that the scheduler in each router must be the same.
- This constraint is made to simplify hardware.
- Table
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:Results-compared-to"
-
-\end_inset
-
-compares our results to the results of the heuristic scheduler in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Brandner2012"
-
-\end_inset
-
- and the lower bounds given in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Schoeberl2011"
-
-\end_inset
-
-, the numbers in parenthesis in the bounds column are optimal schedule periods
- also given in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "Schoeberl2011"
-
-\end_inset
-
-.
- These results have all run for two hours.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Float table
+placement t
 wide true
 sideways false
 status open
@@ -8618,6 +8552,73 @@ key "Brandner2012"
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Our scheduler has been tested with custom topologies besides mesh and bi-torus,
+ to verify functionality.
+ For evaluating the performance of our metaheuristics we only run our scheduler
+ on use-cases with all-to-all communication and on either a mesh or a bi-torus
+ topology these are the only examples for which we have results to compare
+ with.
+ For all-to-all communication in a mesh or bi-torus topology we also have
+ theoretical lower bound on the scheduling period.
+\end_layout
+
+\begin_layout Standard
+Lower bound for the scheduling period are given in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2012"
+
+\end_inset
+
+.
+ In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ a heuristic scheduler is proposed, this scheduler has the constraint compared
+ to our scheduler that the scheduler in each router must be the same.
+ This constraint is made to simplify hardware.
+ Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-compared-to"
+
+\end_inset
+
+compares our results to the results of the heuristic scheduler in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Brandner2012"
+
+\end_inset
+
+ and the lower bounds given in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+, the numbers in parenthesis in the bounds column are optimal schedule periods
+ also given in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+.
+ These results have all run for two hours.
 \end_layout
 
 \begin_layout Standard
