@@ -3,6 +3,10 @@
 \begin_document
 \begin_header
 \textclass sigplanconf
+\begin_preamble
+% This fixes margins when using two-column layout
+\usepackage{mparhack}
+\end_preamble
 \options natbib, nocopyrightspace
 \use_default_options false
 \maintain_unincluded_children false
@@ -28,7 +32,17 @@
 \float_placement tbh
 \paperfontsize default
 \spacing single
-\use_hyperref false
+\use_hyperref true
+\pdf_title "Scheduling in a Real-time Network-on-Chip"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
 \papersize default
 \use_geometry false
 \use_amsmath 1
@@ -600,6 +614,12 @@ The problem is NP-complet problem
 \end_layout
 
 \begin_layout Subsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Initial-solution"
+
+\end_inset
+
 Initial solution
 \begin_inset Marginal
 status open
@@ -614,9 +634,7 @@ Jaspur
 \end_layout
 
 \begin_layout Standard
-For any optimization problem, we require an initial feasible solution to
- optimize.
- Four different approaches to create an initial feasible solution to optimize
+Four different approaches to create a feasible initial solution to optimize
  are:
 \end_layout
 
@@ -625,14 +643,13 @@ Basic
 \begin_inset space ~
 \end_inset
 
-(BAD_RANDOM) This initial solution creates a feasible schedule by randomly
- picking channels to be scheduled onto the NoC, and then schedules them
- on timeslots one after another.
- This initial solution therefore only has one channel scheduled at each
- timeslot.
- The advantage using this approach, is that the schedule is not dense and
- thus the applied metaheuristic will perform all the work in optimizing
- the solution.
+(BASIC) This initial solution creates a feasible schedule by randomly picking
+ channels to be scheduled onto the NoC, and then schedules them on timeslots
+ one after another.
+ This solution only has one channel scheduled at each timeslot, and the
+ advantage using this approach, is that the schedule is not dense and thus
+ the applied metaheuristic will perform all the work towards an optimal
+ solution.
 \end_layout
 
 \begin_layout Description
@@ -642,15 +659,16 @@ Deterministic
 
 (GRREDY) The created deterministic approach is a greedy algorithm that tries
  to schedule channels onto the NoC at the earliest possible timeslot.
- The channels are scheduled in an order from the longest channels to the
- shortest channels.
- Length of channels is defined by number of links it has to take to reach
- its destination.
- The order in which availability of out links in a router is checked is
+ The channels are scheduled in an order, where the longest channels are
+ scheduled first.
+ Length of channels is defined, by the number of links it has to take to
+ reach its destination.
+ The order, in which availability of links out of a router is checked, is
  also set.
  Due to the given attributes, this inital solution always gives the same
- result, and thus using this initial solution, the metaheuristics are forced
- to try and optimize from the same starting point every time.
+ result when given the same input.
+ Therefore, using this initial solution, the metaheuristics are forced to
+ try and optimize from the same starting point every time.
 \end_layout
 
 \begin_layout Description
@@ -658,12 +676,17 @@ Randomized-routing
 \begin_inset space ~
 \end_inset
 
-(rGREEDY) In this initial solution, the same greedy approach as that of
- the deterministic in that it tries to schedule the longest channels first,
+(rGREEDY) This initial solution uses the same greedy approach as that of
+ the deterministic, in that it tries to schedule the longest channels first,
  and the channels are scheduled at the earliest possible timeslot.
  The difference from the deterministic greedy algorithm is in how each channel
  is routed.
- Where the deterministic 
+ Where the deterministic algorithm will always route the channels in the
+ same way, the priority of possible available out links at each router is
+ random, and thus if some routes can be routed better by using a different
+ shortest path, this initial solution may find that route.
+ Also, this gives an initial solution to the metaheuristic that is not always
+ the same.
 \end_layout
 
 \begin_layout Description
@@ -679,37 +702,17 @@ order
 \begin_inset space ~
 \end_inset
 
-(RANDOM) sdf
+(RANDOM) Here, again, the channels are scheduled as early as possible, but
+ now the order is random in which the channels are scheduled.
+ This is another initial solution, where the starting point for the metaheuristi
+c is a somewhat dense schedule, but since the routing ordering is random,
+ using this initial solution will explore solutions different than those
+ when deterministic or only randomized routing is used.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-How is the initial solution c0nstructed.
- How are they different:
-\end_layout
-
-\begin_layout Itemize
-GREEDY
-\end_layout
-
-\begin_layout Itemize
-rGREEDY
-\end_layout
-
-\begin_layout Itemize
-BAD_RANDOM
-\end_layout
-
-\begin_layout Itemize
-RANDOM
-\end_layout
-
-\end_inset
-
-
+The main motivation in having four different ways of obtaining initial solution
+ is to explore different neighborhoods with having different starting points.
 \end_layout
 
 \begin_layout Subsection
@@ -757,20 +760,6 @@ reference "fig:movebend"
 \end_inset
 
 ).
-\end_layout
-
-\begin_layout Subsubsection
-Primitives
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Mark
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -1042,6 +1031,20 @@ Moving bends.
 
 \end_layout
 
+\begin_layout Subsubsection
+Primitives
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 Swapping pairs of links is always possible, but moving bends can lead to
  an infeasible schedule.
@@ -1111,14 +1114,16 @@ intelligent
 \begin_inset Quotes erd
 \end_inset
 
- selection of which channels to reroute is the job of our 
-\emph on
-operators
-\emph default
-.
+ selection of which channels to reroute is the job of our operators.
 \end_layout
 
 \begin_layout Subsubsection
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Operators"
+
+\end_inset
+
 Operators
 \begin_inset Marginal
 status open
@@ -1271,26 +1276,86 @@ Jaspur
 \begin_layout Standard
 With the nature of our problem, where there is not a clear neighborhood,
  diversifying the search for solutions may be an advantage.
- This is a property of the GRASP metaheuristic.
- 
+ Also, the problem is very large, and these properties favor the GRASP metaheuri
+stic.
 \end_layout
 
 \begin_layout Standard
 The GRASP metaheuristic consists of the phases, greedy randomized adaptive
  phase followed by a local serch phase.
  The greedy randomized adaptive phase creates an initial greedy randomized
- solution.
+ solution adaptively.
  After creating the initial greedy randomized solution, the solution is
  improved iteratively using a local search.
  When the solution can not be improved locally, the best solution is stored,
  if it is the best seen so far.
- These steps of creating an initial solution and performing a local search
+ These phases of creating an initial solution and performing a local search
  are then repeated for a set period of time.
 \end_layout
 
 \begin_layout Standard
-In our case, this means that the initial solution is going to be a cross
- between randomized routing and the randomized routing and oredering 
+Our use of the GRASP metaheuristics is not completely in correspondence
+ with its definition.
+ The adaptive function that is to be used when constructing the initial
+ greedy solution is not present in that phase, instead some adaptiveness
+ in selecting operators when performing local search is added.
+ Also, the iterative improvement in the local searchonly performs one step
+ in our case.
+\end_layout
+
+\begin_layout Standard
+Instead of building the initial solution randomly and adaptively, the initial
+ solution is built using a cross between approaches randomized routing and
+ randomized routing and order.
+ This is done by constructing a sorted list of the channels from longest
+ to the shortest as done in the randomized routing approach.
+ A float is then passed as parameter to our GRASP, that is between 0 and
+ 1.
+ It is normalized according to the number of channels to be scheduled.
+ This number, is the number of times two channels are to be chosen in the
+ sorted list and switched thereby partially ruining the sorted order of
+ the channels.
+ We may loop upon this float input as a variation of 
+\begin_inset Formula $\beta$
+\end_inset
+
+ only, instead of being a number between 1 and number of candidates, it
+ is fractional and then normalized.
+ Setting 
+\begin_inset Formula $\beta$
+\end_inset
+
+ to zero will mean that the initial solution used is that of the randomized
+ routing.
+\end_layout
+
+\begin_layout Standard
+The local search utilizes the operators dominating-{path,rectangle} and
+ late-paths.
+ One of these operators is chosen randomly according to a weighted random
+ choice.
+ After running the operator, the returned set of paths are ripped up and
+ rerouted according to the same greedy appoach as the randomized routing.
+ The weights 
+\begin_inset Formula $w$
+\end_inset
+
+ of each operator vary adaptively on how they improve the initial solution.
+ The operators start out equally weighted, and at each iteration that they
+ are chosen they multiplied with the value 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{\left[Schedule\, length\, after\, initial\right]}{\left[Schedule\, length\, after\, local\, search\right]}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This means that dependent on how much an operator improves an initial solution,
+ it is going to be that more favored to be selected again.
 \end_layout
 
 \begin_layout Standard
@@ -1334,16 +1399,157 @@ Mark
 \end_layout
 
 \begin_layout Standard
-Initial solution, many different.
- GREEDY may be too dense to begin with, so we also have BAD-RANDOM, etc.
+Contrary to GRASP, ALNS continually works on the same solution.
+ ALNS repeatedly destroys a part of a solution and rebuilds it again into
+ a feasible solution.
+ Since we always rebuild with route, what we punish and reward are the selection
+ operators described above.
+ The operators fit into this scheme perfectly, so our implementation of
+ ALNS is simple.
+ Our ALNS implementation is as follows:
+\end_layout
+
+\begin_layout Enumerate
+An initial solution is constructed using one of the specified algorithms
+ described in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Initial-solution"
+
+\end_inset
+
+.
+ This is specified by the user.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset CommandInset label
+LatexCommand label
+name "enu:select_op"
+
+\end_inset
+
+One of the selection operators described in Section
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Operators"
+
+\end_inset
+
+ is chosen stochastically.
+ Each operator has an associated probability of it being chosen.
+ To achieve some kind of Simulated Annealing-like behavior we give the random-se
+lection operator a higher probability initially: Initial probabilities are
+ 33% for the random operator and 22% each for the rest, dominating-{path,rectang
+le} and late-path.
+ Since we have not performed any kind of extensive parameter tuning, we
+ do not know how much these initial probabilities affect the solution.
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Er dette ikke en sætning der skal stå i parameter tuning??
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The selection operator is executed, which returns a set of paths.
+ This set of paths is ripped-up and re-routed again.
+ As mentioned before, re-routing paths is done greedily: We first sort the
+ ripped-up paths by length and route them according to this ordering.
+ Any path is routed in a first-fit fashion, meaning we schedule it as early
+ as possible.
+ Also note that tie-breaking for shortest-path routing decisions is done
+ stochastically.
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Noget af det her skal muligvis stå i GRASP istedet, siden det opstår før...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+The new schedule length is found, and if it the shortest seen until now,
+ we copy it and remember it as our best solution thus far.
+\end_layout
+
+\begin_layout Enumerate
+The selection operator we chose in step
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "enu:select_op"
+
+\end_inset
+
+ is punished or rewarded according to a simple scheme: We calculate the
+ ratio 
+\begin_inset Formula $r$
+\end_inset
+
+ between the period of the previous schedule and the new current schedule;
+ 
+\begin_inset Formula $r=prev/curr$
+\end_inset
+
+.
+ Thus multiplying the probability of selected operator by 
+\begin_inset Formula $r$
+\end_inset
+
+ will automatically punished or reward it.
+ If 
+\begin_inset Formula $r>1$
+\end_inset
+
+ the current solution is shorter than the previous, so we reward by increasing
+ the probability of the same operator being selected in the next iteration.
+ Experimentation showed that dominating-paths was much better than random,
+ so probability of random-selection drops quickly.
+ To combat quick convergence we actually multiply by 
+\begin_inset Formula $\sqrt{r}$
+\end_inset
+
+ rather than 
+\begin_inset Formula $r$
+\end_inset
+
+.
+ 
 \end_layout
 
 \begin_layout Standard
-destroy and repair, chosen adaptively
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+In case of equal solutions, punish or reward by schedule homogenity.
 \end_layout
 
-\begin_layout Standard
-repair is done using a greedy heuristic
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -1367,39 +1573,92 @@ C++11
 \family default
 , using 
 \family sans
-BOOST
-\family default
- and 
-\family sans
-pugixml
-\family default
- as 3rd party libraries.
- However our discussion will remain language-agnostic.
-\end_layout
-
-\begin_layout Subsection
-Data-structure organization
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
+BOOST 1.49
+\begin_inset Foot
+status collapsed
 
 \begin_layout Plain Layout
-How a problem is modeled and represented, affects code-cleanliness and can
- have large impact on performance.
- 
-\end_layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://www.boost.org/doc/libs/1_49_0/"
 
 \end_inset
 
 
 \end_layout
 
+\end_inset
+
+
+\family default
+ and 
+\family sans
+pugixml 1.0
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+
+\family typewriter
+\begin_inset CommandInset href
+LatexCommand href
+target "http://pugixml.googlecode.com/files/pugixml-1.0.zip"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\family default
+ as 3rd party libraries.
+ The source code of our schedule is provided as open source software.
+ The source is available at 
+\family typewriter
+
+\begin_inset CommandInset href
+LatexCommand href
+target "https://github.com/rbscloud/SNTs"
+
+\end_inset
+
+
+\family default
+.
+ The source code builds successfully on 
+\family sans
+Linux
+\family default
+ and 
+\family sans
+Cygwin
+\family default
+ with 
+\family sans
+GCC 4.5.2
+\family default
+ or later with 
+\family typewriter
+--std=c++0x
+\family default
+ flag enabled.
+\end_layout
+
+\begin_layout Standard
+The rest of this section will remain language agnostic.
+\end_layout
+
+\begin_layout Subsection
+Data-structure organization and delta-evaluation
+\end_layout
+
 \begin_layout Standard
 In our problem domain, there are basically two ways to represent the schedule;
- time-centric or network-centric.
- 
+ time-centric or network-centric:
 \end_layout
 
 \begin_layout Description
@@ -1424,8 +1683,8 @@ Time-centric We could consider grouping all routing-decisions made in the
 \begin_layout Description
 Network-centric In reality, links are resources for which communication
  must contend.
- Thus is its more intuitive to only have 1 of each link and router represented
- -- rather than as a layer of frames.
+ Thus is its more intuitive to have each link and router represented once
+ only -- rather than multiple times in each frame.
  This means we localize the schedule, storing a local schedule on each link.
  In this representation, this means we do not have to go up one timeslot
  and index again to check if something has been scheduled -- this information
@@ -1433,65 +1692,58 @@ Network-centric In reality, links are resources for which communication
  Splitting the schedule up into such localized schedules, also allows us
  to make fast successor queries.
  A drawback is that determining global schedule length now takes 
-\begin_inset Formula $O(n)$
+\begin_inset Formula $\mathcal{O}(n)$
 \end_inset
 
- time (which is reducible to 
-\begin_inset Formula $O(p)$
+ time where 
+\begin_inset Formula $n$
 \end_inset
 
- using delta-evaluation) rather than 
-\begin_inset Formula $O(1)$
+ is the number of routers, rather than 
+\begin_inset Formula $\mathcal{O}(1)$
 \end_inset
 
  time as in the time-centric representation.
+ However using delta-evaluation this is reducible to average-case 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time.
+\end_layout
+
+\begin_layout Standard
+The goal of delta-evaluation is to reuse as much of what is known about
+ the previous solution, so the evaluation function becomes quick.
+ In our case, we could store a dynamically re-sizable array which for each
+ index (representing a timeslot), stores how many links is scheduled in
+ that timeslot.
+ Whenever we mutate our schedule, the array is updated correspondingly.
+ Traversing backwards from the end of the array until hitting a non-zero,
+ reveals the schedule length.
+ Since the period of neighboring schedules is quite close to each other,
+ traversing the array will take 
+\begin_inset Formula $\mathcal{O}(1)$
+\end_inset
+
+ time in the average case, but 
+\begin_inset Formula $\mathcal{O}(p)$
+\end_inset
+
+ time in the worst-case.
+ Finally, resizing the array dynamically takes amortized constant time.
  
 \end_layout
 
 \begin_layout Standard
-In reality, the overall performance depends on channel routing and very
- little on the 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-internal representation
-\end_layout
-
-\end_inset
-
-.
- Hence we chose the more Object Orientation-friendly network-centric representat
-ion.
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-is to store all the physical links which are actually present only once,
- and then layer time on top of each link.
-\end_layout
-
-\begin_layout Plain Layout
-In the-time centric representation, the interconnect network has to be encoded
- several times.
-\end_layout
-
-\begin_layout Plain Layout
-Current and best solution: We only copy current into best, when we know
- that we have found a better solution.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-delta-evaluation
+In reality, the overall performance depends on channel-routing and very
+ little on our evaluation function, which is very simple and quick enough.
+ Hence we have chosen the more Object Orientation-friendly network-centric
+ representation.
+ If further performance improvements are sought, our 
+\family typewriter
+route
+\family default
+ primitive can be easily parallelized.
 \end_layout
 
 \begin_layout Subsection
@@ -1499,134 +1751,80 @@ Calculating shortest paths
 \end_layout
 
 \begin_layout Standard
-All-pair shortest paths via BFS.
- N^2 time and space.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-We have implemented the program in C++ for speed considerations.
-\end_layout
+One of our simplifying decisions is to only route channels along shortest
+ paths, as this will automatically guarantee in-order packet arrival.
+ For this, we need to compute local routing decisions for the all-pair shortest
+ paths.
+ Since our network graph is very regular as each router only has max out-degree
+ 4
+\begin_inset Foot
+status collapsed
 
 \begin_layout Plain Layout
-Infrastructure.
-\end_layout
-
-\begin_layout Itemize
-Data structures
-\end_layout
-
-\begin_layout Itemize
-Ensuring feasible solutions
-\end_layout
-
-\begin_layout Itemize
-Shortest path calculation
-\end_layout
-
-\begin_layout Itemize
-Primitives for creating a solution
-\end_layout
-
-\begin_layout Itemize
-Initial solutions
-\end_layout
-
-\begin_layout Itemize
-Operators of metaheuristics
+For routing we only care about the 4 non-local ports of routers.
 \end_layout
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-route_channel can be parallelized with OMP, for determining t_start 
-\end_layout
-
+ and all links have unit cost, we can easily find the shortest path via
+ a breadth-first search: We simply start at the destination 
+\begin_inset Formula $b$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Subsection
-Source access
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
+ and do a BFS -- as we encounter another router 
+\begin_inset Formula $a$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-We provide the C++ code of our scheduler as open source.
- The source can be found at
-\end_layout
-
-\begin_layout Standard
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-https://github.com/rbscloud/SNTs 
-\end_layout
-
+, we now know a shortest path from 
+\begin_inset Formula $a$
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
-The source can be downloaded via a zip file or with 
-\family typewriter
-git
-\end_layout
-
-\begin_layout Standard
-
-\family typewriter
-\begin_inset listings
-lstparams "basicstyle={\ttfamily}"
-inline false
-status open
-
-\begin_layout Plain Layout
-
-git clone git://github.com/rbscloud/SNTs.git
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-The project uses the boost C++ libraries from 
-\begin_inset CommandInset href
-LatexCommand href
-target "boost.org"
-
+ to 
+\begin_inset Formula $b$
 \end_inset
 
 .
- To build the scheduler, create a project in your favorite IDE, include
- boost and build.
+ That the path is a shortest path is guaranteed by the nature of BFS.
+ Encountering 
+\begin_inset Formula $a$
+\end_inset
+
+, we simply store which port the BFS-wave reached 
+\begin_inset Formula $a$
+\end_inset
+
+ from, and associate 
+\begin_inset Formula $b$
+\end_inset
+
+ with that port in a local (perfect) hashmap, 
+\begin_inset Formula $next$
+\end_inset
+
+.
+ So 
+\begin_inset Formula $a.next[b]$
+\end_inset
+
+ returns a set of output ports of 
+\begin_inset Formula $a$
+\end_inset
+
+, which lie on one of the shortest paths towards 
+\begin_inset Formula $b$
+\end_inset
+
+.
+ Computing all these shortest-paths can be done in 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ time and 
+\begin_inset Formula $\mathcal{O}(n^{2})$
+\end_inset
+
+ space.
+ 
 \end_layout
 
 \begin_layout Section
@@ -1646,7 +1844,2001 @@ Jaspur
 \begin_layout Standard
 Parameter tuning is vital, in order to get the most optimization from the
  metaheuristics.
- During our tuning
+ In our case the main parameters to consider were:
+\end_layout
+
+\begin_layout Description
+Running
+\begin_inset space ~
+\end_inset
+
+time Is the time that is given to the metaheuristic to try and optimize
+ the problem
+\end_layout
+
+\begin_layout Description
+\begin_inset Formula $\beta$
+\end_inset
+
+ The parameter determining the randomness of the initial solution when running
+ GRASP
+\end_layout
+
+\begin_layout Description
+Starting
+\begin_inset space ~
+\end_inset
+
+parameter
+\begin_inset space ~
+\end_inset
+
+of
+\begin_inset space ~
+\end_inset
+
+choose
+\begin_inset space ~
+\end_inset
+
+table The priorities of operators chosen during the 
+\end_layout
+
+\begin_layout Description
+Initial
+\begin_inset space ~
+\end_inset
+
+solution The choice of what initial solution is chosen when running ALNS
+\end_layout
+
+\begin_layout Standard
+The tuning was done mainly based on observations from test runs.
+ During testing, we chose to focused on the mesh and bi-torus topologies
+ and the scenario where each router communicates a packet of length one
+ to every other router in the network.
+ We focused on the mesh and bi-torus with height and width 3-10 and 15.
+ Also, there was not enough time for thorough testing, so possible scenarios
+ such as running a metaheuristic on very large networks for e.g.
+ 24 hours for getting test results to then do reruns was not an option.
+\end_layout
+
+\begin_layout Subsection
+Running time
+\end_layout
+
+\begin_layout Standard
+The time, the metaheuristic needs to optimize a problem depends on the size
+ of the problem at hand.
+ Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Rounded-numbers-of"
+
+\end_inset
+
+ presents the number of iterations during a test run for two hours of each
+ considered scenario.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="11" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<row>
+<cell multirow="3" alignment="center" valignment="middle" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Size
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+ALNS (RANDOM)
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="right" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="1" alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GRASP 
+\begin_inset Formula $\left(\beta=0.1\right)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bi-torus
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mesh
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bi-torus
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mesh
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $3\times3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+466.451.877
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271.864.914
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+33.164.408 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+30.629.712
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $4\times4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+100.497.005
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.997.571
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5\times5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+29.898.319
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.886.940
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $6\times6$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $7\times7$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+247.464
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+159.557
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $8\times8$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+6.382.482
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.478.727
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+55.597
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $9\times9$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.205.896
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21.638
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $10\times10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.350.495
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $15\times15$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+84
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Rounded-numbers-of"
+
+\end_inset
+
+Rounded numbers of iterations when running for two hours on gramme.ebar.dtu.dk
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When we look at the values in table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Rounded-numbers-of"
+
+\end_inset
+
+, we see that the number of iterations for alns 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Some short comment on the numbers, possibly also some info on how fast the
+ best solution is found
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We did not have time, to do test runs for a longer period of time.
+\end_layout
+
+\begin_layout Subsection
+Starting parameter of choose table 
+\end_layout
+
+\begin_layout Standard
+The starting parameters of the choose table denote the starting priorities
+ of the available operators for the metaheuristic.
+ The nature of the operators dominating-{path,rectangle} and late-path implies
+ that they should be given equal weight at the start of optimization.
+ The adaptive function will then favor those that give good results and
+ not the others.
+ We have not tested other scenarios than equal weighting of the starting
+ parameter in the choose table.
+ The random operator though, which is only present in ALNS, we assigned
+ different values.
+ The reason is that it is not very likely that the random operator is going
+ to increase the
+\end_layout
+
+\begin_layout Standard
+We ended up setting the starting parameter for the random operator to 1.5,
+ while the others are set to 1.0.
+\end_layout
+
+\begin_layout Subsection
+\begin_inset Formula $\beta$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+When running optimization using GRASP, we tested the algorithm by running
+ for two hours with
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\beta\in\left\{ 0,0.01,0.02,0.05,0.1,0.2,0.3,0.5,0.9,1\right\} $
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Varying the 
+\begin_inset Formula $\beta$
+\end_inset
+
+ did not seem to matter that much if it was between 0 and 0.5.
+ When running for two hour, almost all the values were the same.
+ As the width and heigth increased to 10 and 15 though, a 
+\begin_inset Formula $\beta$
+\end_inset
+
+ less than 0.1 gave the best results.
+ We also observed the best results for a bi-torus with size 
+\begin_inset Formula $8\times8$
+\end_inset
+
+ with beta equal to 0.1.
+ From this single case, where 
+\begin_inset Formula $8\times8$
+\end_inset
+
+ performed better than the rest, we could consider 0.1 as about optimal for
+ 
+\begin_inset Formula $\beta$
+\end_inset
+
+.
+ This is still close to the greedy solution, but leaves som room for randomness,
+ that may improve the solution.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Her skal vi helst have noget average data sat op imod best data, muligvis
+ også en reference til hvor hurtigt de forskellige beta
+\end_layout
+
+\begin_layout Plain Layout
+Skal tabel ind her?? Den bliver stor...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Initial solution
+\end_layout
+
+\begin_layout Standard
+When considering ALNS and the initial solutions used, we do not consider
+ average value of the schedule length.
+ This is because as already stated, the performance of a real-time system
+ is based on the worst case execution time period and thus we are most intereste
+d in the initial solution giving the best solution.
+ Also, the length of the initial solution and the first couple of iterations
+ will be worse for the BASIC initial solution than for the others
+\end_layout
+
+\begin_layout Standard
+When doing a test run for 2 hours, the found schedule length for the different
+ sizes of the bi-torus and mesh topologies are seen in table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Best-found-period-1"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Best-found-period-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Bi-torus
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BASIC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GREEDY
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+rGREEDY
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RANDOM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $3\times3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+10
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $4\times4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5\times5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $6\times6$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+45
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+45
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $7\times7$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+64
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $8\times8$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+86
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+88
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $9\times9$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+118
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+113
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+115
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+119
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $10\times10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+160
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+153
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+155
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+158
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $15\times15$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+514
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+471
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+477
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+507
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Best-found-period"
+
+\end_inset
+
+Best found period for bi-torus, when running ALNS on different initial solutions
+ and sizes of networks for two hours
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Nogen kommentarer om hvad performede bedst
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="10" columns="5">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<column alignment="right" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mesh
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+BASIC
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GREEDY
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+rGREEDY
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+RANDOM
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $3\times3$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $4\times4$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $5\times5$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+39
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $6\times6$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $7\times7$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+98
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+101
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $8\times8$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+152
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+145
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $9\times9$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+217
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $10\times10$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+299
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+271
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $15\times15$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1022
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+907
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" bottomline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "tab:Best-found-period-1"
+
+\end_inset
+
+Best found period for mesh topology running ALNS for two hours.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Igen en kommentar om hvad performede bedst
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Generally for the biggest networks, the GREEDY algorithm seems to be the
+ best to use as an initial solution.
+ This is due to fact, that as the size of the network increases, the schedule
+ becomes more dense, and thus the schedule produced initially by the determinist
+ic greedy algorithm is the best found schedule.
 \end_layout
 
 \begin_layout Standard
@@ -1695,19 +3887,6 @@ Initial solution {GREEDY, rGREEDY, RANDOM, BAD_RANDOM}
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Long run time
-\end_layout
-
-\begin_layout Standard
-List parameters
-\end_layout
-
-\begin_layout Standard
-We have not had time to do thorough parameter tuning, because the time limit
- on the program is 24 hours.
 \end_layout
 
 \begin_layout Section
