@@ -2760,7 +2760,16 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
+11
+\end_layout
 
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+11
 \end_layout
 
 \end_inset
@@ -2779,14 +2788,7 @@ RANDOM
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 10
 \end_layout
 
@@ -2810,25 +2812,9 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-18
-\end_layout
 
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-18
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-18
+\series bold
+19
 \end_layout
 
 \end_inset
@@ -2838,6 +2824,30 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+19
 \end_layout
 
 \end_inset
@@ -2860,25 +2870,9 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-29
-\end_layout
 
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-29
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-29
+\series bold
+30
 \end_layout
 
 \end_inset
@@ -2888,6 +2882,30 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+30
 \end_layout
 
 \end_inset
@@ -2910,7 +2928,9 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-44
+
+\series bold
+45
 \end_layout
 
 \end_inset
@@ -2920,6 +2940,8 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+45
 \end_layout
 
 \end_inset
@@ -2929,6 +2951,8 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+45
 \end_layout
 
 \end_inset
@@ -2938,6 +2962,8 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+45
 \end_layout
 
 \end_inset
@@ -2961,24 +2987,8 @@ RANDOM
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+\series bold
+63
 \end_layout
 
 \end_inset
@@ -2988,6 +2998,28 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
+63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+64
 \end_layout
 
 \end_inset
@@ -3010,6 +3042,26 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
+87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+87
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="right" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\series bold
 86
 \end_layout
 
@@ -3019,25 +3071,7 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
+88
 \end_layout
 
 \end_inset
@@ -3060,7 +3094,7 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+118
 \end_layout
 
 \end_inset
@@ -3070,6 +3104,8 @@ RANDOM
 
 \begin_layout Plain Layout
 
+\series bold
+113
 \end_layout
 
 \end_inset
@@ -3078,7 +3114,7 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+115
 \end_layout
 
 \end_inset
@@ -3087,7 +3123,7 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+119
 \end_layout
 
 \end_inset
@@ -3119,6 +3155,8 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 153
 \end_layout
 
@@ -3169,6 +3207,8 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 471
 \end_layout
 
@@ -3187,7 +3227,7 @@ RANDOM
 \begin_inset Text
 
 \begin_layout Plain Layout
-
+507
 \end_layout
 
 \end_inset
