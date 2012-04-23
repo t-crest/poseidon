@@ -8630,8 +8630,8 @@ reference "tab:Number-of-iterations"
 \end_layout
 
 \begin_layout Standard
-The link utilization for the greedy mesh and bi-torus solutions, as a function
- of the network size, can be seen in figure
+The link utilization for the greedy bi-torus solutions, as a function of
+ the network size, can be seen in figure
 \begin_inset space ~
 \end_inset
 
@@ -8644,7 +8644,8 @@ reference "fig:Plot-of-the"
 
 .
  As the link utilization increases intuition tells us that compressing the
- greedy solution becomes increasingly difficult.
+ greedy solution becomes increasingly difficult, thus the metaheuristics
+ need to put in more effort to optimize the solutions
 \end_layout
 
 \begin_layout Standard
@@ -8655,7 +8656,14 @@ status open
 
 \begin_layout Plain Layout
 \align center
-Plot of the link utilization
+\begin_inset Graphics
+	filename figures/linkutil.pdf
+	lyxscale 30
+	width 100col%
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Plain Layout
@@ -8668,7 +8676,8 @@ name "fig:Plot-of-the"
 
 \end_inset
 
-Plot of the link utilization 
+Link utilization of the greedy solutions.
+ 
 \end_layout
 
 \end_inset
