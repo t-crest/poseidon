@@ -1965,11 +1965,10 @@ As mentioned in the introduction the run time of our scheduler might be
  We have restricted the run time of our scheduler to 2 hours, to get a first
  impression of the performance of the metaheuristics and their parameters.
  These reduced runs will be referred to as the test runs.
- During testing, we chose to focus on the mesh and bi-torus topologies and
- the scenario, where each router communicates a packet of length one to
- every other router in the network.
- We focused on instances with height and width 3-10 and 15 of the mesh and
- bi-torus topologies.
+ During testing, we chose to focus on the mesh and bi-torus topologies with
+ all-to-all communication.
+ We focused on network instances of height and width 3 to 10 as well as
+ 15 by 15.
 \end_layout
 
 \begin_layout Subsection
@@ -1979,8 +1978,9 @@ Starting parameter of choose table
 \begin_layout Standard
 The starting parameters of the choose table denote the starting priorities
  of the available operators for the metaheuristic.
- The nature of the operators dominating-{path,rectangle} and late-path implies
- that they should be weighted equally at the start of optimization.
+ Since we do not know which of the operators (dominating-{path,rectangle}
+ and late-path) is best, implies that they should be weighted equally at
+ the start of optimization.
  The adaptive function will favor those that give good results and punish
  the others.
  We have not tested other scenarios than equal weighting of these starting
@@ -2040,9 +2040,10 @@ reference "tab:Beta-for-mesh"
 \end_inset
 
 .
- The standard deviation is calculated from a sample from the iterations,
- with each sample point given with one second intervals, thus for 2 hour
- runs
+ The standard deviation is calculated from samples of the iterations.
+ To avoid excessive file I/O, we limit to reporting at most 1 data point
+ each second.
+ Thus for 2 hour runs we get at most 7200 data points.
 \end_layout
 
 \begin_layout Standard
@@ -4001,7 +4002,7 @@ reference "tab:Beta-for-bitorus"
 
 \end_inset
 
- shows that when runnning the GRASP metaheuristic on the bi-torus topology,
+ shows that when running the GRASP metaheuristic on the bi-torus topology,
  a small amount of randomness is preferred.
  This is seen, since the best solutions for all the bi-torus sizes are found
  with 
