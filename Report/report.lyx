@@ -601,27 +601,6 @@ Mimicking nature we think of the free links in the network as air bubbles.
  
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Why we expect metaheuristics to perform well:
-\end_layout
-
-\begin_layout Itemize
-Highly non-trivial :{)
-\end_layout
-
-\begin_layout Itemize
-The problem is NP-complet problem
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 \begin_inset CommandInset label
 LatexCommand label
@@ -753,7 +732,7 @@ greedy
 \begin_inset Formula $\beta$
 \end_inset
 
- denotes the percentage of how how many paths should be swapped in the list
+ denotes the percentage of how many paths should be swapped in the list
  of sorted-by-length channels.
  Hence 
 \begin_inset Formula $\beta$
@@ -773,7 +752,7 @@ greedy
 \end_layout
 
 \begin_layout Standard
-The main motivation in having four different ways of obtaining initial solution
+The main motivation in having different ways of obtaining initial solution
  is to explore different neighborhoods with having different starting points.
 \end_layout
 
