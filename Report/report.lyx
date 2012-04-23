@@ -5885,8 +5885,8 @@ we could consider 0.1 as about optimal for
 \end_inset
 
 .
- This is still close to the greedy solution, but leaves som room for randomness,
- that may improve the solution.
+ This is still close to the greedy solution, but leaves some room for randomness
+, that may improve the solution.
 \end_layout
 
 \begin_layout Standard
@@ -7256,7 +7256,16 @@ key "Schoeberl2011"
 
 \end_inset
 
+, the numbers in parenthesis in the bounds column are optimal schedule periods
+ also given in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
 .
+ These results have all run for two hours.
 \end_layout
 
 \begin_layout Standard
@@ -7526,7 +7535,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-8
+8 (10)
 \end_layout
 
 \end_inset
@@ -7575,7 +7584,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-8
+8 (10)
 \end_layout
 
 \end_inset
@@ -7638,7 +7647,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-16
+16 (18)
 \end_layout
 
 \end_inset
@@ -7687,7 +7696,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-15
+15 (18)
 \end_layout
 
 \end_inset
@@ -7750,7 +7759,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-25
+25 (34)
 \end_layout
 
 \end_inset
@@ -7797,7 +7806,7 @@ GRASP
 \begin_inset Text
 
 \begin_layout Plain Layout
-24
+24 (28)
 \end_layout
 
 \end_inset
@@ -8522,6 +8531,7 @@ key "Brandner2012"
 \end_inset
 
 .
+ Numbers in parenthesis are optimal schedule periods
 \end_layout
 
 \end_inset
@@ -8569,13 +8579,42 @@ key "Brandner2012"
  for all sizes of mesh networks.
  The reason for this improvement is the constraint, that all routers should
  have the same schedule.
+ For the bi-torus our schedules are within approx.
+ 30
+\begin_inset space ~
+\end_inset
+
+% of the analytical bound from 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Schoeberl2011"
+
+\end_inset
+
+.
+ As seen in the bounds column in table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Results-compared-to"
+
+\end_inset
+
+ the optimal schedule period for a 
+\begin_inset Formula $3\times3$
+\end_inset
+
+ bi-torus network is 10, as is the result of both our ALNS and GRASP schedules.
+ Our scheduler is not fare from the optimal schedule periods for small systems.
 \end_layout
 
 \begin_layout Standard
 Comparing our greedy solution to our metaheuristic solutions, we see that
  our metaheuristics can improve our greedy solution for most cases.
- Only for the large network sizes the improvement by the metaheuristics
- diminish.
+ For the large network sizes the improvement by the metaheuristics diminish.
  Two reasons for these diminishing improvements are the increasing link
  utilization seen in figure
 \begin_inset space ~
@@ -8603,7 +8642,9 @@ reference "tab:Number-of-iterations"
 \end_layout
 
 \begin_layout Standard
-The link utilization for the greedy bi-torus solutions, as a function of
+The link utilization increases because the average communication channel
+ length grows with the network size.
+ The link utilization for the greedy bi-torus schedules, as a function of
  the network size, can be seen in figure
 \begin_inset space ~
 \end_inset
@@ -8618,7 +8659,8 @@ reference "fig:Plot-of-the"
 .
  As the link utilization increases intuition tells us that compressing the
  greedy solution becomes increasingly difficult, thus the metaheuristics
- need to put in more effort to optimize the solutions
+ need to put in more effort to optimize the schedules.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -8649,7 +8691,7 @@ name "fig:Plot-of-the"
 
 \end_inset
 
-Link utilization of the greedy solutions.
+Link utilization of the greedy schedule on a bi-torus topology.
  
 \end_layout
 
@@ -8664,19 +8706,7 @@ Link utilization of the greedy solutions.
 \end_layout
 
 \begin_layout Standard
-The results of the metaheuristics we see in table
-\begin_inset space ~
-\end_inset
-
-
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "tab:Results-compared-to"
-
-\end_inset
-
- have all run for two hours.
- When we look at the iteration count in table
+When we look at the iteration count in table
 \begin_inset space ~
 \end_inset
 
@@ -8690,6 +8720,12 @@ reference "tab:Number-of-iterations"
  we see that for the large network sizes the number of iterations are very
  small, this means that the scheduler, for these sizes, should run for a
  longer period of time.
+ Due to the low iteration count of the large network sizes, we believe that
+ running the scheduler for a longer period of time can still improve the
+ results to be better than the greedy solution.
+ Although we do not expect to get the same fractional improvement as for
+ the smaller network sizes, due to the increased link utilization.
+ 
 \end_layout
 
 \begin_layout Standard
@@ -8820,6 +8856,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 466.451.877
 \end_layout
 
@@ -8829,6 +8867,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 271.864.914
 \end_layout
 
@@ -8838,6 +8878,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 33.164.408 
 \end_layout
 
@@ -8847,6 +8889,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 30.629.712
 \end_layout
 
@@ -8870,6 +8914,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 125.812.628
 \end_layout
 
@@ -8879,6 +8925,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 100.497.005
 \end_layout
 
@@ -8888,6 +8936,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 6.997.571
 \end_layout
 
@@ -8897,6 +8947,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 5.486.080
 \end_layout
 
@@ -8920,6 +8972,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 87.230.064
 \end_layout
 
@@ -8929,6 +8983,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 29.898.319
 \end_layout
 
@@ -8938,6 +8994,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 2.555.017
 \end_layout
 
@@ -8947,6 +9005,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 1.886.940
 \end_layout
 
@@ -8970,6 +9030,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 39.682.545
 \end_layout
 
@@ -8979,6 +9041,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 10.825.917
 \end_layout
 
@@ -8988,6 +9052,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 823.677
 \end_layout
 
@@ -8997,6 +9063,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 457.601
 \end_layout
 
@@ -9020,6 +9088,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 19.926.148
 \end_layout
 
@@ -9029,6 +9099,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 4.270.345
 \end_layout
 
@@ -9038,6 +9110,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 247.464
 \end_layout
 
@@ -9047,6 +9121,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 159.557
 \end_layout
 
@@ -9070,6 +9146,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 6.382.482
 \end_layout
 
@@ -9079,6 +9157,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 1.478.727
 \end_layout
 
@@ -9088,6 +9168,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 123.695
 \end_layout
 
@@ -9097,6 +9179,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 55.597
 \end_layout
 
@@ -9120,6 +9204,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 3.205.896
 \end_layout
 
@@ -9129,6 +9215,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 1.478.727
 \end_layout
 
@@ -9138,6 +9226,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 64.213
 \end_layout
 
@@ -9147,6 +9237,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 21.638
 \end_layout
 
@@ -9170,6 +9262,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 1.350.495
 \end_layout
 
@@ -9179,6 +9273,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 353.699
 \end_layout
 
@@ -9188,6 +9284,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 27.495
 \end_layout
 
@@ -9197,6 +9295,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 11.543
 \end_layout
 
@@ -9220,6 +9320,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 15.969
 \end_layout
 
@@ -9229,6 +9331,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 6.944
 \end_layout
 
@@ -9238,6 +9342,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 1.070
 \end_layout
 
@@ -9247,6 +9353,8 @@ Mesh
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\size small
 84
 \end_layout
 
@@ -9289,12 +9397,8 @@ Numbers of iterations, for a single run for two hours on gramme.ebar.dtu.dk.
 \end_layout
 
 \begin_layout Standard
-Due to the low iteration count of the large network sizes, we believe that
- running the scheduler for a longer period of time can still improve the
- results to be better than the greedy solution.
- Although we do not expect to get the same fractional improvement as for
- the smaller network sizes, due to the link utilization.
- 
+Combining the increasing link utilization and the decreasing iteration count,
+ says that we should increase the run time for large network sizes considerably.
 \end_layout
 
 \begin_layout Section
@@ -9312,11 +9416,15 @@ Rasmus
 \end_layout
 
 \begin_layout Standard
-We have in this report we have shown how to apply two metaheuristics Adaptive
- Large Neighborhood Search and Greedy Randomize Adaptive Search Procedure
- to an NP-complete scheduling problem.
- We have shown that our scheduler gives shorter scheduling periods than
- current state-of-the art schedulers.
+In this report we have shown how to apply two metaheuristics Adaptive Large
+ Neighborhood Search and Greedy Randomize Adaptive Search Procedure to an
+ NP-complete scheduling problem.
+ We have shown that our scheduler gives results close to the optimal solution
+ for small network sizes and for larger network sizes we are with in 30
+\begin_inset space ~
+\end_inset
+
+% of the analytical bound for bi-torus.
 \end_layout
 
 \begin_layout Bibliography
