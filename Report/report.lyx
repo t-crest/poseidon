@@ -1305,11 +1305,11 @@ The GRASP metaheuristic consists of the phases, greedy randomized adaptive
 \begin_layout Standard
 Our use of the GRASP metaheuristics is not completely in correspondence
  with its definition.
- The adaptive function that is to be used when constructing the initial
- greedy solution is not present in that phase, instead some adaptiveness
- in selecting operators when performing local search is added.
- Also, the iterative improvement in the local searchonly performs one step
- in our case.
+ The adaptive phase when constructing the initial greedy solution is not
+ present.
+ Instead, operators ar eselected adaptively when performing local search.
+ Also, the iterative improvement in the local search performs only a single
+ step in our case.
 \end_layout
 
 \begin_layout Standard
@@ -1369,7 +1369,7 @@ This means that dependent on how much an operator improves an initial solution,
 
 \begin_layout Standard
 \begin_inset Note Note
-status open
+status collapsed
 
 \begin_layout Plain Layout
 Explanation of GRASP
@@ -1932,19 +1932,22 @@ Starting parameter of choose table
 The starting parameters of the choose table denote the starting priorities
  of the available operators for the metaheuristic.
  The nature of the operators dominating-{path,rectangle} and late-path implies
- that they should be given equal weight at the start of optimization.
+ that they should be weighted equally at the start of optimization.
  The adaptive function will favor those that give good results and punish
  the others.
- We have not tested other scenarios than equal weighting of the starting
+ We have not tested other scenarios than equal weighting of these starting
  parameter in the choose table.
  We have assigned different values to the random operator in ALNS.
- The reason is that it is not very likely that the random operator is going
- to increase the
-\end_layout
-
-\begin_layout Standard
-We ended up setting the starting parameter for the random operator to 1.5,
- while the others are set to 1.0.
+ The reason is that it is not as likely that the random operator is going
+ to improve the schedule.
+ Therefore, in order to force the ALNS metaheuristic to explore different
+ neighborhoods, we ended up setting the starting parameter for the random
+ operator to 33%, while the others are set to 22%, thus slightly favoring
+ random initially.
+ Preferably, with more time, we would vary the starting weights of the operators
+ an observe the performance of the metaheuristics.
+ We could also elaborate our punish and reward system of operators, by also
+ taking into account if the same schedule length is found.
 \end_layout
 
 \begin_layout Subsection
@@ -1957,7 +1960,7 @@ GRASP randomness
 
 \begin_layout Standard
 When running optimization using GRASP, we tested the algorithm by running
- for two hours with
+ for two hours with:
 \end_layout
 
 \begin_layout Standard
@@ -1969,22 +1972,33 @@ When running optimization using GRASP, we tested the algorithm by running
 \end_layout
 
 \begin_layout Standard
-Varying the 
-\begin_inset Formula $\beta$
+Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-bitorus"
+
 \end_inset
 
- did not seem to matter that much if it was between 0 and 0.5.
- When running for two hour, almost all the values were the same.
- As the width and heigth increased to 10 and 15 though, a 
-\begin_inset Formula $\beta$
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-mesh"
+
 \end_inset
 
- less than 0.1 gave the best results.
+ show the best found schedule length and the standard deviation for each
  
+\begin_inset Formula $\beta$
+\end_inset
+
+.
+ The standard deviation is calculated from a sample of the of all the iterations
+, with
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float table
+placement t
 wide true
 sideways false
 status open
@@ -1992,15 +2006,9 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="21">
+<lyxtabular version="3" rows="11" columns="15">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
@@ -2037,6 +2045,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0
 \end_layout
 
@@ -2055,6 +2065,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.01
 \end_layout
 
@@ -2073,6 +2085,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.02
 \end_layout
 
@@ -2091,6 +2105,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.05
 \end_layout
 
@@ -2109,6 +2125,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.1
 \end_layout
 
@@ -2127,42 +2145,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.2
-\end_layout
 
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-0.3
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 0.5
 \end_layout
 
@@ -2181,24 +2165,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.9
-\end_layout
 
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 1
 \end_layout
 
@@ -2385,75 +2353,6 @@ min
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
 </row>
 <row>
 <cell alignment="center" valignment="top" rightline="true" usebox="none">
@@ -2461,7 +2360,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $3\times3$
 \end_inset
 
@@ -2475,7 +2374,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -2486,7 +2385,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.47 
 \end_layout
 
@@ -2497,7 +2396,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -2508,7 +2407,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.47 
 \end_layout
 
@@ -2520,7 +2419,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 10
 \end_layout
 
@@ -2531,7 +2430,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.55 
 \end_layout
 
@@ -2542,7 +2442,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 10
 \end_layout
 
@@ -2553,7 +2453,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.57 
 \end_layout
 
@@ -2564,7 +2464,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 10
 \end_layout
 
@@ -2575,7 +2475,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.56 
 \end_layout
 
@@ -2586,7 +2486,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 10
 \end_layout
 
@@ -2597,51 +2497,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.57 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-10
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-0.58 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-10
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.59 
 \end_layout
 
@@ -2652,7 +2508,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 10
 \end_layout
 
@@ -2663,29 +2519,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.59 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-10
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.59 
 \end_layout
 
@@ -2698,7 +2532,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $4\times4$
 \end_inset
 
@@ -2713,7 +2547,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2724,7 +2558,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.57 
 \end_layout
 
@@ -2735,7 +2570,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2746,7 +2581,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.62 
 \end_layout
 
@@ -2757,7 +2592,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2768,7 +2603,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.60 
 \end_layout
 
@@ -2779,7 +2614,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2790,7 +2625,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.61 
 \end_layout
 
@@ -2801,7 +2636,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2812,7 +2647,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.67 
 \end_layout
 
@@ -2823,7 +2658,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2834,51 +2669,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.65 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-19
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-0.71 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-19
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.66 
 \end_layout
 
@@ -2889,7 +2680,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 19
 \end_layout
 
@@ -2900,29 +2691,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.70 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-19
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.69 
 \end_layout
 
@@ -2935,7 +2704,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $5\times5$
 \end_inset
 
@@ -2949,7 +2718,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -2960,7 +2729,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.70 
 \end_layout
 
@@ -2972,7 +2741,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -2983,7 +2752,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.69 
 \end_layout
 
@@ -2995,7 +2765,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -3006,7 +2776,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.69 
 \end_layout
 
@@ -3017,7 +2788,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -3028,7 +2799,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.74 
 \end_layout
 
@@ -3039,7 +2810,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -3050,7 +2821,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.76 
 \end_layout
 
@@ -3061,7 +2832,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -3072,51 +2843,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.82 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-30
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-0.80 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-30
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.79 
 \end_layout
 
@@ -3127,7 +2854,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 30
 \end_layout
 
@@ -3138,29 +2865,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.79 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-30
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.79 
 \end_layout
 
@@ -3173,7 +2878,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $6\times6$
 \end_inset
 
@@ -3187,7 +2892,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 43
 \end_layout
 
@@ -3198,7 +2903,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.88 
 \end_layout
 
@@ -3210,7 +2915,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 43
 \end_layout
 
@@ -3221,7 +2926,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.86 
 \end_layout
 
@@ -3232,7 +2938,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 43
 \end_layout
 
@@ -3243,7 +2949,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.98 
 \end_layout
 
@@ -3254,7 +2960,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 43
 \end_layout
 
@@ -3265,7 +2971,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.94 
 \end_layout
 
@@ -3276,7 +2982,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 44
 \end_layout
 
@@ -3287,7 +2993,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.97 
 \end_layout
 
@@ -3298,7 +3004,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 44
 \end_layout
 
@@ -3309,51 +3015,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.96 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-44
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-0.97 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-44
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.93 
 \end_layout
 
@@ -3364,7 +3026,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 44
 \end_layout
 
@@ -3375,29 +3037,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.94 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-44
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.91 
 \end_layout
 
@@ -3410,7 +3050,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $7\times7$
 \end_inset
 
@@ -3424,7 +3064,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -3435,7 +3075,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.14 
 \end_layout
 
@@ -3446,7 +3086,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -3457,7 +3097,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.08 
 \end_layout
 
@@ -3469,7 +3109,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -3480,7 +3120,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.95 
 \end_layout
 
@@ -3491,7 +3132,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -3502,7 +3143,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.08 
 \end_layout
 
@@ -3513,7 +3154,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -3524,7 +3165,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.13 
 \end_layout
 
@@ -3535,8 +3176,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-61
+\size footnotesize
+62
 \end_layout
 
 \end_inset
@@ -3546,7 +3187,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.08 
 \end_layout
 
@@ -3557,7 +3198,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 62
 \end_layout
 
@@ -3568,73 +3209,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.10 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.08 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.12 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.10 
 \end_layout
 
@@ -3647,7 +3222,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $8\times8$
 \end_inset
 
@@ -3661,7 +3236,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3672,7 +3247,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.26 
 \end_layout
 
@@ -3684,7 +3259,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3695,7 +3270,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.15 
 \end_layout
 
@@ -3706,7 +3282,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3717,7 +3293,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.37 
 \end_layout
 
@@ -3728,7 +3304,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3739,7 +3315,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.33 
 \end_layout
 
@@ -3750,7 +3326,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3761,7 +3337,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.42 
 \end_layout
 
@@ -3772,7 +3348,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 85
 \end_layout
 
@@ -3783,51 +3359,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.46 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-85
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.42 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-85
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.44 
 \end_layout
 
@@ -3838,7 +3370,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 86
 \end_layout
 
@@ -3849,29 +3381,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.44 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-86
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.35 
 \end_layout
 
@@ -3884,7 +3394,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $9\times9$
 \end_inset
 
@@ -3898,7 +3408,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 113
 \end_layout
 
@@ -3909,7 +3419,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.80 
 \end_layout
 
@@ -3920,7 +3430,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 113
 \end_layout
 
@@ -3931,7 +3441,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.60 
 \end_layout
 
@@ -3942,7 +3452,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 113
 \end_layout
 
@@ -3953,7 +3463,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.60 
 \end_layout
 
@@ -3965,7 +3475,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 113
 \end_layout
 
@@ -3976,7 +3486,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.44 
 \end_layout
 
@@ -3987,7 +3498,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 114
 \end_layout
 
@@ -3998,7 +3509,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.58 
 \end_layout
 
@@ -4009,51 +3520,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-114
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.64 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-114
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.66 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 115
 \end_layout
 
@@ -4064,7 +3531,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.53 
 \end_layout
 
@@ -4075,7 +3542,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 116
 \end_layout
 
@@ -4086,29 +3553,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.57 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-116
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.53 
 \end_layout
 
@@ -4121,7 +3566,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $10\times10$
 \end_inset
 
@@ -4135,7 +3580,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 151
 \end_layout
 
@@ -4146,7 +3591,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.08 
 \end_layout
 
@@ -4157,7 +3602,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 151
 \end_layout
 
@@ -4168,7 +3613,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.00 
 \end_layout
 
@@ -4179,7 +3624,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 152
 \end_layout
 
@@ -4190,7 +3635,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.13 
 \end_layout
 
@@ -4202,7 +3647,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 151
 \end_layout
 
@@ -4213,7 +3658,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.90 
 \end_layout
 
@@ -4224,7 +3670,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 152
 \end_layout
 
@@ -4235,7 +3681,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.87 
 \end_layout
 
@@ -4246,29 +3692,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-152
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.85 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 153
 \end_layout
 
@@ -4279,29 +3703,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.96 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-153
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.99 
 \end_layout
 
@@ -4312,7 +3714,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 155
 \end_layout
 
@@ -4323,29 +3725,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.98 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-155
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.95 
 \end_layout
 
@@ -4358,7 +3738,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $15\times15$
 \end_inset
 
@@ -4373,7 +3753,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 474
 \end_layout
 
@@ -4384,7 +3764,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 6.81 
 \end_layout
 
@@ -4395,7 +3776,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 477
 \end_layout
 
@@ -4406,7 +3787,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.46 
 \end_layout
 
@@ -4417,7 +3798,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 479
 \end_layout
 
@@ -4428,7 +3809,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.46 
 \end_layout
 
@@ -4439,7 +3820,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 481
 \end_layout
 
@@ -4450,7 +3831,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.30 
 \end_layout
 
@@ -4461,7 +3842,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 485
 \end_layout
 
@@ -4472,7 +3853,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.59 
 \end_layout
 
@@ -4483,51 +3864,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-491
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-4.38 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-495
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-4.22 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 501
 \end_layout
 
@@ -4538,7 +3875,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 4.00 
 \end_layout
 
@@ -4549,7 +3886,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 506
 \end_layout
 
@@ -4560,29 +3897,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-3.77 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-506
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 3.42 
 \end_layout
 
@@ -4611,6 +3926,7 @@ Best found solution and standard deviation, for the different
 \end_inset
 
  values and bi-torus sizes.
+ The columns for 0.2, 0.3 and 0.9 are omitted to lack of information of interest.
 \end_layout
 
 \end_inset
@@ -4621,19 +3937,6 @@ Best found solution and standard deviation, for the different
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-We also observed the best results for a bi-torus with size 
-\begin_inset Formula $8\times8$
-\end_inset
-
- with beta equal to 0.1.
- From this single case, where 
-\begin_inset Formula $8\times8$
-\end_inset
-
- performed better than the rest,
 \end_layout
 
 \begin_layout Standard
@@ -4645,15 +3948,9 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Tabular
-<lyxtabular version="3" rows="11" columns="21">
+<lyxtabular version="3" rows="11" columns="15">
 <features tabularvalignment="middle">
 <column alignment="center" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
-<column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
 <column alignment="right" valignment="top" width="0">
@@ -4690,24 +3987,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-0
-\end_layout
 
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 0.01
 \end_layout
 
@@ -4726,6 +4007,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.02
 \end_layout
 
@@ -4744,24 +4027,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.05
-\end_layout
 
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 0.1
 \end_layout
 
@@ -4780,6 +4047,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.2
 \end_layout
 
@@ -4798,6 +4067,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.3
 \end_layout
 
@@ -4816,6 +4087,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
+
+\series bold
 0.5
 \end_layout
 
@@ -4834,24 +4107,8 @@ Size
 \begin_inset Text
 
 \begin_layout Plain Layout
-0.9
-\end_layout
 
-\end_inset
-</cell>
-<cell multicolumn="2" alignment="center" valignment="top" topline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-</cell>
-<cell multicolumn="1" alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
+\series bold
 1
 \end_layout
 
@@ -5038,75 +4295,6 @@ min
 
 \end_inset
 </cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-min
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-\begin_inset Formula $\sigma$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
 </row>
 <row>
 <cell alignment="center" valignment="top" rightline="true" usebox="none">
@@ -5114,7 +4302,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $3\times3$
 \end_inset
 
@@ -5128,7 +4316,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 11
 \end_layout
 
@@ -5139,29 +4328,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.59 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-11
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\series bold
+\size footnotesize
 0.57 
 \end_layout
 
@@ -5172,7 +4340,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5183,18 +4351,18 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.59 
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5205,7 +4373,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.60 
 \end_layout
 
@@ -5216,7 +4384,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5227,29 +4395,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.60 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-11
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.62 
 \end_layout
 
@@ -5260,7 +4406,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5271,7 +4417,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.62 
 \end_layout
 
@@ -5282,7 +4428,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5293,7 +4439,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.64 
 \end_layout
 
@@ -5304,7 +4450,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 11
 \end_layout
 
@@ -5315,29 +4461,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.62 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-11
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.64 
 \end_layout
 
@@ -5350,7 +4474,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $4\times4$
 \end_inset
 
@@ -5364,7 +4488,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 22
 \end_layout
 
@@ -5375,29 +4499,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.75 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-22
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.76 
 \end_layout
 
@@ -5408,7 +4510,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 21
 \end_layout
 
@@ -5419,18 +4522,19 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 0.75 
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 21
 \end_layout
 
@@ -5441,7 +4545,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.78 
 \end_layout
 
@@ -5452,7 +4556,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 21
 \end_layout
 
@@ -5463,29 +4567,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.78 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-21
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.84 
 \end_layout
 
@@ -5496,7 +4578,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 21
 \end_layout
 
@@ -5507,7 +4589,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.81 
 \end_layout
 
@@ -5518,7 +4600,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 21
 \end_layout
 
@@ -5529,7 +4611,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 0.79 
 \end_layout
 
@@ -5540,7 +4622,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 21
 \end_layout
 
@@ -5551,29 +4633,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.79 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-21
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.77 
 \end_layout
 
@@ -5586,7 +4646,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $5\times5$
 \end_inset
 
@@ -5600,7 +4660,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 39
 \end_layout
 
@@ -5611,29 +4671,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.92 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-39
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 0.98 
 \end_layout
 
@@ -5644,7 +4682,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 38
 \end_layout
 
@@ -5655,18 +4693,18 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.01 
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
+<cell alignment="center" valignment="top" leftline="true" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 38
 \end_layout
 
@@ -5677,7 +4715,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.06 
 \end_layout
 
@@ -5688,29 +4726,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-38
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.06 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 37
 \end_layout
 
@@ -5721,7 +4737,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.13 
 \end_layout
 
@@ -5732,7 +4748,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 37
 \end_layout
 
@@ -5743,7 +4759,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.14 
 \end_layout
 
@@ -5754,7 +4770,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 37
 \end_layout
 
@@ -5765,7 +4781,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.09 
 \end_layout
 
@@ -5776,7 +4792,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 37
 \end_layout
 
@@ -5787,29 +4804,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.02 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-37
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\series bold
+\size footnotesize
 0.99 
 \end_layout
 
@@ -5822,7 +4818,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $6\times6$
 \end_inset
 
@@ -5836,7 +4832,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 63
 \end_layout
 
@@ -5847,29 +4843,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-0.96 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-63
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.24 
 \end_layout
 
@@ -5880,7 +4854,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 63
 \end_layout
 
@@ -5891,30 +4865,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.33 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.24 
 \end_layout
 
 \end_inset
@@ -5924,7 +4876,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 62
 \end_layout
 
@@ -5935,7 +4887,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.60 
 \end_layout
 
@@ -5946,7 +4898,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -5957,7 +4909,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.27 
 \end_layout
 
@@ -5968,7 +4920,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 61
 \end_layout
 
@@ -5979,7 +4931,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.44 
 \end_layout
 
@@ -5990,7 +4942,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 61
 \end_layout
 
@@ -6001,7 +4954,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.18 
 \end_layout
 
@@ -6012,7 +4966,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 62
 \end_layout
 
@@ -6023,29 +4977,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.29 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-62
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.12 
 \end_layout
 
@@ -6058,7 +4990,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $7\times7$
 \end_inset
 
@@ -6072,7 +5004,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 97
 \end_layout
 
@@ -6083,29 +5015,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.44 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-97
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.49 
 \end_layout
 
@@ -6116,7 +5026,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 96
 \end_layout
 
@@ -6127,30 +5037,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.77 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-96
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-1.90 
 \end_layout
 
 \end_inset
@@ -6160,7 +5048,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 95
 \end_layout
 
@@ -6171,7 +5059,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.92 
 \end_layout
 
@@ -6182,7 +5070,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 94
 \end_layout
 
@@ -6193,7 +5082,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.63 
 \end_layout
 
@@ -6204,7 +5094,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 94
 \end_layout
 
@@ -6215,7 +5105,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.18 
 \end_layout
 
@@ -6226,7 +5116,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 95
 \end_layout
 
@@ -6237,7 +5127,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 1.78 
 \end_layout
 
@@ -6248,7 +5138,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 95
 \end_layout
 
@@ -6259,29 +5149,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-1.59 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-95
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 1.93 
 \end_layout
 
@@ -6294,7 +5162,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $8\times8$
 \end_inset
 
@@ -6308,7 +5176,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 141
 \end_layout
 
@@ -6319,29 +5187,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-2.46 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-141
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 2.47 
 \end_layout
 
@@ -6352,7 +5198,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 140
 \end_layout
 
@@ -6363,30 +5209,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.21 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-140
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-2.07 
 \end_layout
 
 \end_inset
@@ -6396,7 +5220,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 139
 \end_layout
 
@@ -6407,7 +5231,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.39 
 \end_layout
 
@@ -6419,7 +5243,7 @@ min
 \begin_layout Plain Layout
 
 \series bold
-\size scriptsize
+\size footnotesize
 138
 \end_layout
 
@@ -6430,7 +5254,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 1.63 
 \end_layout
 
@@ -6441,7 +5266,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 139
 \end_layout
 
@@ -6452,7 +5277,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.44 
 \end_layout
 
@@ -6463,7 +5288,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 139
 \end_layout
 
@@ -6474,7 +5299,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.12 
 \end_layout
 
@@ -6485,29 +5310,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-140
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-2.22 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 139
 \end_layout
 
@@ -6518,7 +5321,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.41 
 \end_layout
 
@@ -6531,7 +5334,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $9\times9$
 \end_inset
 
@@ -6545,29 +5348,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-199
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-3.83 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 198
 \end_layout
 
@@ -6578,7 +5359,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.15 
 \end_layout
 
@@ -6589,7 +5370,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 198
 \end_layout
 
@@ -6600,30 +5381,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.01 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-197
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-3.06 
 \end_layout
 
 \end_inset
@@ -6633,7 +5392,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 196
 \end_layout
 
@@ -6644,7 +5403,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.70  
 \end_layout
 
@@ -6655,7 +5414,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 195
 \end_layout
 
@@ -6666,7 +5426,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 2.63 
 \end_layout
 
@@ -6677,7 +5438,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 195
 \end_layout
 
@@ -6688,7 +5449,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.11 
 \end_layout
 
@@ -6699,7 +5460,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 196
 \end_layout
 
@@ -6710,7 +5471,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.15 
 \end_layout
 
@@ -6721,29 +5482,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-197
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-2.80 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 198
 \end_layout
 
@@ -6754,7 +5493,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 2.83 
 \end_layout
 
@@ -6767,7 +5506,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $10\times10$
 \end_inset
 
@@ -6781,7 +5520,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 270
 \end_layout
 
@@ -6792,29 +5531,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-5.79 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-270
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 3.84 
 \end_layout
 
@@ -6825,7 +5542,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 269
 \end_layout
 
@@ -6836,30 +5553,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.48 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-268
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-2.96 
 \end_layout
 
 \end_inset
@@ -6869,7 +5564,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 267
 \end_layout
 
@@ -6880,7 +5576,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 3.17 
 \end_layout
 
@@ -6891,7 +5588,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 267
 \end_layout
 
@@ -6902,7 +5599,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.39 
 \end_layout
 
@@ -6913,7 +5610,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 267
 \end_layout
 
@@ -6924,7 +5621,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.31 
 \end_layout
 
@@ -6935,7 +5632,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 268
 \end_layout
 
@@ -6946,7 +5643,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 3.31 
 \end_layout
 
@@ -6957,7 +5654,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 269
 \end_layout
 
@@ -6968,29 +5665,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-3.28 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-269
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 3.53 
 \end_layout
 
@@ -7003,7 +5678,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 \begin_inset Formula $15\times15$
 \end_inset
 
@@ -7017,7 +5692,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 903
 \end_layout
 
@@ -7028,29 +5703,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-13.66 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-903
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 3.76 
 \end_layout
 
@@ -7061,7 +5714,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 903
 \end_layout
 
@@ -7072,30 +5725,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 7.58 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="right" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-900
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-4.44 
 \end_layout
 
 \end_inset
@@ -7105,7 +5736,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 899
 \end_layout
 
@@ -7116,7 +5748,8 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\series bold
+\size footnotesize
 5.12 
 \end_layout
 
@@ -7127,7 +5760,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 899
 \end_layout
 
@@ -7138,7 +5771,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 7.18 
 \end_layout
 
@@ -7149,7 +5782,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 902
 \end_layout
 
@@ -7160,7 +5793,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 5.98 
 \end_layout
 
@@ -7171,7 +5804,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 905
 \end_layout
 
@@ -7182,7 +5815,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 8.28 
 \end_layout
 
@@ -7193,29 +5826,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
-912
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
-9.59 
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="center" valignment="top" bottomline="true" leftline="true" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\size scriptsize
+\size footnotesize
 913
 \end_layout
 
@@ -7226,7 +5837,7 @@ min
 
 \begin_layout Plain Layout
 
-\size scriptsize
+\size footnotesize
 9.28 
 \end_layout
 
@@ -7255,6 +5866,7 @@ Best found solution and standard deviation, for the different
 \end_inset
 
  values and mesh sizes.
+ The columns for 0, 0.05 and 0.9 are omitted to lack of information of interest.
 \end_layout
 
 \end_inset
@@ -7903,8 +6515,8 @@ name "tab:Best-found-period"
 
 \end_inset
 
-Best found period for bi-torus, when running ALNS on different initial solutions
- and sizes of networks for two hours
+Best found period for bi-torus, when running ALNS one time on different
+ initial solutions and sizes of networks for two hours
 \end_layout
 
 \end_inset
@@ -7918,16 +6530,38 @@ Best found period for bi-torus, when running ALNS on different initial solutions
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Nogen kommentarer om hvad performede bedst
-\end_layout
-
+Observing the results in table
+\begin_inset space ~
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Best-found-period"
+
+\end_inset
+
+, we see that for the sizes of bi-torus up to width and height 7, all the
+ initial solutions perform almost equally.
+ The RANDOM solution is the only one to differ slightly from the others,
+ in finding a better solution for size 
+\begin_inset Formula $3\times3$
+\end_inset
+
+ and performing worse for 
+\begin_inset Formula $7\times7$
+\end_inset
+
+.
+ For size 
+\begin_inset Formula $8\times8$
+\end_inset
+
+ the initial solution using randomized routing found the best schedule.
+ After this, using the deterministic GREEDY performs best.
+ Since using GREEDY as initial solution performs best in all but two cases,
+ this implies that generally it is best solution to start from for ALNS
+ when optimizing the schedule for a bi-torus.
 \end_layout
 
 \begin_layout Standard
@@ -8504,7 +7138,8 @@ name "tab:Best-found-period-1"
 
 \end_inset
 
-Best found period for mesh topology running ALNS for two hours.
+Best found period for mesh topology running ALNS one time ont each initial
+ solution and Mesh sizes for two hours.
 \end_layout
 
 \end_inset
@@ -8518,72 +7153,38 @@ Best found period for mesh topology running ALNS for two hours.
 \end_layout
 
 \begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Igen en kommentar om hvad performede bedst
-\end_layout
-
+Again as for bi-torus, observing the results in table
+\begin_inset space ~
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-Generally for the biggest networks, the GREEDY algorithm seems to be the
- best to use as an initial solution.
- This is due to fact, that as the size of the network increases, the schedule
- becomes more dense, and thus the schedule produced initially by the determinist
-ic greedy algorithm is the best found schedule.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Run time
-\end_layout
-
-\begin_layout Itemize
-Because the program is meant for compile time optimization of a static schedule,
- the run time may exceed 24 hours.
- However for the results in this report we have used 30 min as the run time
- to get results for a variety of system sizes.
-\end_layout
-
-\begin_layout Itemize
-Even for a run-time of 30 min parameter tuning is tedious.
-\end_layout
-
-\begin_layout Plain Layout
-GRASP
-\end_layout
-
-\begin_layout Itemize
-BETA
-\end_layout
-
-\begin_layout Itemize
-Starting parameters of the choose_table.
-\end_layout
-
-\begin_layout Plain Layout
-ALNS
-\end_layout
-
-\begin_layout Itemize
-Starting parameters of the choose_table.
-\end_layout
-
-\begin_layout Itemize
-Initial solution {GREEDY, rGREEDY, RANDOM, BAD_RANDOM}
-\end_layout
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Best-found-period-1"
 
 \end_inset
 
+, the deterministic GREEDY seems to give the best results when running ALNS.
+ Only in the case of 
+\begin_inset Formula $7\times7$
+\end_inset
 
+ the RANDOM initial solution gives a shorter schedule.
+ Generally the RANDOM seems to match GREEDY well up to size 
+\begin_inset Formula $10\times10$
+\end_inset
+
+, only being slightly worse for sizes 
+\begin_inset Formula $8\times8$
+\end_inset
+
+ and 
+\begin_inset Formula $9\times9$
+\end_inset
+
+.
+ Therefore, if ALNS was to be run multiple times, RANDOM could be preferred
+ instead of the deterministic GREEDY.
 \end_layout
 
 \begin_layout Section
