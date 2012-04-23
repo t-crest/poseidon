@@ -2534,7 +2534,7 @@ reference "tab:Number-of-iterations"
 
 \end_inset
 
-, we see that the number of iterations for alns 
+, we see that the number of iterations for ALNS 
 \begin_inset Note Note
 status collapsed
 
@@ -2546,10 +2546,6 @@ Some short comment on the numbers, possibly also some info on how fast the
 \end_inset
 
 
-\end_layout
-
-\begin_layout Standard
-We did not have time, to do test runs for a longer period of time.
 \end_layout
 
 \begin_layout Subsection
