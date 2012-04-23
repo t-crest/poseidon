@@ -602,6 +602,26 @@ Mimicking nature we think of the free links in the network as air bubbles.
 \end_layout
 
 \begin_layout Subsection
+Proposed metaheuristics
+\end_layout
+
+\begin_layout Standard
+We expect the following two metaheuristics to yield good results:
+\end_layout
+
+\begin_layout Itemize
+Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy randomized
+ initial solution.
+ Make local search for better solution.
+ Start over with new initial solution.
+\end_layout
+
+\begin_layout Itemize
+Adaptive Large Neighborhood Search (ALNS): Choose initial solution.
+ Destroy and rebuild part of current solution.
+\end_layout
+
+\begin_layout Subsection
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Initial-solution"
@@ -1329,28 +1349,6 @@ For both ALNS and GRASP, the above operators are used to mutate our current
 \end_layout
 
 \begin_layout Subsection
-Proposed metaheuristics
-\end_layout
-
-\begin_layout Standard
-We expect the following two metaheuristics to yield good results:
-\end_layout
-
-\begin_layout Itemize
-Greedy Randomized Adaptive Search Procedure (GRASP): Make greedy randomized
- initial solution.
- Make local search for better solution.
- Start over with new initial solution.
-\end_layout
-
-\begin_layout Itemize
-Adaptive Large Neighborhood Search (ALNS): Choose initial solution.
- Destroy and rebuild part of current solution.
- This is exactly what we described above.
- 
-\end_layout
-
-\begin_layout Subsection
 Greedy Randomized Adaptive Search Procedure
 \begin_inset Marginal
 status open
@@ -1416,32 +1414,6 @@ reference "sub:Initial-solution"
 .
 \end_layout
 
-\begin_layout Standard
-\begin_inset Note Note
-status collapsed
-
-\begin_layout Plain Layout
-Explanation of GRASP
-\end_layout
-
-\begin_layout Itemize
-Vores forskelle fra GRASP
-\end_layout
-
-\begin_layout Itemize
-Original GRASP builds initial solution randomized and adaptively, we only
- build randomized.
-\end_layout
-
-\begin_layout Itemize
-In local search it only makes sens to attack dominating paths.
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
 Adaptive Large Neighborhood Search
 \begin_inset Marginal
@@ -1491,36 +1463,19 @@ name "enu:select_op"
 
 \end_inset
 
-One of the selection operators described in Section
+One of the selection operators is chosen stochastically as described in
+ Section
 \begin_inset space ~
 \end_inset
 
 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sub:Operators"
+reference "sub:adaptive_choose"
 
 \end_inset
 
- is chosen stochastically.
- Each operator has an associated probability of it being chosen.
- To achieve some kind of Simulated Annealing-like behavior we give the random-se
-lection operator a higher probability initially: Initial probabilities are
- 33% for the random operator and 22% each for the rest, dominating-{path,rectang
-le} and late-path.
- Since we have not performed any kind of extensive parameter tuning, we
- do not know how much these initial probabilities affect the solution.
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Er dette ikke en sætning der skal stå i parameter tuning??
-\end_layout
-
-\end_inset
-
-
+.
 \end_layout
 
 \begin_layout Enumerate
@@ -1532,16 +1487,6 @@ The selection operator is executed, which returns a set of paths.
  as possible.
  Also note that tie-breaking for shortest-path routing decisions is done
  stochastically.
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Noget af det her skal muligvis stå i GRASP istedet, siden det opstår før...
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Enumerate
@@ -1573,19 +1518,6 @@ reference "sub:adaptive_choose"
 \end_inset
 
 .
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-In case of equal solutions, punish or reward by schedule homogenity.
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Section
@@ -1973,6 +1905,8 @@ The starting parameters of the choose table denote the starting priorities
  random initially.
  Preferably, with more time, we would vary the starting weights of the operators
  an observe the performance of the metaheuristics.
+ For example, to achieve some kind of Simulated Annealing-like behavior
+ we give the random-selection operator a higher probability initially.
  We could also elaborate our punish and reward system of operators, by also
  taking into account if the same schedule length is found.
 \end_layout
