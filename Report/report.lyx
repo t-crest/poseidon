@@ -188,12 +188,15 @@ At least one autor is required.
 \end_layout
 
 \begin_layout Abstract
-This paper shows how metaheuristics can be applied to optimize scheduling
+This paper shows how two metaheuristics can be applied to optimize scheduling
  of of inter-processor communication in a real-time Network-on-Chip.
  This scheduling problem is an NP-complete multi-commodity flow problem,
  which we optimize using the metaheuristics Adaptive Large Neighborhood
  Search (ALNS) and Greedy Randomized Adaptive Search Procedure (GRASP).
- 
+ Our scheduler supports scheduling of arbitrary communication-graphs on
+ arbitrary topologies.
+ We detail performance measurements and results for bi-torus and mesh topologies
+ and show that we out perform a prior heuristic scheduler.
 \end_layout
 
 \begin_layout Terms
@@ -603,6 +606,16 @@ Mimicking nature we think of the free links in the network as air bubbles.
 
 \begin_layout Subsection
 Proposed metaheuristics
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Rasmus
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1306,6 +1319,16 @@ name "sub:adaptive_choose"
 \end_inset
 
 Choosing operators adaptively
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1354,7 +1377,7 @@ Greedy Randomized Adaptive Search Procedure
 status open
 
 \begin_layout Plain Layout
-Jaspur
+Rasmus
 \end_layout
 
 \end_inset
@@ -1526,7 +1549,7 @@ Implementation
 status open
 
 \begin_layout Plain Layout
-Mark
+Rasmus
 \end_layout
 
 \end_inset
@@ -1622,6 +1645,16 @@ The rest of this section will remain language agnostic.
 
 \begin_layout Subsection
 Data-structure organization and delta-evaluation
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1716,6 +1749,16 @@ route
 
 \begin_layout Subsection
 Calculating shortest paths
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Mark
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1883,7 +1926,17 @@ As mentioned in the introduction the run time of our scheduler might be
 \end_layout
 
 \begin_layout Subsection
-Starting parameter of choose table 
+Starting parameter of choose table
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Jaspur
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -1917,6 +1970,16 @@ GRASP randomness
 \end_inset
 
  
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Jaspur
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -5920,6 +5983,16 @@ It is an interesting observation that the
 
 \begin_layout Subsection
 Initial solution
+\begin_inset Marginal
+status open
+
+\begin_layout Plain Layout
+Jaspur
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -8069,7 +8142,7 @@ status open
 \begin_inset Graphics
 	filename figures/linkutil.pdf
 	lyxscale 30
-	width 100col%
+	width 95col%
 
 \end_inset
 
@@ -8798,16 +8871,6 @@ Combining the increasing link utilization and the decreasing iteration count,
 
 \begin_layout Section
 Conclusion
-\begin_inset Marginal
-status open
-
-\begin_layout Plain Layout
-Rasmus
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \begin_layout Standard
@@ -8815,11 +8878,17 @@ In this report we have shown how to apply two metaheuristics Adaptive Large
  Neighborhood Search and Greedy Randomize Adaptive Search Procedure to an
  NP-complete scheduling problem.
  We have shown that our scheduler gives results close to the optimal solution
- for small network sizes and for larger network sizes we are with in 30
+ for small network sizes and for larger network sizes we are within ~30
 \begin_inset space ~
 \end_inset
 
-% of the analytical bound for bi-torus.
+% of the analytical lower bound for bi-torus.
+ The results for the large network sizes can be expected to improve when
+ the scheduler is allowed to run for several days.
+ We have shown that our scheduler performs better a prior heuristic scheduler.
+ For large mesh networks our scheduler is a factor of 3.9x better.
+ Overall GASP has shown to be the best metaheuristic for this scheduling
+ problem.
 \end_layout
 
 \begin_layout Bibliography
