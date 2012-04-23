@@ -1993,7 +1993,8 @@ reference "tab:Beta-for-mesh"
 
 .
  The standard deviation is calculated from a sample from the iterations,
- with each sample point given with one second intervals.
+ with each sample point given with one second intervals, thus for 2 hour
+ runs
 \end_layout
 
 \begin_layout Standard
@@ -3921,7 +3922,8 @@ name "tab:Beta-for-bitorus"
 
 \end_inset
 
-Best found solution and standard deviation, for the different 
+Best found solution and standard deviation running GRASP, for the different
+ 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -3937,6 +3939,34 @@ Best found solution and standard deviation, for the different
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Table
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-bitorus"
+
+\end_inset
+
+ shows that when runnning the GRASP metaheuristic on the bi-torus topology,
+ a small amount of randomness is preferred.
+ This is seen, since the best solutions for all the bi-torus sizes are found
+ with 
+\begin_inset Formula $\beta\leq0.05$
+\end_inset
+
+.
+ The best solution here, is meant by the 
+\begin_inset Formula $\beta$
+\end_inset
+
+ value that gets the smallest schedule length, and secondly has the smallest
+ standard deviation.
 \end_layout
 
 \begin_layout Standard
@@ -5861,7 +5891,8 @@ name "tab:Beta-for-mesh"
 
 \end_inset
 
-Best found solution and standard deviation, for the different 
+Best found solution and standard deviation running GRASP, for the different
+ 
 \begin_inset Formula $\beta$
 \end_inset
 
@@ -5880,31 +5911,27 @@ Best found solution and standard deviation, for the different
 \end_layout
 
 \begin_layout Standard
-we could consider 0.1 as about optimal for 
-\begin_inset Formula $\beta$
-\end_inset
-
-.
- This is still close to the greedy solution, but leaves som room for randomness,
- that may improve the solution.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-Her skal vi helst have noget average data sat op imod best data, muligvis
- også en reference til hvor hurtigt de forskellige beta
-\end_layout
-
-\begin_layout Plain Layout
-Skal tabel ind her?? Den bliver stor...
-\end_layout
-
+For the mesh topology, table
+\begin_inset space ~
 \end_inset
 
 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tab:Beta-for-mesh"
+
+\end_inset
+
+ shows, that the best results can be found across the table.
+ For 
+\begin_inset Formula $\beta=0.2$
+\end_inset
+
+ we observe, that it consistantly for the best schedule length with a relatively
+ good standard deviations.
+ From this we gather, that in contrary to the bi-torus topology, the mesh
+ topology gets the best schedule length when some randomness is added to
+ the initial solutions.
 \end_layout
 
 \begin_layout Subsection
@@ -7184,7 +7211,7 @@ reference "tab:Best-found-period-1"
 
 .
  Therefore, if ALNS was to be run multiple times, RANDOM could be preferred
- instead of the deterministic GREEDY.
+ instead of the deterministic GREEDY for the mesh topology.
 \end_layout
 
 \begin_layout Section
