@@ -98,7 +98,7 @@ and
 
 \end_inset
 
- Jaspur Højgaard 
+ Rasmus Bo Sørensen 
 \begin_inset ERT
 status collapsed
 
@@ -111,7 +111,7 @@ and
 
 \end_inset
 
- Rasmus Bo Sørensen 
+ Jaspur Højgaard 
 \begin_inset ERT
 status collapsed
 
@@ -146,8 +146,8 @@ type "mailto:"
 , 
 \begin_inset CommandInset href
 LatexCommand href
-name "s072069"
-target "s072069@student.dtu.dk"
+name "s072080"
+target "s072080@student.dtu.dk"
 type "mailto:"
 
 \end_inset
@@ -155,8 +155,8 @@ type "mailto:"
 , 
 \begin_inset CommandInset href
 LatexCommand href
-name "s072080"
-target "s072080@student.dtu.dk"
+name "s072069"
+target "s072069@student.dtu.dk"
 type "mailto:"
 
 \end_inset
@@ -192,10 +192,20 @@ Introduction
 \end_layout
 
 \begin_layout Standard
-For the T-Crest project, a real-time Network-on-Chip (NoC) is to be designed.
+For the T-CREST
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+http://www.t-crest.org/
+\end_layout
+
+\end_inset
+
+ project, a real-time Network-on-Chip (NoC) is to be designed.
  We have implemented a scheduler for static inter-processor communication
  in a real-time Multi-Processor System-on-Chip (MPSoC).
- In this type of Real-time system scheduling is done at compile-time to
+ In this type of real-time system scheduling is done at compile-time to
  simplify Worst-Case Execution Time (WCET) analysis.
  In real-time systems, performance depends purely on the Worst-Case Execution
  Time (WCET) -- therefore the analyzability of the system is very important
@@ -286,7 +296,7 @@ status open
 \begin_layout Plain Layout
 \align center
 \begin_inset Graphics
-	filename figures/Timeslot0-mesh.pdf
+	filename figures/Timeslot0-mesh_cropped.pdf
 	scale 70
 
 \end_inset
@@ -298,7 +308,14 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Mesh
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:First-time-slot"
+
+\end_inset
+
+A time slot of a schedule.
+ Color indicates which communication channel is routed on the link.
 \end_layout
 
 \end_inset
@@ -306,6 +323,38 @@ Mesh
 
 \end_layout
 
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset space ~
 \end_inset
 
 
@@ -359,14 +408,7 @@ A tile contains a processor, a Network Adapter (NA), a local instruction
 \begin_inset Caption
 
 \begin_layout Plain Layout
-\begin_inset CommandInset label
-LatexCommand label
-name "fig:First-time-slot"
 
-\end_inset
-
-The first time slot of the schedule.
- The color indicates which communication channel is routed on the link.
 \end_layout
 
 \end_inset
@@ -392,13 +434,8 @@ Our goal for this project is to make a scheduler that makes as good schedules
  constructed it very generic.
  Our scheduler can schedule arbitrary communication graphs on arbitrary
  interconnect topologies, the topologies are limited to routers with out
- degree 5, where one of the output ports always are connected to a CPU.
-\end_layout
-
-\begin_layout Standard
-It is trivial to construct a greedy solution for the scheduling problem.
- To improve schedules compared to this greedy solution, we can apply metaheurist
-ics.
+ degree 5, where one of the output ports always are connected to a Network
+ Adapter.
 \end_layout
 
 \begin_layout Standard
@@ -415,13 +452,6 @@ es and constraints.
  Always taking the shortest path will automatically guarantee causality
  of received packets.
  
-\end_layout
-
-\begin_layout Standard
-Our scheduling problem is NP-complete, thus we need metaheuristics to improve
- schedule periods from greedy algorithms.
- For most relevant network sizes it is practically impossible to search
- though the whole solution space.
 \end_layout
 
 \begin_layout Standard
@@ -1824,8 +1854,7 @@ route
 route
 \family default
  does this via a simple depth-first search.
- Of the paths which has just been ripped-up, the longest paths are routed
- first.
+ The longest of the ripped-up paths are routed first.
  
 \end_layout
 
@@ -1846,8 +1875,9 @@ intelligent
 
  selection of which channels to reroute is the job of our operators.
  The most successful operator is our dominating paths: We call the paths
- that finish last for the dominating paths, and includes below them in time.
- It is therefore natural to attack these paths since they prolong the schedule.
+ that finish last for the dominating paths, and includes all paths below
+ them in time.
+ It is natural to attack these paths since they prolong the schedule.
  
 \end_layout
 
@@ -1898,10 +1928,10 @@ Adaptive Large Neighborhood Search
 Contrary to GRASP, ALNS continually works on the same solution.
  ALNS repeatedly destroys a part of a solution and rebuilds it again into
  a feasible solution.
- Since we always rebuild with route, what we punish and reward are the selection
- operators described above.
- The operators fit into this scheme perfectly, so our implementation of
- ALNS is standard.
+ Since we always rebuild the routes, we punish and reward the selection
+ operators.
+ The operators fit into this scheme perfectly, so our implementation is
+ close to standard ALNS.
  Our adaptive scheme is based on multiplying the operator-probability with
  the improvement.
 \end_layout
