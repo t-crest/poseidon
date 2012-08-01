@@ -32,6 +32,7 @@ public:
 	
 private:
 	meta_t parse_meta_t(string str);
+        void print_help();
 };
 
 namespace global {
