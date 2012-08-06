@@ -42,6 +42,7 @@ protected:
 	time_t t0;
 	network_t& n;
 
+        void percent_set(const int init);
 	void percent_set(const int init, const string);
 	void percent_up(const int curr);
 	void print_stats_linkutil();

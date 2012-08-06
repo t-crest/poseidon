@@ -37,11 +37,16 @@ singleshot_scheduler::singleshot_scheduler(network_t& _n) : n(_n) {
 void singleshot_scheduler::percent_set(const int init, const string text){
 	percent = 0.0;
 	initial = init;
-//	cout << text << endl;
+	cout << text << endl;
+}
+
+void singleshot_scheduler::percent_set(const int init){
+	percent = 0.0;
+	initial = init;
 }
 
 void singleshot_scheduler::percent_up(const int curr){
-	return;
+//	return;
 	
 	float curr_percent = 100-(curr*100)/initial;
 	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
@@ -539,9 +544,11 @@ void s_alns::run()
 
 	// destroy noget
 	// repair igen
-
+	percent_set(global::opts->run_for);
 	for (; time(NULL) <= this->t0 + global::opts->run_for;  ) 
 	{
+		percent_up(time(NULL)- this->t0 );
+		
 		this->destroy();
 		this->repair();
 

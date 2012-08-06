@@ -11,6 +11,8 @@
 #include "draw.hpp"
 #include "options.h"
 #include "schedulers.hpp"
+#include "IOutput.h"
+#include "vhdlOutput.h"
 #include <array>
 #include <stack>
 #include <queue>
@@ -41,6 +43,14 @@ int main(int argc, char* argv[])
 	
 
 	if (global::opts->draw) draw_schedule(n); // finally draw the schedule itself 
+	
+	if (!global::opts->output_dir.empty())
+	{
+		cout << "Printing shedule...";
+		vhdlOutput* o = new vhdlOutput(global::opts->output_dir);
+		o->output_schedule(n);
+		cout << "Done." << endl;
+	}
 
 	delete global::opts;
 	return 0;
