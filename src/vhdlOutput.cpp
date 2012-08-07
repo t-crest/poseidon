@@ -22,7 +22,8 @@ bool vhdlOutput::output_schedule(const network_t& n)
 		this->startrouterST(r_id);
 		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
 			// Write row in Network Adabpter table
-			router_id dest_id, src_id = (*r)->address;
+			router_id dest_id = (*r)->address;
+			router_id src_id = (*r)->address;
 			if ((*r)->local_in_best_schedule.has(t)){
 				dest_id = (*r)->local_in_best_schedule.get(t)->to;
 			}
@@ -36,6 +37,26 @@ bool vhdlOutput::output_schedule(const network_t& n)
 			this->writeSlotNISrc(src);
 			// Write row in Router table 
 //			this->writeSlotRouter(t,countWidth,ports);
+			port_id ports[5];
+			for(int in_p = 0; in_p < __NUM_PORTS; in_p++){
+				if(!(*r).in((port_id)in_p).has_link())
+					continue; // Route input
+				if((*r).in((port_id)in_p).link().best_schedule.has(t)){
+					channel* in_c =(*r).in((port_id)in_p).link().best_schedule.get(t);
+					for(int out_p = 0; out_p < __NUM_PORTS; out_p++){
+						if(!(*r).out((port_id)out_p).has_link())
+							continue; // Route input
+						if((*r).out((port_id)out_p).link().best_schedule.has(t)){
+							channel* out_c =(*r).out((port_id)out_p).link().best_schedule.get(t);
+							
+						}
+					}
+				}
+				//ports[N] = ; 
+				
+			}
+			
+			
 		}
 		//(*r).
 		this->endniST(r_id);
@@ -55,7 +76,8 @@ string vhdlOutput::bin(int val, int bits) {
 	string s = "";
 	for (int i = 0; i < bits; ++i) {
 		s += (val & (1 << (bits - i - 1))) != 0 ? "1" : "0";
-	}
+	} // TODO: Correct endianness by dividing  and subtracting
+	// bitset STL
 	return s;
 }
 

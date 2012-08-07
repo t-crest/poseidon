@@ -32,7 +32,7 @@ typedef int coord;
 typedef std::pair<coord, coord> router_id;
 
 enum port_id {
-	N, S, E, W, L, __NUM_PORTS
+	N, S, E, W, L, __NUM_PORTS // HACK!!
 };
 typedef std::pair<router_id, port_id> routerport_id;
 

@@ -46,14 +46,14 @@ void singleshot_scheduler::percent_set(const int init){
 }
 
 void singleshot_scheduler::percent_up(const int curr){
-//	return;
 	
-	float curr_percent = 100-(curr*100)/initial;
-	curr_percent = round(curr_percent*1e2)/1e2; // Rounding to 2 decimal point precision
-	if(curr_percent > percent && curr_percent <= 100){
+	float curr_percent = (float)curr/initial;
+	curr_percent = round(curr_percent*1e4)/1e2; // Rounding to 2 decimal point precision
+	if(curr_percent > percent){
 		percent = curr_percent;
-		(cout << "\r" << "Progress: " << curr_percent << "%").flush();
-		if (int(curr_percent) == 100)
+		printf("\rProgress: %.2f%%",curr_percent);
+		fflush(stdout);
+		if (int(curr_percent) >= 100)
 			cout << " Done." << endl;
 	}
 
@@ -124,7 +124,8 @@ void s_greedy::run() {
 	});
 	
 	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
-	percent_set(pq.size(), "Creating initial solution:");
+	int orig_size = pq.size();
+	percent_set(orig_size, "Creating initial solution:");
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
@@ -136,7 +137,7 @@ void s_greedy::run() {
 				break;
 			}
 		}
-		percent_up(pq.size());
+		percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
@@ -178,7 +179,7 @@ void s_cross::run()
 	}
 	
 	auto next_mutator = get_next_mutator();
-	percent_set(pq.size(), "Creating initial solution:");
+	//percent_set(pq.size(), "Creating initial solution:");
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
@@ -212,7 +213,8 @@ void s_random::run()
 
 	auto next_mutator = get_next_mutator();
 
-	percent_set(pq.size(), "Creating initial solution:");
+	int orig_size = pq.size();
+	percent_set(orig_size, "Creating initial solution:");
 	// Routes channels and mutates the network. 
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
@@ -227,7 +229,7 @@ void s_random::run()
 				break;
 			}
 		}
-		percent_up(pq.size());
+		percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
@@ -249,7 +251,9 @@ void s_bad_random::run()
 	debugf(pq.size());
 
 	auto next_mutator = get_next_mutator();
-	percent_set(pq.size(), "Creating initial solution:");
+	
+	int orig_size = pq.size();
+	percent_set(orig_size, "Creating initial solution:");
 	timeslot t_start = 0;
 
 	// Routes channels and mutates the network. 
@@ -266,7 +270,7 @@ void s_bad_random::run()
 				break;
 			}
 		}
-		percent_up(pq.size());
+		percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
@@ -544,9 +548,12 @@ void s_alns::run()
 
 	// destroy noget
 	// repair igen
-	percent_set(global::opts->run_for);
+	percent_set(global::opts->run_for, "Applying ALNS");
 	for (; time(NULL) <= this->t0 + global::opts->run_for;  ) 
 	{
+//		debugf(time(NULL)- this->t0);
+		
+		
 		percent_up(time(NULL)- this->t0 );
 		
 		this->destroy();
