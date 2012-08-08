@@ -21,7 +21,7 @@ bool vhdlOutput::output_schedule(const network_t& n)
 		this->startniST(r_id);
 		this->startrouterST(r_id);
 		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
-			// Write row in Network Adabpter table
+			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
 			if ((*r)->local_in_best_schedule.has(t)){
@@ -37,24 +37,24 @@ bool vhdlOutput::output_schedule(const network_t& n)
 			this->writeSlotNISrc(src);
 			// Write row in Router table 
 //			this->writeSlotRouter(t,countWidth,ports);
-			port_id ports[5];
-			for(int in_p = 0; in_p < __NUM_PORTS; in_p++){
-				if(!(*r).in((port_id)in_p).has_link())
-					continue; // Route input
-				if((*r).in((port_id)in_p).link().best_schedule.has(t)){
-					channel* in_c =(*r).in((port_id)in_p).link().best_schedule.get(t);
-					for(int out_p = 0; out_p < __NUM_PORTS; out_p++){
-						if(!(*r).out((port_id)out_p).has_link())
-							continue; // Route input
-						if((*r).out((port_id)out_p).link().best_schedule.has(t)){
-							channel* out_c =(*r).out((port_id)out_p).link().best_schedule.get(t);
-							
-						}
-					}
-				}
-				//ports[N] = ; 
-				
-			}
+//			port_id ports[5];
+//			for(int out_p = 0; out_p < __NUM_PORTS; out_p++){
+//				if(!(*r)->out((port_id)out_p).has_link())
+//					continue; // Route input
+//				if((*r)->in((port_id)in_p).link().best_schedule.has(t)){
+//					const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t);
+//					for(int out_p = 0; out_p < __NUM_PORTS; out_p++){
+//						if(!(*r)->out((port_id)out_p).has_link())
+//							continue; // Route input
+//						if((*r)->out((port_id)out_p).link().best_schedule.has(t)){
+//							const channel* out_c =(*r)->out((port_id)out_p).link().best_schedule.get(t);
+//							
+//						}
+//					}
+//				}
+//				//ports[N] = ; 
+//				
+//			}
 			
 			
 		}
@@ -73,17 +73,34 @@ bool vhdlOutput::output_schedule(const network_t& n)
 }
 
 string vhdlOutput::bin(int val, int bits) {
+	int max = (int)pow(2.0,bits-1);
 	string s = "";
-	for (int i = 0; i < bits; ++i) {
-		s += (val & (1 << (bits - i - 1))) != 0 ? "1" : "0";
-	} // TODO: Correct endianness by dividing  and subtracting
-	// bitset STL
+	for(int i = 0; i < bits; i++){
+		if(val/max >= 1){
+			val -= max;
+			s += "1";
+		} else {
+			s += "0";
+		}
+	}
 	return s;
 }
 
 vhdlOutput::vhdlOutput(string output_dir){
 	niST.open(output_dir + "ni_ST.vhd", ios::trunc);
 	routerST.open(output_dir + "router_ST.vhd", ios::trunc);
+	if(!niST.good()){
+		niST.close();
+		string new_file = output_dir + ::lex_cast<string>((int)time(NULL)) + "ni_ST.vhd";
+		cout << "Warning: Output failure, new output name: " + new_file << endl;
+		niST.open(new_file, ios::trunc);
+	}
+	if(!routerST.good()){
+		routerST.close();
+		string new_file = output_dir + ::lex_cast<string>((int)time(NULL)) + "router_ST.vhd";
+		cout << "Warning: Output failure, new output name: " + new_file << endl;
+		routerST.open(new_file, ios::trunc);
+	}
 	// TODO: Error handling + Specify output file name
 }
 
@@ -125,7 +142,7 @@ void vhdlOutput::endArchRouter(){
 	routerST << "end data;\n";
 }
 
-void vhdlOutput::writeSlotRouter(int slotNum, int countWidth, port* ports){
+void vhdlOutput::writeSlotRouter(int slotNum, int countWidth, port_id* ports){
 	routerST << "\t\twhen \"" << bin(slotNum,countWidth) << "\" =>\n";
 	if(ports[0] == 5 || ports[0] == 0){
 		routerST << "\t\t\tsels(0) <= " << 0 << ";\n";
@@ -177,8 +194,8 @@ void vhdlOutput::writeHeaderNI(int countWidth, int numOfNodes){
 	niST << "\t\tNI_NUM\t: natural);\n";
 	niST << "\tport (\n";
 	niST << "\t\tcount\t: in unsigned(" << countWidth-1 << " downto 0);\n";
-	niST << "\t\tdest\t: out integer range 0 to " << numOfNodes << ";\n";
-	niST << "\t\tsrc\t: out integer range 0 to " << numOfNodes << "\n";
+	niST << "\t\tdest\t: out integer range 0 to " << numOfNodes-1 << ";\n";
+	niST << "\t\tsrc\t: out integer range 0 to " << numOfNodes-1 << "\n";
 	niST << "\t\t);\n";
 
 	niST << "end ni_ST;\n\n";
