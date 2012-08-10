@@ -44,8 +44,8 @@ private:
     ofstream routerST;
 
     string bin(int val, int bits);
+    char p2c(port_id p);
     void startST(int num, ofstream* ST);
-    void endST(int num, ofstream* ST);
     void writeHeaderRouter(int countWidth);
     void endArchRouter();
     void writeSlotRouter(int slotNum, int countWidth, port_id* ports);
