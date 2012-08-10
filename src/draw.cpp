@@ -2,12 +2,12 @@
 
 #include "draw.hpp"
 
-draw::draw(network_t& _n)
+draw::draw(const network_t& _n)
 : n(_n), scale(60), bezel(20), router_size(scale / 2) {
 	this->init();
 }
 
-draw::draw(network_t& _n, timeslot _t)
+draw::draw(const network_t& _n, timeslot _t)
 : n(_n), scale(60), bezel(20), router_size(scale / 2), t(_t) {
 	this->init();
 }

@@ -1,7 +1,7 @@
 #include "output.hpp"
 
 
-void draw_network(network_t& n) 
+void draw_network(const network_t& n) 
 {
 	using snts::file;
 	
@@ -10,7 +10,7 @@ void draw_network(network_t& n)
 	f << d.root.toString() << "\n";
 }
 
-void draw_schedule(network_t& n) 
+void draw_schedule(const network_t& n) 
 {
 	using snts::file;
 	

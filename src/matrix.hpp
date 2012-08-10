@@ -47,6 +47,11 @@ public:
 	inline T& operator() (std::pair<X, Y> arg) {
 		return (*this)(arg.first, arg.second);
 	}
+        
+        template <typename X, typename Y>
+        inline T operator() (std::pair<X, Y> arg) const {
+                return (*this)(arg.first, arg.second);
+        }
 };
 
 template <typename A>

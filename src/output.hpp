@@ -18,12 +18,9 @@
 #include <cstdlib>
 #include <memory>
 
-class output {
-	
-};
 
-void draw_network(network_t& n);
-void draw_schedule(network_t& n);
+void draw_network(const network_t& n);
+void draw_schedule(const network_t& n);
 
 
 #endif	/* OUTPUT_HPP */

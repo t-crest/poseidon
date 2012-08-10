@@ -24,7 +24,7 @@ class draw {
 	const int bezel;
 	const int router_size; // width and height of a router
 	boost::optional<timeslot> t;
-	network_t& n;	
+	const network_t& n;	
 	
 	void init();
 	element link(link_t *l);
@@ -36,8 +36,8 @@ class draw {
 	
 public:
 	element root;
-	draw(network_t& _n);
-	draw(network_t& _n, timeslot _t);
+	draw(const network_t& _n);
+	draw(const network_t& _n, timeslot _t);
 };
 
 #endif	/* DRAW_HPP */
