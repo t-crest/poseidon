@@ -213,7 +213,7 @@ public:
 	
         
 	bool route_channel_wrapper(channel* c, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
-	void ripup_channel(const channel* c);
+	void ripup_channel(const channel* c, router_id start);
 	void check_channel(const channel* c, const bool best);
 private:
 	bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);

@@ -1,6 +1,7 @@
 #ifndef SCHEDULERS_HPP
 #define	SCHEDULERS_HPP
 
+#include "maxset.hpp"
 #include "output.hpp"
 #include "draw.hpp"
 #include "svg.h"
@@ -85,28 +86,52 @@ public:
 
 class meta_scheduler : public singleshot_scheduler {
 private:
-	std::set<const channel*> find_depend_path(const channel* dom);
-	std::set<const channel*> find_depend_rectangle(const channel* c);
-	std::set<const channel*> find_dom_paths();
-	std::set<const channel*> find_late_paths(timeslot top);
+	
+	typedef std::pair<const channel*, router_id/*start*/> channel_part;
+	
+	struct minor_t {
+		static network_t* this_n;  // UGLY HACK
+		
+		bool operator()(channel_part a, channel_part b) {
+			assert(a.first == b.first);
+			const channel *c = a.first; // does not matter if a or b
+			const int a_hops = this_n->router(c->from)->hops[a.second]; 
+			const int b_hops = this_n->router(c->from)->hops[b.second]; 
+			return (a_hops > b_hops); // prefer a if it has more hops (since a and b are the same channel, a will also include b)
+		}
+	};
 
+	struct major_t {bool operator()(channel_part a, channel_part b) {
+		return (a.first < b.first);
+	}};	
+	
+	typedef maxset<channel_part, minor_t, major_t> chosen_t;
+
+	chosen_t find_depend_path(const channel* dom);
+	chosen_t find_depend_rectangle(const channel* c);
+	chosen_t find_dom_paths();
+	chosen_t find_late_paths(timeslot top);
+	void find_crater(router_id r, timeslot t);
+	
+	
 protected:
-	std::set<std::pair<int, const channel*> > unrouted_channels;
+	std::set< std::pair<int, channel_part> > unrouted_channels;
 //	int best;
 //	int prev;
 	int chosen_adaptive;
 	int iterations;
 
-	#define MEM_FUNC_T std::set<const channel*>(meta_scheduler::*)()
+//	#define MEM_FUNC_T std::set<const channel*>(meta_scheduler::*)()
+	#define MEM_FUNC_T chosen_t(meta_scheduler::*)()
 	std::vector< std::pair<float, MEM_FUNC_T> > choose_table;
 
 	void punish_or_reward();
 	void normalize_choose_table();
 
-	std::set<const channel*> choose_random();
-	std::set<const channel*> choose_late_paths();
-	std::set<const channel*> choose_dom_paths();
-	std::set<const channel*> choose_dom_rectangle();
+	chosen_t choose_random();
+	chosen_t choose_late_paths();
+	chosen_t choose_dom_paths();
+	chosen_t choose_dom_rectangle();
 
 public:
 	meta_scheduler(network_t& _n);
