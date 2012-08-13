@@ -542,7 +542,7 @@ void network_t::ripup_channel(const channel* c, router_id start)
 		this->router(c->from)->local_in_schedule.remove(c->t_start);
 	}
 
-	bool modify = false;	// flag indicating if we delete links from now on, or just follow them until we have found start
+	bool modify = true;	// flag indicating if we delete links from now on, or just follow them until we have found start
 	router_id curr = c->from;
 	const router_id dest = c->to;
 	timeslot t = c->t_start;
