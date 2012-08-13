@@ -354,10 +354,23 @@ void meta_scheduler::repair() {
 }
 
 void meta_scheduler::punish_or_reward() {
-	if (this->iterations >= 1) {
-		this->choose_table[this->chosen_adaptive].first *= std::sqrt((float(n.prev)/n.curr));
+	float sq = std::sqrt((float(n.prev)/n.curr));
+	float loga = 1+std::log((float(n.prev)/n.curr));
+//	debugf(this->iterations);
+//	debugf(sq);
+//	debugf(loga);
+	
+	float factor = loga;
+	
+	if (this->iterations >= 1 && n.prev != n.curr) {
+		this->choose_table[this->chosen_adaptive].first *= factor;
 		this->normalize_choose_table();
-	} 
+	}
+	else if (n.prev == n.curr) {
+		this->choose_table[this->chosen_adaptive].first *= 0.99;
+		this->normalize_choose_table();
+	}
+	
 	n.prev = n.curr;
 }
 
@@ -370,6 +383,7 @@ void meta_scheduler::normalize_choose_table() {
 	for (int i = 0; i < choose_table.size(); i++) {
 		choose_table[i].first /= sum;
 	}
+	printf("\r                   Choose_table: %.4f%% , %.4f%% , %.4f%% , %.4f%%",choose_table[0].first, choose_table[1].first, choose_table[2].first, choose_table[3].first);
 }
 
 std::set<const channel*> meta_scheduler::choose_random() {
