@@ -299,6 +299,8 @@ timeslot network_t::p_best() const {
 }
 
 bool network_t::has(const router_id r) const {
+	if (!(0 <= r.first && r.first < this->rows())) return false;
+	if (!(0 <= r.second && r.second < this->cols())) return false;
 	return (this->m_routers(r) != NULL);
 }
 

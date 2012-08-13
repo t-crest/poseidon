@@ -23,6 +23,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <memory>
+#include <algorithm>
 
 using namespace std;
 
@@ -103,7 +104,7 @@ private:
 	};
 
 	struct major_t {bool operator()(channel_part a, channel_part b) {
-		return (a.first < b.first);
+		return (a.first < b.first); // compare channels
 	}};	
 	
 	typedef maxset<channel_part, minor_t, major_t> chosen_t;
@@ -112,6 +113,7 @@ private:
 	chosen_t find_depend_rectangle(const channel* c);
 	chosen_t find_dom_paths();
 	chosen_t find_late_paths(timeslot top);
+	void crater_process(const router_id r0, const timeslot t0, chosen_t& ret);
 	
 protected:
 	std::set< std::pair<int, channel_part> > unrouted_channels;
