@@ -457,43 +457,37 @@ meta_scheduler::chosen_t meta_scheduler::choose_dom_rectangle()
 	return ret;
 }
 
-
-void meta_scheduler::find_crater(router_id r_epi, timeslot t_epi) 
+meta_scheduler::chosen_t meta_scheduler::choose_dom_crater() 
 {
 	const int radius = 2; // space-time radius :)
+	chosen_t ret;
 	
-//	chosen_t doms = this->find_dom_paths();
-//	for_each(doms, [&](const channel *dom){
-//		
-////		dom->
-//		
-//		
-//		
-//	});
-//	
-	
-	
-	
-	for (int x = -radius; x <= radius; x++) {
-	for (int y = -radius; y <= radius; y++) {
-		router_id r = r_epi;
-		r.first += x;
-		r.second += y;
+	chosen_t doms = this->find_dom_paths();
+	for_each(doms.get_set(), [&](const channel_part dom){
 
+		int len = n.router(dom.first->from)->hops[dom.first->to];
 		
-		
-		
-		for (int p = 0; p < __NUM_PORTS; p++) {
-			port_out_t& op = this->n.router(r)->out((port_id)p);
-			if (!op.has_link()) continue;
-			
-		}
-		
-	}
-	}
+		debugf(dom);
+		debugf(*dom.first);
+		debugf(dom.second);
+		debugf(len);
+	});
 	
+//	for (int x = -radius; x <= radius; x++) {
+//	for (int y = -radius; y <= radius; y++) {
+//		router_id r = r_epi;
+//		r.first += x;
+//		r.second += y;
+//		
+//		for (int p = 0; p < __NUM_PORTS; p++) {
+//			port_out_t& op = this->n.router(r)->out((port_id)p);
+//			if (!op.has_link()) continue;
+//			
+//		}
+//	}
+//	}
 	
-	
+	return ret;
 }
 
 meta_scheduler::chosen_t meta_scheduler::find_depend_path(const channel* dom) 
@@ -581,6 +575,7 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
+//	this->choose_table.push_back({1.0, &s_alns::choose_dom_crater});
 	this->normalize_choose_table();
 }
 

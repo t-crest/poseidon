@@ -43,7 +43,7 @@ protected:
 	time_t t0;
 	network_t& n;
 
-        void percent_set(const int init);
+	void percent_set(const int init);
 	void percent_set(const int init, const string);
 	void percent_up(const int curr);
 	void print_stats_linkutil();
@@ -112,8 +112,6 @@ private:
 	chosen_t find_depend_rectangle(const channel* c);
 	chosen_t find_dom_paths();
 	chosen_t find_late_paths(timeslot top);
-	void find_crater(router_id r, timeslot t);
-	
 	
 protected:
 	std::set< std::pair<int, channel_part> > unrouted_channels;
@@ -133,6 +131,7 @@ protected:
 	chosen_t choose_late_paths();
 	chosen_t choose_dom_paths();
 	chosen_t choose_dom_rectangle();
+	chosen_t choose_dom_crater();
 
 public:
 	meta_scheduler(network_t& _n);

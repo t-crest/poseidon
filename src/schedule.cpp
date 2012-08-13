@@ -528,8 +528,8 @@ bool network_t::route_channel(
 	return false;
 }
 
-/* Rips up channel c, starting from begin_ripup (inclusive).
- * This means links (including local ones) on channel c from begin_ripup to c->to are removed
+/* Rips up channel c, starting from start (inclusive).
+ * This means links (including local ones) on channel c from start to c->to are removed
  */
 void network_t::ripup_channel(const channel* c, router_id start) 
 {
