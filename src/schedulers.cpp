@@ -391,7 +391,7 @@ void meta_scheduler::normalize_choose_table() {
 	for (int i = 0; i < choose_table.size(); i++) {
 		choose_table[i].first /= sum;
 	}
-	printf("\r                   Choose_table: %.4f%% , %.4f%% , %.4f%% , %.4f%%",choose_table[0].first, choose_table[1].first, choose_table[2].first, choose_table[3].first);
+	// printf("\r                   Choose_table: %.4f%% , %.4f%% , %.4f%% , %.4f%%",choose_table[0].first, choose_table[1].first, choose_table[2].first, choose_table[3].first);
 }
 
 meta_scheduler::chosen_t meta_scheduler::choose_random() {

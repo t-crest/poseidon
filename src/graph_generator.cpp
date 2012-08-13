@@ -5,8 +5,8 @@
 #include "graph_generator.h"
 
 
-graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int bw_max, string type)
-:	n(_n), max_channels((_n*(_n-1)))
+graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int bw_max, string type, string _output_dir)
+:	n(_n), max_channels((_n*(_n-1))), output_dir(_output_dir)
 {
 	assert(n > 0);
 	assert(channel_factor >= 0.0 && channel_factor <= 1.0);
@@ -58,11 +58,11 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 			
 		}
 	}
-
-	char type_char [7];
-	for(int i = 0; i < type.size(); i++) {
-		type_char[i] = type[i];
-	}
-	sprintf(default_file_name,"%s%ix%i_cf%f_int%i_%i",type_char,n,n,channel_factor,bw_min,bw_max);
+	
+	sprintf(default_file_name,"%s%s%ix%i_cf%f_int%i_%i",output_dir.c_str(),type.c_str(),n,n,channel_factor,bw_min,bw_max);
 	doc.save_file(default_file_name);
+}
+
+graph_generator::~graph_generator() {
+	
 }
