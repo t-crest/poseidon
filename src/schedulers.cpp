@@ -623,7 +623,7 @@ s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	s->run(); // make initial solution
 	n.updatebest();
 	
-	this->choose_table.push_back({1.5, &s_alns::choose_random});
+	this->choose_table.push_back({1.0, &s_alns::choose_random});
 	this->choose_table.push_back({1.0, &s_alns::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_alns::choose_dom_rectangle});
@@ -671,6 +671,7 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_paths});
 	this->choose_table.push_back({1.0, &s_grasp::choose_dom_rectangle});
+	this->choose_table.push_back({1.0, &s_grasp::choose_dom_crater});
 	this->normalize_choose_table();
 }
 
