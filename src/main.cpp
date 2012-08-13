@@ -14,6 +14,7 @@
 #include "IOutput.h"
 #include "vhdlOutput.h"
 #include "xmlOutput.h"
+#include "graph_generator.h"
 #include <array>
 #include <stack>
 #include <queue>
@@ -26,6 +27,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) 
 {
+	new graph_generator(3, 0.3, 1, 5, "b");
 	global::opts = new options(argc, argv);
 
 	parser p(global::opts->input_file);
