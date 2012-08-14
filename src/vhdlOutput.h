@@ -42,6 +42,7 @@ private:
     
     ofstream niST;
     ofstream routerST;
+    string numOfNodesStr;
 
     string bin(int val, int bits);
     char p2c(port_id p);
