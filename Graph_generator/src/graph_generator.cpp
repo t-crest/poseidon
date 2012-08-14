@@ -53,7 +53,7 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 						channel.append_attribute("from").set_value(from_node);
 						sprintf(to_node,"(%i,%i)",k,l);
 						channel.append_attribute("to").set_value(to_node);
-						channel.append_attribute("bandwidth").set_value((rand() % bw_max) + (bw_min + 1));
+						channel.append_attribute("bandwidth").set_value((rand() % bw_max) + bw_min);
 						channel.append_attribute("repsonse").set_value("false");
 					}
 				}

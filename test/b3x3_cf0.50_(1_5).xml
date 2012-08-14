@@ -3,40 +3,43 @@
 	<graph type="bitorus" />
 </topology>
 <channels type="arbitrary">
-	<channel from="(0,0)" to="(0,2)" bandwidth="3" repsonse="false" />
+	<channel from="(0,0)" to="(0,2)" bandwidth="1" repsonse="false" />
+	<channel from="(0,0)" to="(1,0)" bandwidth="1" repsonse="false" />
 	<channel from="(0,0)" to="(1,1)" bandwidth="5" repsonse="false" />
-	<channel from="(0,0)" to="(2,0)" bandwidth="2" repsonse="false" />
-	<channel from="(0,0)" to="(2,1)" bandwidth="4" repsonse="false" />
-	<channel from="(0,0)" to="(2,2)" bandwidth="6" repsonse="false" />
-	<channel from="(0,1)" to="(0,2)" bandwidth="4" repsonse="false" />
-	<channel from="(0,1)" to="(2,0)" bandwidth="5" repsonse="false" />
-	<channel from="(0,1)" to="(2,1)" bandwidth="6" repsonse="false" />
-	<channel from="(0,2)" to="(1,0)" bandwidth="6" repsonse="false" />
-	<channel from="(0,2)" to="(1,1)" bandwidth="4" repsonse="false" />
-	<channel from="(0,2)" to="(2,1)" bandwidth="4" repsonse="false" />
-	<channel from="(1,0)" to="(0,2)" bandwidth="4" repsonse="false" />
-	<channel from="(1,0)" to="(1,1)" bandwidth="3" repsonse="false" />
-	<channel from="(1,0)" to="(1,2)" bandwidth="6" repsonse="false" />
-	<channel from="(1,0)" to="(2,0)" bandwidth="4" repsonse="false" />
-	<channel from="(1,1)" to="(1,2)" bandwidth="4" repsonse="false" />
-	<channel from="(1,1)" to="(2,1)" bandwidth="2" repsonse="false" />
-	<channel from="(1,2)" to="(0,1)" bandwidth="6" repsonse="false" />
-	<channel from="(1,2)" to="(0,2)" bandwidth="2" repsonse="false" />
-	<channel from="(1,2)" to="(1,0)" bandwidth="2" repsonse="false" />
-	<channel from="(1,2)" to="(2,1)" bandwidth="6" repsonse="false" />
-	<channel from="(1,2)" to="(2,2)" bandwidth="5" repsonse="false" />
-	<channel from="(2,0)" to="(0,1)" bandwidth="5" repsonse="false" />
-	<channel from="(2,0)" to="(0,2)" bandwidth="6" repsonse="false" />
-	<channel from="(2,0)" to="(1,0)" bandwidth="6" repsonse="false" />
+	<channel from="(0,0)" to="(1,2)" bandwidth="4" repsonse="false" />
+	<channel from="(0,0)" to="(2,1)" bandwidth="3" repsonse="false" />
+	<channel from="(0,0)" to="(2,2)" bandwidth="1" repsonse="false" />
+	<channel from="(0,1)" to="(0,0)" bandwidth="4" repsonse="false" />
+	<channel from="(0,1)" to="(0,2)" bandwidth="2" repsonse="false" />
+	<channel from="(0,1)" to="(1,0)" bandwidth="1" repsonse="false" />
+	<channel from="(0,1)" to="(1,1)" bandwidth="4" repsonse="false" />
+	<channel from="(0,1)" to="(2,0)" bandwidth="2" repsonse="false" />
+	<channel from="(0,1)" to="(2,1)" bandwidth="5" repsonse="false" />
+	<channel from="(0,1)" to="(2,2)" bandwidth="4" repsonse="false" />
+	<channel from="(0,2)" to="(0,1)" bandwidth="5" repsonse="false" />
+	<channel from="(0,2)" to="(1,1)" bandwidth="1" repsonse="false" />
+	<channel from="(0,2)" to="(1,2)" bandwidth="1" repsonse="false" />
+	<channel from="(0,2)" to="(2,2)" bandwidth="1" repsonse="false" />
+	<channel from="(1,0)" to="(0,0)" bandwidth="3" repsonse="false" />
+	<channel from="(1,0)" to="(0,1)" bandwidth="4" repsonse="false" />
+	<channel from="(1,0)" to="(1,2)" bandwidth="3" repsonse="false" />
+	<channel from="(1,0)" to="(2,0)" bandwidth="1" repsonse="false" />
+	<channel from="(1,0)" to="(2,1)" bandwidth="2" repsonse="false" />
+	<channel from="(1,0)" to="(2,2)" bandwidth="3" repsonse="false" />
+	<channel from="(1,1)" to="(0,2)" bandwidth="4" repsonse="false" />
+	<channel from="(1,1)" to="(2,0)" bandwidth="4" repsonse="false" />
+	<channel from="(1,2)" to="(0,0)" bandwidth="1" repsonse="false" />
+	<channel from="(1,2)" to="(0,1)" bandwidth="1" repsonse="false" />
+	<channel from="(1,2)" to="(1,0)" bandwidth="3" repsonse="false" />
+	<channel from="(1,2)" to="(2,1)" bandwidth="5" repsonse="false" />
+	<channel from="(1,2)" to="(2,2)" bandwidth="4" repsonse="false" />
+	<channel from="(2,0)" to="(0,0)" bandwidth="4" repsonse="false" />
+	<channel from="(2,0)" to="(1,0)" bandwidth="2" repsonse="false" />
+	<channel from="(2,0)" to="(1,1)" bandwidth="4" repsonse="false" />
+	<channel from="(2,0)" to="(1,2)" bandwidth="4" repsonse="false" />
 	<channel from="(2,0)" to="(2,1)" bandwidth="4" repsonse="false" />
-	<channel from="(2,0)" to="(2,2)" bandwidth="3" repsonse="false" />
-	<channel from="(2,1)" to="(0,1)" bandwidth="3" repsonse="false" />
-	<channel from="(2,1)" to="(0,2)" bandwidth="6" repsonse="false" />
-	<channel from="(2,1)" to="(1,0)" bandwidth="4" repsonse="false" />
-	<channel from="(2,1)" to="(1,1)" bandwidth="2" repsonse="false" />
 	<channel from="(2,2)" to="(0,0)" bandwidth="3" repsonse="false" />
-	<channel from="(2,2)" to="(0,1)" bandwidth="4" repsonse="false" />
-	<channel from="(2,2)" to="(0,2)" bandwidth="3" repsonse="false" />
-	<channel from="(2,2)" to="(1,0)" bandwidth="6" repsonse="false" />
+	<channel from="(2,2)" to="(1,0)" bandwidth="4" repsonse="false" />
+	<channel from="(2,2)" to="(1,2)" bandwidth="1" repsonse="false" />
 	<channel from="(2,2)" to="(2,0)" bandwidth="5" repsonse="false" />
 </channels>
