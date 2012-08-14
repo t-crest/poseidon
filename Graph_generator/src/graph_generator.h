@@ -4,9 +4,11 @@
 #include <cassert>
 #include <string>
 #include <vector>
-#include "IOutput.h"
-#include "lex_cast.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <iostream>
 #include "pugixml.hpp"
+
 using namespace std;
 
 

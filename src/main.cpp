@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
 		xmlOutput* o = new xmlOutput(global::opts->output_dir);
 		o->output_schedule(n);
 		cout << "Done." << endl;
-		// new graph_generator(3, 0.3, 1,5, "m", global::opts->output_dir);
 	}
 
 	delete global::opts;

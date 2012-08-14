@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<topology width="3" heigth="3">
+	<graph type="mesh" />
+</topology>
+<channels type="arbitrary">
+	<channel from="(0,0)" to="(2,0)" bandwidth="3" repsonse="false" />
+	<channel from="(0,2)" to="(2,2)" bandwidth="4" repsonse="false" />
+	<channel from="(1,0)" to="(1,2)" bandwidth="6" repsonse="false" />
+	<channel from="(1,1)" to="(2,2)" bandwidth="6" repsonse="false" />
+	<channel from="(2,0)" to="(1,2)" bandwidth="5" repsonse="false" />
+	<channel from="(2,0)" to="(2,1)" bandwidth="3" repsonse="false" />
+	<channel from="(2,2)" to="(1,0)" bandwidth="3" repsonse="false" />
+</channels>

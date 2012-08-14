@@ -8,20 +8,22 @@
 graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int bw_max, string type, string _output_dir)
 :	n(_n), max_channels((_n*(_n-1))), output_dir(_output_dir)
 {
+	
 	assert(n > 0);
 	assert(channel_factor >= 0.0 && channel_factor <= 1.0);
 	assert(bw_min > 0);
 	assert(bw_max >= bw_min);
 	assert((type.compare("b") != 0) || (type.compare("m") != 0));
-	
+
+	cout << "assertions dome" << endl;
 	// Initialize
-	xml_document doc;
+	pugi::xml_document doc;
 	
-	xml_node topology = doc.append_child("topology");
+	pugi::xml_node topology = doc.append_child("topology");
 	topology.append_attribute("width").set_value(n);
 	topology.append_attribute("heigth").set_value(n);
 	
-	xml_node graph = topology.append_child("graph");
+	pugi::xml_node graph = topology.append_child("graph");
 	if (type.compare("b") != 0) { // b = "bitorus"
 		graph.append_attribute("type").set_value("bitorus");
 	}
@@ -31,8 +33,9 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 
 	srand(time(NULL));
 
+	cout << "init dome" << endl;
 	// Channels
-	xml_node channels = doc.append_child("channels");
+	pugi::xml_node channels = doc.append_child("channels");
 	channels.append_attribute("type").set_value("arbitrary");
 	
 	for (int i = 0; i < n; i++) { // first coordinate from
@@ -43,9 +46,9 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 						continue;
 					
 					if ((rand() % 100) <= channel_factor*100) {
-						char from_node [5];
-						char to_node [5];
-						xml_node channel = channels.append_child("channel");
+						char* from_node = new char[9];
+						char* to_node = new char[9];
+						pugi::xml_node channel = channels.append_child("channel");
 						sprintf(from_node,"(%i,%i)",i,j);
 						channel.append_attribute("from").set_value(from_node);
 						sprintf(to_node,"(%i,%i)",k,l);
@@ -58,9 +61,12 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 			
 		}
 	}
+	cout << "loops dome" << endl;
 	
-	sprintf(default_file_name,"%s%s%ix%i_cf%f_int%i_%i",output_dir.c_str(),type.c_str(),n,n,channel_factor,bw_min,bw_max);
+	sprintf(default_file_name,"%s%s%ix%i_cf%.2f_(%i_%i).xml",output_dir.c_str(),type.c_str(),n,n,channel_factor,bw_min,bw_max);
 	doc.save_file(default_file_name);
+	
+	cout << "file dome" << endl;
 }
 
 graph_generator::~graph_generator() {
