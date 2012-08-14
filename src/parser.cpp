@@ -45,8 +45,9 @@ parser::parser(string file) {
 
 			bool pathexist = !this->n->router(c.from)->next[c.to].empty();
 			ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
-
-			this->n->specification.push_back(c);
+			for(int i = 0; i < c.bandwidth; i++){
+				this->n->specification.push_back(c);
+			}
 		}
 	} else if (channel_type == "all2all") {
 		this->create_all2all();
