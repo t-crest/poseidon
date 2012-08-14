@@ -11,12 +11,12 @@ parser::parser(string file) {
 	ensure(!topology.empty(), "File " << file << " has no topology");
 	ensure(!channels.empty(), "File " << file << " has no channels");
 	ensure(!graph.empty(), "File " << file << " has no topology-graph");
-
+	
 	const int cols = ::lex_cast<int>(topology.attribute("width").value());
 	const int rows = ::lex_cast<int>(topology.attribute("height").value());
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
-
+	
 	this->n = new network_t(rows, cols);
 
 	const string graph_type = graph.attribute("type").value();
@@ -36,7 +36,7 @@ parser::parser(string file) {
 	this->n->shortest_path(); // Calculate all the shortests paths, and store in routing tables
 
 	const string channel_type = channels.attribute("type").value();
-	if (channel_type == "arbitary") {
+	if (channel_type == "arbitrary") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr);
 
