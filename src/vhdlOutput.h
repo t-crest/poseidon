@@ -11,8 +11,10 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <math.h>
 #include <unordered_map>
 #include "IOutput.h"
+#include "lex_cast.h"
 
 
 class vhdlOutput: public IOutput {
@@ -42,11 +44,11 @@ private:
     ofstream routerST;
 
     string bin(int val, int bits);
+    char p2c(port_id p);
     void startST(int num, ofstream* ST);
-    void endST(int num, ofstream* ST);
     void writeHeaderRouter(int countWidth);
     void endArchRouter();
-    void writeSlotRouter(int slotNum, int countWidth, port* ports);
+    void writeSlotRouter(int slotNum, int countWidth, port_id* ports);
     void writeHeaderNI(int countWidth, int numOfNodes);
 
     void writeSlotNIDest(int slotNum, int countWidth, int dest);

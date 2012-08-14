@@ -1,0 +1,14 @@
+<schedule length=zzz>
+	<tile id=(x,y)>
+		<timeslot value=zzz>
+			<na rx=(x,y) tx=(x,y)/>
+			<router>
+				<output id=N input=x/>
+				<output id=S input=x/>
+				<output id=E input=x/>
+				<output id=W input=x/>
+				<output id=L input=x/>
+			</router>
+		</timeslot>
+	</tile>
+</schedule>

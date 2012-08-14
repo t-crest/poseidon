@@ -299,6 +299,8 @@ timeslot network_t::p_best() const {
 }
 
 bool network_t::has(const router_id r) const {
+	if (!(0 <= r.first && r.first < this->rows())) return false;
+	if (!(0 <= r.second && r.second < this->cols())) return false;
 	return (this->m_routers(r) != NULL);
 }
 
@@ -469,7 +471,10 @@ bool network_t::route_channel_wrapper(
 	std::function<void(vector<port_out_t*>&)> next_mutator
 ) 
 {
-	if (this->router(c->from)->local_in_schedule.available(t) == false)
+	const bool already = this->router(c->from)->local_in_schedule.is(t, c);
+	const bool available = this->router(c->from)->local_in_schedule.available(t);
+	
+	if (!already && !available)
 		return false;
 
 	const bool path_routed = this->route_channel(c, c->from, t, next_mutator);
@@ -489,7 +494,10 @@ bool network_t::route_channel(
 	const bool dest_reached = (curr == c->to);
 	
 	if (dest_reached) {
-		if (this->router(c->to)->local_out_schedule.available(t)) {
+		const bool already = this->router(c->to)->local_out_schedule.is(t, c);
+		const bool available = this->router(c->to)->local_out_schedule.available(t);
+		
+		if (available || already) {
 			this->router(c->to)->local_out_schedule.add(c, t);
 			return true;
 		} else {
@@ -508,13 +516,13 @@ bool network_t::route_channel(
 		assert(p->has_link());
 		link_t& l = p->link();
 
-		if (l.local_schedule.available(t) == false) {
+		const bool already = l.local_schedule.is(t, c);
+		const bool available = l.local_schedule.available(t);
+		if (!already && !available)
 			continue;
-		}
-		
+				
 		if (this->route_channel(c, l.sink.parent.address, t+1, next_mutator)) {
 			l.local_schedule.add(c, t);
-//			c->t_start = t;
 			return true;
 		}
 	}
@@ -522,20 +530,28 @@ bool network_t::route_channel(
 	return false;
 }
 
-
-void network_t::ripup_channel(const channel* c) 
+/* Rips up channel c, starting from start (inclusive).
+ * This means links (including local ones) on channel c from start to c->to are removed
+ */
+void network_t::ripup_channel(const channel* c, router_id start) 
 {
+	if (c->from == start) {
+		if(!this->router(c->from)->local_in_schedule.is(c->t_start,c)){
+			ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot: " << c->t_start << ".");
+		}
+		this->router(c->from)->local_in_schedule.remove(c->t_start);
+	}
+
+	bool modify = true;	// flag indicating if we delete links from now on, or just follow them until we have found start
 	router_id curr = c->from;
-	router_id dest = c->to;
+	const router_id dest = c->to;
 	timeslot t = c->t_start;
 	
-	if(!this->router(curr)->local_in_schedule.is(t,c)){
-		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot: " << t << ".");
-	}
-	this->router(curr)->local_in_schedule.remove(c->t_start);
+	assert(c->from != c->to);
 	
-
 	while (curr != dest) {
+		if (curr == start) modify = true; // we found the start, let's begin to delete links
+		
 		port_out_t *p = NULL;
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!this->router(curr)->out((port_id)i).has_link())
@@ -549,7 +565,8 @@ void network_t::ripup_channel(const channel* c)
 		assert(p != NULL);
 
 		ensure(p->link().local_schedule.is(t,c),"Ripup failed: Channel: " << *c << " is not routed on local schedule of link " << p->link() << ".")
-		p->link().local_schedule.remove(t);
+		if (modify)
+			p->link().local_schedule.remove(t);
 		t++;
 		curr = p->link().sink.parent.address;
 	}
