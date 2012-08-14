@@ -15,25 +15,25 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	assert(bw_max >= bw_min);
 	assert((type.compare("b") != 0) || (type.compare("m") != 0));
 
-	cout << "assertions dome" << endl;
+//	cout << "assertions done" << endl;
 	// Initialize
 	pugi::xml_document doc;
 	
 	pugi::xml_node topology = doc.append_child("topology");
 	topology.append_attribute("width").set_value(n);
-	topology.append_attribute("heigth").set_value(n);
+	topology.append_attribute("height").set_value(n);
 	
 	pugi::xml_node graph = topology.append_child("graph");
-	if (type.compare("b") != 0) { // b = "bitorus"
+	if (type == "b") { // b = "bitorus"
 		graph.append_attribute("type").set_value("bitorus");
 	}
-	else if (type.compare("m") != 0) { // m = "mesh"
+	else if (type == "m") { // m = "mesh"
 		graph.append_attribute("type").set_value("mesh");
 	}
 
 	srand(time(NULL));
 
-	cout << "init dome" << endl;
+//	cout << "init done" << endl;
 	// Channels
 	pugi::xml_node channels = doc.append_child("channels");
 	channels.append_attribute("type").set_value("arbitrary");
@@ -61,12 +61,12 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 			
 		}
 	}
-	cout << "loops dome" << endl;
+//	cout << "loops done" << endl;
 	
 	sprintf(default_file_name,"%s%s%ix%i_cf%.2f_(%i_%i).xml",output_dir.c_str(),type.c_str(),n,n,channel_factor,bw_min,bw_max);
 	doc.save_file(default_file_name);
 	
-	cout << "file dome" << endl;
+//	cout << "file done" << endl;
 }
 
 graph_generator::~graph_generator() {
