@@ -23,7 +23,7 @@ public:
 	enum meta_t {GREEDY, rGREEDY, CROSS, RANDOM, BAD_RANDOM, GRASP, ALNS, ERR};
 	meta_t metaheuristic;
 	string input_file;
-        string output_dir;
+	string output_dir;
 	bool draw;
 	meta_t meta_inital;
 	bool save_best;
@@ -33,8 +33,8 @@ public:
 	
 private:
 	meta_t parse_meta_t(string str);
-        void print_help();
-        void print_option(char opt, string text);
+    void print_help();
+    void print_option(char opt, string text);
 };
 
 namespace global {

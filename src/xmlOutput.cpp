@@ -1,6 +1,6 @@
 /* 
  * File:   xmlOutput.cpp
- * Author: T410s
+ * Author: Rasmus
  * 
  * Created on 6. august 2012, 11:13
  */
@@ -19,18 +19,14 @@ bool xmlOutput::output_schedule(const network_t& n)
 	xml_node schedule = doc.append_child("schedule");
 	schedule.append_attribute("length").set_value(n.best);
 	
-	
-	
-	
 	for(vector<router_t*>::const_iterator r = n.routers().begin(); r != n.routers().end(); r++){ // For each router, write Network Adapter Table and Router Table
-		int r_id = (*r)->address.first + (*r)->address.second * n.cols();
-		// New tile
+		// New xml tile
 		xml_node tile = schedule.append_child("tile");
 		char co [10];
-		sprintf(co,"(%i,%i)",(*r)->address.first,(*r)->address.second);
+		print_coord((*r)->address,co,sizeof(co));
 		tile.append_attribute("id") = co;
-		//this->startniST(r_id);
-		//this->startrouterST(r_id);
+		// Vector for saving data to calculate Worst-Case Latencies
+		vector<router_id> destinations(n.best,(*r)->address);
 		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
@@ -49,21 +45,15 @@ bool xmlOutput::output_schedule(const network_t& n)
 			}
 			if ((*r)->local_out_best_schedule.has(t1))
 				src_id = (*r)->local_out_best_schedule.get(t1)->from;
-			
-			int dest = dest_id.first + dest_id.second * n.cols();
-			int src = src_id.first + src_id.second * n.cols();
-			
+			destinations[t] = dest_id;	
 			// New na
 			xml_node na = ts.append_child("na");
-			sprintf(co,"(%i,%i)",src_id.first,src_id.second);
+			print_coord(src_id,co,sizeof(co));
 			na.append_attribute("rx") = co;
-			sprintf(co,"(%i,%i)",dest_id.first,dest_id.second);
+			print_coord(dest_id,co,sizeof(co));
 			na.append_attribute("tx") = co;
 			
-//			this->writeSlotNIDest(t,countWidth,dest);
-//			this->writeSlotNISrc(src);
 			// Write row in Router table 
-			//this->writeSlotRouter(t,countWidth,ports);
 			port_id ports[5] = {__NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS};
 			// New router
 			xml_node router = ts.append_child("router");
@@ -72,43 +62,43 @@ bool xmlOutput::output_schedule(const network_t& n)
 			for(int out_p = 0; out_p < __NUM_PORTS-1; out_p++){
 				// For all 4 output ports not being the local port.
 				if(!(*r)->out((port_id)out_p).has_link()){
-					continue; // No outgoing channel from the port.
+					continue; // No outgoing link from the port.
 				}
-				if((*r)->out((port_id)out_p).link().best_schedule.has(t)){
-					// If there is a channel comming out of the port, find the
-					// input port from which the channel is comming from.
-					const channel* out_c =(*r)->out((port_id)out_p).link().best_schedule.get(t);
-					for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
-						// For all 4 input ports not being the local port.
-						if(!(*r)->in((port_id)in_p).has_link())
-							continue; // No link into this port
-						if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){ // REMEMBER: Change back t-1 -> t 
-							const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t0);
-							if(out_c == in_c){
-								// The correct link found
-								ports[(port_id)out_p] = (port_id)in_p;
-								break;
-							}
+				if(!(*r)->out((port_id)out_p).link().best_schedule.has(t)){
+					ports[(port_id)out_p] = __NUM_PORTS; // No outgoing channel on link
+					continue;
+				}
+				// If there is a channel comming out of the port, find the
+				// input port from which the channel is comming from.
+				const channel* out_c =(*r)->out((port_id)out_p).link().best_schedule.get(t);
+				for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
+					// For all 4 input ports not being the local port.
+					if(!(*r)->in((port_id)in_p).has_link())
+						continue; // No link into this port
+					if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){
+						const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t0);
+						if(out_c == in_c){
+							// The correct link found
+							ports[(port_id)out_p] = (port_id)in_p;
+							break;
 						}
 					}
-					if(ports[(port_id)out_p] == __NUM_PORTS){
-						// If channel was not found on any of the 4 input ports.
-						// It should be on the local in port, but we test it anyway.
-						if((*r)->local_in_best_schedule.has(t)){
-							const channel* in_c = (*r)->local_in_best_schedule.get(t);
-							if(out_c == in_c){
-								// The correct link found
-								ports[(port_id)out_p] = L;
-							} else {
-								cout << "Failure: Channel rose from nothing like a fenix." << endl;
-							}
-						}
-					}
-				} else {
-					ports[(port_id)out_p] = __NUM_PORTS;
 				}
-				
+				if(ports[(port_id)out_p] != __NUM_PORTS){
+					continue; // Channel was found on one of the input ports.
+				}
+				// It should be on the local in port, but we test it anyway.
+				if((*r)->local_in_best_schedule.has(t)){
+					const channel* in_c = (*r)->local_in_best_schedule.get(t);
+					if(out_c == in_c){
+						// The correct link found
+						ports[(port_id)out_p] = L;
+					} else {
+						cout << "Failure: Channel rose from nothing like a fenix." << endl;
+					}
+				}
 			}
+			
 			if((*r)->local_out_best_schedule.has(t1)){ // For the local out port.
 				const channel* out_c = (*r)->local_out_best_schedule.get(t1);
 				for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
@@ -134,23 +124,65 @@ bool xmlOutput::output_schedule(const network_t& n)
 			for(int p = 0; p < __NUM_PORTS; p++){
 				// New output
 				xml_node output = router.append_child("output");
-				sprintf(co,"%c",p2c((port_id)p));
+				sprintf(co,"%c",p2c((port_id)p)); // Should be snprintf, avoiding buffer overflow
+//				sprintf(co,sizeof(co),"%c",p2c((port_id)p));
 				output.append_attribute("id") = co;
-				sprintf(co,"%c",p2c(ports[(port_id)p]));
+				sprintf(co,"%c",p2c(ports[(port_id)p])); // Should be snprintf, avoiding buffer overflow
+//				sprintf(co,sizeof(co),"%c",p2c(ports[(port_id)p]));
 				output.append_attribute("input") = co;
 			}
-//			this->writeSlotRouter(t,countWidth,ports);
 			
 		}
-//		this->endniST(r_id);
-//		this->endrouterST(r_id);
-	}
+		xml_node latency = tile.append_child("latency");
+		// The following for loop is slow and unnecessary, can be changed to improve runtime
+		for_each(n.channels(), [&](const channel & c) {
+			if(c.from != (*r)->address){
+				return; // Channel not from router
+			}
+			// For each channel from router
+			int WCL = 0;
+			int late = 0;
+			int inlate = 0;
+			bool init = true;
+			for(int i = 0; i < n.best; i++){
+				if(c.to != destinations[i]){
+					// Increment latency
+					late++;
+					continue;
+				}
+				// Correct destination
+				if(init){
+					init = false;
+					inlate = late;
+				}
+				if(late > WCL){
+					WCL = late;
+				}
+				late = 0;
+			}
+			late += inlate;
+			if(late > WCL){
+				WCL = late;
+			}
+			// Analyze the latency
+			xml_node destination = latency.append_child("destination");
+			print_coord(c.to,co,sizeof(co));
+			destination.append_attribute("id") = co;
+			destination.append_attribute("WCL") = WCL;
+		});
+	}	
 	char co [500];
-	sprintf(co,"%soutput.xml",output_dir.c_str());
+	sprintf(co,"%soutput.xml",output_dir.c_str()); // Should be snprintf, avoiding buffer overflow
+	//sprintf(co,sizeof(co),"%soutput.xml",output_dir.c_str());
 	doc.save_file(co);	
 
 	delete this;
 	return true;
+}
+
+void xmlOutput::print_coord(const pair<int, int> r,char* co, const size_t buffe_size){
+	sprintf(co,"(%i,%i)",r.first,r.second); // Should be snprintf, avoiding buffer overflow
+//	sprintf(co,buffer_size,"(%i,%i)",c.to.first,c.to.second); 
 }
 
 char xmlOutput::p2c(port_id p){
