@@ -1,0 +1,245 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Part*
+Article
+\end_layout
+
+\begin_layout Standard
+The comments on what has to be changed in the project for the article.
+\end_layout
+
+\begin_layout Section*
+Title
+\end_layout
+
+\begin_layout Standard
+\begin_inset Quotes eld
+\end_inset
+
+A generic scheduler for Real-time Network-on-Chips using metaheuristics
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+I tvivl om vi skal bruge metaheuristics
+\end_layout
+
+\end_inset
+
+
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section*
+Introduction
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Generelt formuleres så det ses hvad vi har i forvejen og hvad vi har fundet
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Focus on the problem at hand
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+General purpose platform...
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Related work section
+\end_layout
+
+\begin_layout Section*
+Analysis
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+En anden titel på dette afsnit?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+What demands need to be fulfilled in order for the scheduler to be generic?
+\end_layout
+
+\begin_layout Section*
+Design
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+En anden titel på dette afsnit også?
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Metaheuristics: How we optimize...
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Argumentation for choosing GRASP and ALNS
+\end_layout
+
+\begin_layout Itemize
+Why use metaheuristics?
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Neighborhood and operators
+\end_layout
+
+\begin_layout Section*
+Implementation
+\end_layout
+
+\begin_layout Itemize
+Implement a 
+\begin_inset Formula ${\tt make}$
+\end_inset
+
+ file
+\end_layout
+
+\begin_layout Itemize
+How is the solution implemented in general (overview)
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Some pseudo code?
+\end_layout
+
+\end_deeper
+\begin_layout Section*
+Results
+\end_layout
+
+\begin_layout Itemize
+Link utilization
+\end_layout
+
+\begin_layout Itemize
+Schedule length
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Compare to previous work
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Application specific testing
+\end_layout
+
+\begin_layout Part*
+Program
+\end_layout
+
+\begin_layout Itemize
+Fine-grained scheduling, scheduling flits instead of packets
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+Give packets a parameter specifying number of flits
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Latency lowering
+\end_layout
+
+\begin_layout Itemize
+Give routers a pipe-line depth parameter
+\end_layout
+
+\begin_layout Itemize
+Mapping of processes to processors.
+ The cost function should be the overall length of the communication channels.
+\end_layout
+
+\end_body
+\end_document
