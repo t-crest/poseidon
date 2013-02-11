@@ -63,7 +63,7 @@ struct channel {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-#define USE_SCHEDULE_HASHMAP 
+//#define USE_SCHEDULE_HASHMAP 
 
 class schedule {
 public:

@@ -535,12 +535,15 @@ bool network_t::route_channel(
  */
 void network_t::ripup_channel(const channel* c, router_id start) 
 {
-	if (c->from == start) {
-		if(!this->router(c->from)->local_in_schedule.is(c->t_start,c)){
-			ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot: " << c->t_start << ".");
-		}
-		this->router(c->from)->local_in_schedule.remove(c->t_start);
+//	if (c->from != start) {
+//		debugf(c->from);
+//		debugf(c->to);
+//		debugf(start);
+//	}
+	if(!this->router(c->from)->local_in_schedule.is(c->t_start,c)){
+		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local in schedule at time slot: " << c->t_start << ".");
 	}
+	this->router(c->from)->local_in_schedule.remove(c->t_start);
 
 	bool modify = true;	// flag indicating if we delete links from now on, or just follow them until we have found start
 	router_id curr = c->from;

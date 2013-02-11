@@ -26,8 +26,17 @@ bool xmlOutput::output_schedule(const network_t& n)
 		print_coord((*r)->address,co,sizeof(co));
 		tile.append_attribute("id") = co;
 		// Vector for saving data to calculate Worst-Case Latencies
+		
 		vector<router_id> destinations(n.best,(*r)->address);
+		std::cout << "Tile: " << (*r)->address << std::endl;
 		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
+			if ((*r)->local_in_best_schedule.has(t))
+			{
+				const channel* c = (*r)->local_in_best_schedule.get(t);
+				std::cout << "Timeslot: " << t << " = " << c->to << std::endl;
+			} else{	
+				std::cout << "Timeslot: " << t << std::endl;
+			}
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
 			ts.append_attribute("value") = t;
@@ -40,8 +49,8 @@ bool xmlOutput::output_schedule(const network_t& n)
 			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
-			if ((*r)->local_in_best_schedule.has((t+2)%n.best)){
-				dest_id = (*r)->local_in_best_schedule.get((t+2)%n.best)->to;
+			if ((*r)->local_in_best_schedule.has((t)%n.best)){	// Used to be t+2 to account for pipelining in the network interface.
+				dest_id = (*r)->local_in_best_schedule.get((t)%n.best)->to;	// Used to be t+2 to account for pipelining in the network interface.
 			}
 			if ((*r)->local_out_best_schedule.has(t1))
 				src_id = (*r)->local_out_best_schedule.get(t1)->from;
@@ -180,7 +189,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 	return true;
 }
 
-void xmlOutput::print_coord(const pair<int, int> r,char* co, const size_t buffe_size){
+void xmlOutput::print_coord(const pair<int, int> r,char* co, const size_t buffer_size){
 	sprintf(co,"(%i,%i)",r.first,r.second); // Should be snprintf, avoiding buffer overflow
 //	sprintf(co,buffer_size,"(%i,%i)",c.to.first,c.to.second); 
 }
