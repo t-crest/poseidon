@@ -21,7 +21,7 @@ init:
 	-mkdir obj
 	-mkdir xml
 
-down_traffic: init
+down_traffic: | init
 	-rm -rf ./MCSL_NoC_Benchmark_Suite_v1.5
 	wget http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
 	gzip -d MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
@@ -31,7 +31,7 @@ down_traffic: init
 	@echo "Traffic downloaded"
 	@echo "------------------"
 	
-create_xml: down_traffic MCSL
+create_xml: MCSL | down_traffic 
 	-rm -rf $(XML_DIR)/mesh
 	-mkdir $(XML_DIR)/mesh
 	i=3 ; while [[ $$i -le 16 ]] ; do \
