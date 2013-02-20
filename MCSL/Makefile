@@ -1,4 +1,5 @@
 .PHONY: down_traffic create_xml clean realclean init all
+SHELL := /bin/bash
 #CXX	= g++
 CC	= g++
 OPT	= -g -std=c++0x -O3
@@ -31,7 +32,7 @@ down_traffic: | init
 	@echo "Traffic downloaded"
 	@echo "------------------"
 	
-create_xml: MCSL | down_traffic 
+create_xml: MCSL #| down_traffic 
 	-rm -rf $(XML_DIR)/mesh
 	-mkdir $(XML_DIR)/mesh
 	i=3 ; while [[ $$i -le 16 ]] ; do \
