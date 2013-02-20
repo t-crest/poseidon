@@ -1,10 +1,9 @@
 #!/bin/bash
 CORES=32
-#RUNFOR=10800
-RUNFOR=20
+RUNFOR=10800
 PROG=snts
-#FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
-FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"
+FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
+#FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"
 DATA_DIR="./MCSL/xml"
 
 
