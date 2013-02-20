@@ -14,7 +14,7 @@ for t in mesh torus ; do
 					echo -e "Found $min \tfor ${t}${s}x${s}_${a} ${m}\t$iter$i" 
 				else
 					if [ "$1" != "-c" ]; then
-						echo -e "Pending... \tfor ${t}${s}x${s} ${m}" 
+						echo -e "Pending... \tfor ${t}${s}x${s}_${a} ${m}" 
 					fi
 				fi
 			done
