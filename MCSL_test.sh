@@ -1,8 +1,10 @@
 #!/bin/bash
 CORES=32
-RUNFOR=10800
+#RUNFOR=10800
+RUNFOR=20
 PROG=snts
-FULL_PROG="dist/Gramme/GNU-Linux-x86/${prog}"
+#FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
+FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"
 DATA_DIR="./MCSL/xml"
 
 
@@ -22,18 +24,18 @@ function run {
 
 for t in torus mesh ; do
 	for s in 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do 
-		for APPLICATIONS in FTT-1024_complex Fpppp H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse; do
+		for APPLICATIONS in FFT-1024_complex Fpppp H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse; do
 			# Single shot solutions
 			for m in GREEDY rGREEDY; do
 				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
 			done 	
 
 			for b in 0.01 0.02 0.1 0.2 ; do
-				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $runfor -b ${b}" &
+				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
 			done 
 
 			for i in GREEDY rGREEDY ; do
-				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $runfor -i ${i}" &
+				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
 			done 
 		done
 	done 
