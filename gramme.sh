@@ -1,7 +1,8 @@
 #!/bin/bash
-cd /home/eisbaw/NetBeansProjects/Metaheuristics/SNTs # Make sure $PWD is what I expect it to be
-
+cd /home/rasmus/SNTs # Make sure $PWD is what I expect it to be
+#cd metanoc &&
 set -v
-(cd metanoc && "/usr/bin/make" --quiet -f nbproject/Makefile-Gramme.mk QMAKE= SUBPROJECTS= .build-conf) || exit
+( "/usr/bin/make" --quiet -f nbproject/Makefile-Gramme.mk QMAKE= SUBPROJECTS= .build-conf) || exit
 rsync -r * gramme:meta/ || exit
-ssh gramme "(cd meta/ && time metanoc/dist/Gramme/GNU-Linux-x86/metanoc $@)"
+ssh gramme "(cd meta/ && time dist/Gramme/GNU-Linux-x86/snts $@)"
+

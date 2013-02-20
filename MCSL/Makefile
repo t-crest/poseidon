@@ -1,4 +1,4 @@
-.PHONY : down_traffic create_xml clean realclean init all
+.PHONY: down_traffic create_xml clean realclean init all
 SHELL := /bin/bash
 #CXX	= g++
 CC	= g++
