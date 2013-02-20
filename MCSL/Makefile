@@ -1,6 +1,7 @@
+.PHONY: down_traffic create_xml clean realclean init all
 #CXX	= g++
 CC	= g++
-OPT	= -g -std=c++0x
+OPT	= -g -std=c++0x -O3
 WARN	= -Wall
 CXXFLAGS= $(OPT) $(WARN)
 SRC_DIR	= ./src
@@ -15,8 +16,12 @@ TORUS_APPLICATIONS = Sparse_torus_$${i}x$${i}.stp FFT-1024_complex_torus_$${i}x$
 
 all: MCSL
 
+init:
+	-mkdir bin
+	-mkdir obj
+	-mkdir xml
 
-down_traffic:
+down_traffic: init
 	-rm -rf ./MCSL_NoC_Benchmark_Suite_v1.5
 	wget http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
 	gzip -d MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
@@ -26,7 +31,7 @@ down_traffic:
 	@echo "Traffic downloaded"
 	@echo "------------------"
 	
-create_xml:
+create_xml: down_traffic MCSL
 	-rm -rf $(XML_DIR)/mesh
 	-mkdir $(XML_DIR)/mesh
 	i=3 ; while [[ $$i -le 16 ]] ; do \
