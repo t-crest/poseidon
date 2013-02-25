@@ -14,6 +14,7 @@
 #include <limits>
 #include <cmath>
 #include "pugixml.hpp"
+#include "options.h"
 
 //#define debugging
 
@@ -32,16 +33,14 @@ typedef pair<int,int> coord;
  */
 int main(int argc, char** argv) {
 	
-	if (argc < 2){
-		cout << "To few arguments" << endl;
-		return 0;
-	}
+	global::opts = new options(argc, argv);
+	cout << global::opts->input_file << endl;
 	
 	//std::ifstream in("../traffic_data/mesh/mesh_3x3/Sparse_mesh_3x3.stp");
-	std::ifstream in(argv[1]);
-	cout << argv[1] << endl;
+	std::ifstream in(global::opts->input_file);
+	
 	if(in.fail()){
-		cout << "File not found!" << endl;
+		cout << "File not found!1" << endl;
 		return 0;
 	}
 	
@@ -195,6 +194,7 @@ int main(int argc, char** argv) {
 				//cout << "(" << i << "," << j << ") rate: " << ceil(nodes[i].second[j].second/min_rate) << endl;
 				char* from_node = new char[30];
 				char* to_node = new char[30];
+				int bw = ceil(nodes[i].second[j].second/(min_rate*global::opts->sigma));
 				pugi::xml_node channel = channels.append_child("channel");
 				//sprintf(from_node,"(%i,%i)",src_x,src_y);
 				sprintf(from_node,"(%i,%i)",nodes[i].first.first,nodes[i].first.second);
@@ -202,7 +202,7 @@ int main(int argc, char** argv) {
 				//sprintf(to_node,"(%i,%i)",dest_x,dest_y);
 				sprintf(to_node,"(%i,%i)",nodes[i].second[j].first.first,nodes[i].second[j].first.second);
 				channel.append_attribute("to").set_value(to_node);
-				channel.append_attribute("bandwidth").set_value(ceil(nodes[i].second[j].second/min_rate));
+				channel.append_attribute("bandwidth").set_value(bw);
 				channel.append_attribute("repsonse").set_value("false");
 			}
 		}
@@ -212,8 +212,10 @@ int main(int argc, char** argv) {
 	//char default_file_name [500] = "testout.xml";
 	//sprintf(default_file_name,"%s%s%ix%i_cf%.2f_(%i_%i).xml");
 	//doc.save_file(default_file_name);
-	doc.save_file(argv[2]);
-		
+	//doc.save_file(argv[2]);
+	cout << global::opts->output_file.c_str() << endl;
+	doc.save_file(global::opts->output_file.c_str());
+	
 	return 0;
 }
 

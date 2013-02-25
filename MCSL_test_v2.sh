@@ -1,0 +1,43 @@
+#!/bin/bash
+CORES=32
+RUNFOR=10800
+PROG=snts
+FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
+#FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"
+DATA_DIR="./MCSL/xml"
+
+
+function run {
+#	echo "Queing $FULL_PROG $@"
+	sleep $(( $RANDOM % 15 )).$(( $RANDOM % 1000 ))
+
+	while [ $(pgrep snts | wc -l) -ge $CORES ] ; do 
+		sleep $(( $RANDOM % 5 )).$(( $RANDOM % 1000 ))
+	done
+
+	echo "Executing $FULL_PROG $@"	
+	$FULL_PROG $@
+}
+
+
+
+#for t in torus mesh ; do
+for t in torus ; do
+	for s in 4 6 12 16; do 
+#		for APPLICATIONS in FFT-1024_complex Fpppp H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse; do
+		for APPLICATIONS in RS-32_28_8_dec; do
+			# Single shot solutions
+#			for m in GREEDY rGREEDY; do
+#				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
+#			done 	
+
+#			for b in 0.01 0.02 0.1 0.2 ; do
+#				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
+#			done 
+
+			for i in GREEDY rGREEDY ; do
+				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
+			done 
+		done
+	done 
+done
