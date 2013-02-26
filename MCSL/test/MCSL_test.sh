@@ -31,8 +31,8 @@ function run {
 }
 
 #$FULL_PROG -f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_1.1.xml -m GREEDY
-
-for s in 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30 ; do
+# 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30
+for s in 50 100 200; do
 	# Single shot solutions
 	for m in GREEDY rGREEDY; do
 		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ${m}" &
