@@ -16,8 +16,8 @@ public:
 	options(int argc, char *argv[]);
 	~options();
 
-	string input_file;
-	string output_file;
+	int network_size;
+	string output_dir;
 	double sigma;
 	
 private:

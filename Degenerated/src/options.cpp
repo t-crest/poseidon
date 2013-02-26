@@ -2,31 +2,33 @@
 
 options::options(int argc, char *argv[])
 // Option defaults:
-:	input_file(""),
-	output_file("")
+:	output_dir("")
 {
 	bool output = false;
 	sigma = 1.0;
+	network_size = 0;
 	/* Set options as specified by user */
 	for (int c; (c = getopt(argc, argv, "f:o:s:h")) != -1;) {
 		switch (c) {
-			case 'f':	input_file = optarg;							break; // f for xml input file
+			case 'n':	network_size = atoi(optarg);					break; // n for network size
 			case 'h':   print_help();									break; // h for the help menu
-			case 'o':   output_file = optarg; output = true;			break; // o for specifying the output directory
+			case 'o':   output_dir = optarg; output = true;				break; // o for specifying the output directory
 			case 's':	sigma = atof(optarg);							break;
 			default:	cout << "Unknown flag " << c << "." << endl;
 		}
 	}
+	
 	
 	if (argc < 2){ // If no comand line options are given, the help menu is printet.
 		print_help();
 	}
 
 	/* Some input validation */
-	if(!input_file.size() > 0) {
-		cout << "Empty file name given." << endl;;
+	
+	if (!(network_size > 0)){
+		cout << "Network size not specified." << endl;
 	}
-	if (output && !(output_file.size() > 0))
+	if (output || !(output_file.size() > 0))
 		cout << "Empty output directory given." << endl;;
 }
 
