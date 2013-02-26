@@ -1,5 +1,5 @@
 #!/bin/bash
-GRAMME=false
+GRAMME=true
 DATA_DIR="./xml_in"
 PROG=snts
 TOPO=torus
@@ -30,19 +30,19 @@ function run {
 	$FULL_PROG $@
 }
 
-$FULL_PROG -f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_1.1.xml -m GREEDY
+#$FULL_PROG -f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_1.1.xml -m GREEDY
 
-# for s in 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30 ; do
-	# # Single shot solutions
-	# for m in GREEDY rGREEDY; do
-		# run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ${m}" &
-	# done 	
+for s in 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30 ; do
+	# Single shot solutions
+	for m in GREEDY rGREEDY; do
+		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ${m}" &
+	done 	
 
-	# for b in 0.01 0.02 0.1 0.2 ; do
-		# run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
-	# done 
+	for b in 0.01 0.02 0.1 0.2 ; do
+		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
+	done 
 
-	# for i in GREEDY rGREEDY ; do
-		# run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
-	# done 
-# done
+	for i in GREEDY rGREEDY ; do
+		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
+	done 
+done
