@@ -36,15 +36,15 @@ for a in ${TORUS_APPLICATIONS} ; do
 		# Single shot solutions
 #		for m in GREEDY rGREEDY; do
 		for m in GREEDY ; do
-			run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ${m}" &
+			run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ${m}" &
 		done 	
 
 		# for b in 0.01 0.02 0.1 0.2 ; do
-		# 	run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
+		# 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
 		# done 
 
 		# for i in GREEDY rGREEDY ; do
-		# 	run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
+		# 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
 		# done 
 	done
 done
