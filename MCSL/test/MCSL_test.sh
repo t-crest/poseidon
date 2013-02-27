@@ -4,7 +4,7 @@ DATA_DIR="./xml_in"
 PROG=snts
 TOPO=torus
 SIZE=16
-APPLICATION=RS-32_28_8_dec
+TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp"
 if [ "${GRAMME}" = "true" ]
 then
 	CORES=32
@@ -30,19 +30,21 @@ function run {
 	$FULL_PROG $@
 }
 
-#$FULL_PROG -f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_1.1.xml -m GREEDY
-# 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30
-for s in 50 100 200 300 500; do
-	# Single shot solutions
-	for m in GREEDY rGREEDY; do
-		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ${m}" &
-	done 	
+for a in ${TORUS_APPLICATIONS} ; do
+	
+	for s in 1 1.1 1.2 1.3 1.5 2 3 4 5 10 20 30 50 100 200 300 500 ; do
+		# Single shot solutions
+#		for m in GREEDY rGREEDY; do
+		for m in GREEDY ; do
+			run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ${m}" &
+		done 	
 
-	for b in 0.01 0.02 0.1 0.2 ; do
-		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
-	done 
+		# for b in 0.01 0.02 0.1 0.2 ; do
+		# 	run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
+		# done 
 
-	for i in GREEDY rGREEDY ; do
-		run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${APPLICATION}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
-	done 
+		# for i in GREEDY rGREEDY ; do
+		# 	run "-f ${DATA_DIR}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
+		# done 
+	done
 done
