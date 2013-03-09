@@ -4,14 +4,13 @@ DATA_DIR="./xml_in"
 PROG=snts
 TOPO=torus
 SIZE=16
+command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
 TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp"
 if [ "${GRAMME}" = "true" ]
 then
-	CORES=32
 	RUNFOR=10800
 	FULL_PROG="../../dist/Gramme/GNU-Linux-x86/snts"
 else
-	CORES=1
 	RUNFOR=10
 	FULL_PROG="../../dist/Release/Cygwin_4.x-Windows/${PROG}"
 fi

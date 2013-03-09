@@ -2,7 +2,7 @@
 RESULTS="mGREEDY mrGREEDY mALNS mGRASP"
 TOPO=torus
 SIZE=16
-TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp"
+TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec"
 if [ "$1" = "Final" ]
 then
 	unset RESULTS

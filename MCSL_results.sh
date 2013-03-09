@@ -6,7 +6,7 @@ then
 fi
 
 for t in mesh torus ; do 
-	for a in FFT-1024_complex Fpppp Robot RS-32_28_8_dec RS-32_28_8_enc Sparse; do #H264-720p_dec
+	for a in FFT-1024_complex Fpppp Robot RS-32_28_8_dec RS-32_28_8_enc Sparse H264-720p_dec ; do #H264-720p_dec
 		for s in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ; do 
 			for m in ${RESULTS} ; do
 				min=$(cat stat*${t}_${t}_${s}x${s}_${a}*${m}* 2>/dev/null | awk '{if (NF==5) print $3}  {if (NF==2) print $2}' | sort -nur | tail -1)

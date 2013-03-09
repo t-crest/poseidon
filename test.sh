@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cores=32
+command -v nproc >/dev/null && cores=$(nproc) || cores=32
 runfor=7200
 prog=metanoc
 full_prog="metanoc/dist/Gramme/GNU-Linux-x86/${prog}"
