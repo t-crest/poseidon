@@ -26,7 +26,7 @@ function run {
 }
 
 for t in torus mesh ; do
-	for s in {3..16} ; do
+	for s in 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do
 		for a in ${APPLICATIONS}; do
 			for r in mean max_rate ; do
 				# Single shot solutions

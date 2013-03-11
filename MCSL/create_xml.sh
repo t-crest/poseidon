@@ -9,7 +9,7 @@ for t in torus mesh ; do
 	rm -rf ${XML_DIR}/${t} 2>/dev/null
 	mkdir ${XML_DIR}/${t} 2>/dev/null
 	mkdir ${XML_DIR}/${t} 2>/dev/null
-	for i in {3..16} ; do
+	for i in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ; do
 		echo "------------" ;
 		echo ${i}x${i}_${t} ;
 		echo "------------" ;
