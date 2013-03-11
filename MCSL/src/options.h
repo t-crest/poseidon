@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <getopt.h>
 //#include "file.hpp"
 //#include "lex_cast.h"
 using namespace std;
@@ -19,6 +20,7 @@ public:
 	string input_file;
 	string output_file;
 	double sigma;
+	bool mean;
 	
 private:
     void print_help();

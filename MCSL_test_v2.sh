@@ -1,6 +1,6 @@
 #!/bin/bash
 command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
-RUNFOR=10800
+RUNFOR=7200
 PROG=snts
 FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
 #FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"

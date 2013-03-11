@@ -5,10 +5,10 @@ PROG=snts
 TOPO=torus
 SIZE=16
 command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
-TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp"
+TORUS_APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec"
 if [ "${GRAMME}" = "true" ]
 then
-	RUNFOR=10800
+	RUNFOR=7200
 	FULL_PROG="../../dist/Gramme/GNU-Linux-x86/snts"
 else
 	RUNFOR=10
@@ -38,12 +38,12 @@ for a in ${TORUS_APPLICATIONS} ; do
 			run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ${m}" &
 		done 	
 
-		# for b in 0.01 0.02 0.1 0.2 ; do
-		# 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
-		# done 
+		for b in 0.01 0.02 0.1 0.2 ; do
+		 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}" &
+		done 
 
-		# for i in GREEDY rGREEDY ; do
-		# 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
-		# done 
+		for i in GREEDY rGREEDY ; do
+		 	run "-f ${DATA_DIR}/${a}/${TOPO}/${TOPO}_${SIZE}x${SIZE}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}" &
+		done 
 	done
 done

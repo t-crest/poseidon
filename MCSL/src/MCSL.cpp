@@ -163,38 +163,40 @@ int main(int argc, char** argv) {
 		if(nodes[src_id].second[dest_id].second == -1){
 			nodes[src_id].second[dest_id].second = 0;
 		}
-		nodes[src_id].second[dest_id].second += rate; 
 		
+		if(global::opts->mean){
+			nodes[src_id].second[dest_id].second += mean; 
+		} else {
+			if(nodes[src_id].second[dest_id].second <= rate){
+				nodes[src_id].second[dest_id].second = rate; 
+			}
+		}
 	}
 	
-	double min_rate = numeric_limits<double>::max();
-	double max_rate = 0.0;
+	double min_bw = numeric_limits<double>::max();
+	double max_bw = 0.0;
 	for(int i = 0; i < pbs; i++){
 		for(int j = 0; j < pbs; j++){
 			if(nodes[i].second[j].second == -1){
 				continue;
 			}
-			if(min_rate > nodes[i].second[j].second){
-				min_rate = nodes[i].second[j].second;
+			if(min_bw > nodes[i].second[j].second){
+				min_bw = nodes[i].second[j].second;
 			}
-			if(max_rate < nodes[i].second[j].second){
-				max_rate = nodes[i].second[j].second;
+			if(max_bw < nodes[i].second[j].second){
+				max_bw = nodes[i].second[j].second;
 			}
 		}
 	}
-	cout << "Min_rate: " << min_rate << endl;
-	cout << "Max_rate: " << max_rate << endl;
+	cout << "Min_bw: " << min_bw << endl;
+	cout << "Max_bw: " << max_bw << endl;
 	
 	for(int i = 0; i < pbs; i++){
 		for(int j = 0; j < pbs; j++){
-			if(nodes[i].second[j].second == -1){
-				//cout << "(" << i << "," << j << ") rate: " << nodes[i].second[j].second << endl;
-			}
-			else{
-				//cout << "(" << i << "," << j << ") rate: " << ceil(nodes[i].second[j].second/min_rate) << endl;
+			if(nodes[i].second[j].second != -1){
 				char* from_node = new char[30];
 				char* to_node = new char[30];
-				int bw = ceil(nodes[i].second[j].second/(min_rate*global::opts->sigma));
+				int bw = ceil(nodes[i].second[j].second/(min_bw*global::opts->sigma));
 				pugi::xml_node channel = channels.append_child("channel");
 				//sprintf(from_node,"(%i,%i)",src_x,src_y);
 				sprintf(from_node,"(%i,%i)",nodes[i].first.first,nodes[i].first.second);

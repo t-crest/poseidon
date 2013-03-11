@@ -1,6 +1,6 @@
 .PHONY: down_traffic create_xml clean realclean init all
 SHELL := /bin/bash
-#CXX	= g++
+CXX	= g++
 CC	= g++
 OPT	= -g -std=c++0x -O3
 WARN	= -Wall
@@ -8,12 +8,7 @@ CXXFLAGS= $(OPT) $(WARN)
 SRC_DIR	= ./src
 OBJ_DIR	= ./obj
 EXE_DIR	= ./bin
-TRAFFIC_DIR = ./MCSL_NoC_Benchmark_Suite_v1.5/traffic
-XML_DIR = ./xml
 OBJECTS	= $(OBJ_DIR)/MCSL.o $(OBJ_DIR)/pugixml.o $(OBJ_DIR)/options.o
-
-MESH_APPLICATIONS = Sparse_mesh_$${i}x$${i}.stp FFT-1024_complex_mesh_$${i}x$${i}.stp Fpppp_mesh_$${i}x$${i}.stp Robot_mesh_$${i}x$${i}.stp RS-32_28_8_dec_mesh_$${i}x$${i}.stp RS-32_28_8_enc_mesh_$${i}x$${i}.stp H264-720p_dec_mesh_$${i}x$${i}.stp
-TORUS_APPLICATIONS = Sparse_torus_$${i}x$${i}.stp FFT-1024_complex_torus_$${i}x$${i}.stp Fpppp_torus_$${i}x$${i}.stp Robot_torus_$${i}x$${i}.stp RS-32_28_8_dec_torus_$${i}x$${i}.stp RS-32_28_8_enc_torus_$${i}x$${i}.stp H264-720p_dec_torus_$${i}x$${i}.stp
 
 all: MCSL
 
@@ -22,6 +17,10 @@ init:
 	-mkdir obj
 	-mkdir xml
 
+#############################################################
+#	Download the MCSL benchmark suite
+#	Close to half a GB
+#############################################################
 down_traffic: | init
 	-rm -rf ./MCSL_NoC_Benchmark_Suite_v1.5
 	wget http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
@@ -32,44 +31,23 @@ down_traffic: | init
 	@echo "Traffic downloaded"
 	@echo "------------------"
 	
+#############################################################
+#	Create the XML files for the different topologies
+#	and applications.
+#############################################################
 create_xml: MCSL #| down_traffic 
-	-rm -rf $(XML_DIR)/mesh
-	-mkdir $(XML_DIR)/mesh
-	i=3 ; while [[ $$i -le 16 ]] ; do \
-		echo "------------" ; \
-		echo $${i}x$${i}_mesh ; \
-		echo "------------" ; \
-		mkdir $(XML_DIR)/mesh/mesh_$${i}x$${i} ; \
-		$(foreach MESH_APPLICATION,$(MESH_APPLICATIONS), \
-			$(EXE_DIR)/MCSL -f "$(TRAFFIC_DIR)/mesh/mesh_$${i}x$${i}/$(MESH_APPLICATION)" \
-				-o "$(XML_DIR)/mesh/mesh_$${i}x$${i}/$(MESH_APPLICATION).xml";)\
-        ((i = i + 1)) ; \
-    done
-	
-	-rm -rf $(XML_DIR)/torus
-	-mkdir $(XML_DIR)/torus
-	i=3 ; while [[ $$i -le 16 ]] ; do \
-		echo "------------" ; \
-		echo $${i}x$${i}_torus ; \
-		echo "------------" ; \
-		mkdir $(XML_DIR)/torus/torus_$${i}x$${i} ; \
-		$(foreach TORUS_APPLICATION,$(TORUS_APPLICATIONS), \
-			$(EXE_DIR)/MCSL -f "$(TRAFFIC_DIR)/torus/torus_$${i}x$${i}/$(TORUS_APPLICATION)" \
-				-o "$(XML_DIR)/torus/torus_$${i}x$${i}/$(TORUS_APPLICATION).xml";)\
-        ((i = i + 1)) ; \
-    done
-
+	sh create_xml.sh
 	
 MCSL: $(OBJECTS)
 	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXE_DIR)/MCSL 
 	
-$(OBJ_DIR)/MCSL.o: $(src)/MCSL.cpp
+$(OBJ_DIR)/MCSL.o: $(SRC_DIR)/MCSL.cpp
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/MCSL.cpp -o $(OBJ_DIR)/MCSL.o
 	
-$(OBJ_DIR)/pugixml.o: $(src)/pugixml.cpp
+$(OBJ_DIR)/pugixml.o: $(SRC_DIR)/pugixml.cpp
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/pugixml.cpp -o $(OBJ_DIR)/pugixml.o
 	
-$(OBJ_DIR)/options.o: $(src)/options.cpp
+$(OBJ_DIR)/options.o: $(SRC_DIR)/options.cpp
 	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/options.cpp -o $(OBJ_DIR)/options.o
 	
 clean:
@@ -79,17 +57,17 @@ realclean: clean
 	@rm -f $(BIN_DIR)/MCSL*
 
 #File dependencies
-$(src)/pugiconfig.hpp:
+$(SRC_DIR)/pugiconfig.hpp:
 	
-$(src)/pugixml.hpp: $(src)/pugiconfig.hpp 
+$(SRC_DIR)/pugixml.hpp: $(SRC_DIR)/pugiconfig.hpp 
 
-$(src)/pugixml.cpp: $(src)/pugixml.hpp $(src)/pugiconfig.hpp
+$(SRC_DIR)/pugixml.cpp: $(SRC_DIR)/pugixml.hpp $(SRC_DIR)/pugiconfig.hpp
 
-$(src)/options.h: 
+$(SRC_DIR)/options.h: 
 
-$(src)/options.cpp: $(src)/options.h 
+$(SRC_DIR)/options.cpp: $(SRC_DIR)/options.h 
 
-$(src)/MCSL.cpp: $(src)/pugixml.hpp $(src)/options.h
+$(SRC_DIR)/MCSL.cpp: $(SRC_DIR)/pugixml.hpp $(SRC_DIR)/options.h
 	
 
 	
