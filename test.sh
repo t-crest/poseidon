@@ -5,10 +5,10 @@ command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
 if [ "${GRAMME}" = "true" ]
 then
 	RUNFOR=36000
-	FULL_PROG="../../dist/Gramme/GNU-Linux-x86/snts"
+	FULL_PROG="./dist/Gramme/GNU-Linux-x86/${PROG}"
 else
 	RUNFOR=10
-	FULL_PROG="../../dist/Release/Cygwin_4.x-Windows/${PROG}"
+	FULL_PROG="./dist/Release/Cygwin_4.x-Windows/${PROG}"
 fi
 
 function run {
