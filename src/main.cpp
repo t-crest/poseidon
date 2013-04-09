@@ -23,7 +23,6 @@
 
 using namespace std;
 
-
 int main(int argc, char* argv[]) 
 {
 	global::opts = new options(argc, argv);

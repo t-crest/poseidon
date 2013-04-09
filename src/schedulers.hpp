@@ -14,6 +14,7 @@
 #include "file.hpp"
 #include "draw.hpp"
 #include "options.h"
+#include "network_t.hpp"
 #include <array>
 #include <ctime>
 #include <stack>
@@ -25,10 +26,7 @@
 #include <memory>
 #include <algorithm>
 
-using namespace std;
-
-std::function<void(vector<port_out_t*>&) > get_next_mutator();
-
+std::function<void(std::vector<port_out_t*>&) > get_next_mutator();
 
 
 class singleshot_scheduler {
@@ -37,12 +35,11 @@ private:
 	int initial;
 
 protected:
-//	int curr;
 	time_t t0;
 	network_t& n;
 
 	void percent_set(const int init);
-	void percent_set(const int init, const string);
+	void percent_set(const int init, const std::string);
 	void percent_up(const int curr);
 	void print_stats_linkutil();
 	void print_stats();

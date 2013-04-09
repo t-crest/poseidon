@@ -1,12 +1,13 @@
 /* 
  * File:   vhdlOutput.cpp
- * Author: T410s
+ * Author: Rasmus Bo Sorensen
  * 
  * Created on 6. august 2012, 11:13
  */
 
 #include "vhdlOutput.h"
 
+using namespace std;
 
 bool vhdlOutput::output_schedule(const network_t& n)
 {

@@ -1,6 +1,11 @@
 #include "output.hpp"
 
+using namespace std;
 
+/**
+ * Draws a picture of the network topology and output it to an svg file.
+ * @param n The data structure representing the network.
+ */
 void draw_network(const network_t& n) 
 {
 	using snts::file;
@@ -10,6 +15,10 @@ void draw_network(const network_t& n)
 	f << d.root.toString() << "\n";
 }
 
+/**
+ * Draws a picture of the network topology and the communication channels for each timeslot of the generated schedule.
+ * @param n The data structure representing the network.
+ */
 void draw_schedule(const network_t& n) 
 {
 	using snts::file;

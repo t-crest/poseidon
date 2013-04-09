@@ -1,5 +1,6 @@
 #include "options.h"
 
+using namespace std;
 
 string get_stat_name(int argc, char *argv[]) 
 {

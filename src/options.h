@@ -9,10 +9,8 @@
 #include <ctime>
 #include "file.hpp"
 #include "lex_cast.h"
-using namespace std;
 
-
-string get_stat_name(int argc, char *argv[]);
+std::string get_stat_name(int argc, char *argv[]);
 
 
 class options {
@@ -22,19 +20,19 @@ public:
 
 	enum meta_t {GREEDY, rGREEDY, CROSS, RANDOM, BAD_RANDOM, GRASP, ALNS, ERR};
 	meta_t metaheuristic;
-	string input_file;
-	string output_dir;
+	std::string input_file;
+	std::string output_dir;
 	bool draw;
 	meta_t meta_inital;
 	bool save_best;
 	time_t run_for;
-	ofstream stat_file;
+	std::ofstream stat_file;
 	float beta_percent;
 	
 private:
-	meta_t parse_meta_t(string str);
+	meta_t parse_meta_t(std::string str);
     void print_help();
-    void print_option(char opt, string text);
+    void print_option(char opt, std::string text);
 };
 
 namespace global {

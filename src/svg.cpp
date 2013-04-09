@@ -1,5 +1,6 @@
 #include "svg.h"
 
+using namespace std;
 
 element& element::Tag(const string& t) {
 	this->tag = t;

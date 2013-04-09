@@ -1,6 +1,6 @@
 /* 
  * File:   xmlOutput.h
- * Author: T410s
+ * Author: Rasmus Bo Sorensen
  *
  * Created on 6. august 2012, 11:13
  */
@@ -22,13 +22,13 @@
 
 class xmlOutput: public IOutput {
 private:
-    string output_dir;
+    std::string output_dir;
 
     char p2c(port_id p);
-	void print_coord(const pair<int, int> r, char* co, const size_t buffer_size);
+	void print_coord(const std::pair<int, int> r, char* co, const size_t buffer_size);
    
 public:
-    xmlOutput(string _output_dir);
+    xmlOutput(std::string _output_dir);
     ~xmlOutput();
     
     bool output_schedule(const network_t& n);

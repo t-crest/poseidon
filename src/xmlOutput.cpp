@@ -5,10 +5,11 @@
  * Created on 6. august 2012, 11:13
  */
 
-#include <string.h>
 
 #include "xmlOutput.h"
 
+using namespace std;
+using namespace pugi;
 
 bool xmlOutput::output_schedule(const network_t& n)
 {	

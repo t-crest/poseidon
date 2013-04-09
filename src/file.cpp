@@ -1,5 +1,7 @@
 #include "file.hpp"
 
+using namespace std;
+
 namespace snts {
 
 file::file(const string& file_path, ios_base::openmode mode) 

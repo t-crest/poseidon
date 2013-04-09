@@ -8,7 +8,7 @@
 #include "lex_cast.h"
 #include "util.hpp"
 #include "matrix.hpp"
-#include "schedule.hpp"
+#include "network_t.hpp"
 #include "file.hpp"
 #include "draw.hpp"
 #include "options.h"

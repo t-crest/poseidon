@@ -1,6 +1,6 @@
 /* 
  * File:   vhdlOutput.h
- * Author: T410s
+ * Author: Rasmus Bo Sorensen
  *
  * Created on 6. august 2012, 11:13
  */
@@ -40,13 +40,13 @@ private:
 //
 //    };
     
-    ofstream niST;
-    ofstream routerST;
-    string numOfNodesStr;
+    std::ofstream niST;
+    std::ofstream routerST;
+    std::string numOfNodesStr;
 
-    string bin(int val, int bits);
+    std::string bin(int val, int bits);
     char p2c(port_id p);
-    void startST(int num, ofstream* ST);
+    void startST(int num, std::ofstream* ST);
     void writeHeaderRouter(int countWidth);
     void endArchRouter();
     void writeSlotRouter(int slotNum, int countWidth, port_id* ports);
@@ -62,7 +62,7 @@ private:
 
     void endArchNI();
 public:
-    vhdlOutput(string output_dir);
+    vhdlOutput(std::string output_dir);
     ~vhdlOutput();
     
 //    bool output_schedule(network_t& n);

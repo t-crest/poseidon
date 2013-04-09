@@ -1,5 +1,8 @@
 #include "parser.hpp"
 
+using namespace std;
+using namespace pugi;
+
 parser::parser(string file) {
 	xml_document doc;
 	xml_parse_result foo = doc.load_file(file.c_str());

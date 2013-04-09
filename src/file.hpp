@@ -7,17 +7,16 @@
 #include <fstream>
 #include <cassert>
 #include <cstdlib>
-using namespace std;
 
 
 namespace snts {
 
 class file {
 public:
-	file(const string& file_path, ios_base::openmode mode);
+	file(const std::string& file_path, std::ios_base::openmode mode);
 	~file();
 
-	string getline();
+	std::string getline();
 
 	template <typename T>
 	file& operator >>(T& dest) {
@@ -42,13 +41,13 @@ public:
 
 private:
 	void check_for_input() const;
-	string file_path;
-	fstream file_stream;
+	std::string file_path;
+	std::fstream file_stream;
 };
 
 
-struct file_read_error : public runtime_error {
-	file_read_error(const string& msg);
+struct file_read_error : public std::runtime_error {
+	file_read_error(const std::string& msg);
 };
 
 }

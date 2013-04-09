@@ -4,9 +4,8 @@
 #include "higher_order.h"
 #include "util.hpp"
 #include "lex_cast.h"
-#include "matrix.hpp"
+
 #include <boost/optional/optional.hpp>
-#include "parser.hpp"
 #include <set>
 #include <cassert>
 #include <utility>
@@ -18,14 +17,6 @@
 #include <memory>
 #include <iostream>
 
-using std::pair;
-using std::map;
-using std::unordered_map;
-using std::set;
-using std::array;
-using std::vector;
-using std::cout;
-using std::endl;
 
 typedef uint timeslot;
 typedef int coord;
@@ -156,8 +147,8 @@ public:
     schedule local_out_schedule; // Local link to schedule traffic into the processor
     schedule local_out_best_schedule; 
     const router_id address; // Fixed address
-    map<router_id, vector<port_out_t*> > next; // shortest path 
-    map<router_id, int> hops; // hops from this to router_id
+    std::map<router_id, std::vector<port_out_t*> > next; // shortest path 
+    std::map<router_id, int> hops; // hops from this to router_id
 
 
     router_t(router_id _address);
@@ -174,50 +165,8 @@ private:
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-typedef std::function<void(vector<port_out_t*>&)> mutate_func_t;
-static const mutate_func_t next_identity = [](vector<port_out_t*>& arg){/*This is the identity function; arg is not modified*/};	
-
-class network_t {
-    matrix<router_t*> m_routers;
-    vector<router_t*> router_ts;
-    vector<link_t*> link_ts;
-    vector<channel> specification;
-    friend class parser;
-        
-        
-        
-public:
-    int curr;
-    int best;
-    int prev;
-
-    network_t(uint rows, uint cols);
-    timeslot p() const;
-    timeslot p_best() const;
-    uint rows() const;
-    uint cols() const;
-    bool has(const router_id r) const;
-    link_t* add(port_out_t& source, port_in_t& sink);
-    router_t* add(router_id r);
-    router_t* router(router_id r);
-    const vector<link_t*>& links() const;
-    const vector<router_t*>& routers() const;
-    const vector<channel>& channels() const;
-    void shortest_path_bfs(router_t *dest);
-    void shortest_path();
-    void print_next_table();
-    void print_channel_specification();
-    float link_utilization(bool best);
-    void updatebest();
-    void clear(); // clears
-
-
-    bool route_channel_wrapper(channel* c, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
-    void ripup_channel(const channel* c, router_id start);
-    void check_channel(const channel* c, const bool best);
-private:
-    bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(vector<port_out_t*>&)> next_mutator = next_identity);
-};
+typedef std::function<void(std::vector<port_out_t*>&)> mutate_func_t;
+static const mutate_func_t next_identity = [](std::vector<port_out_t*>& arg){/*This is the identity function; arg is not modified*/};	
 
 #endif	/* SCHEDULE2_HPP */
 

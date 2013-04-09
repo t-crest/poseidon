@@ -1,17 +1,30 @@
-#include <stdint.h>
 
 #include "draw.hpp"
 
+using namespace std;
+
+/**
+ * The constructor of the draw class when the caller whishes to draw the network topology.
+ * @param _n The network data structure.
+ */
 draw::draw(const network_t& _n)
 : n(_n), scale(60), bezel(20), router_size(scale / 2) {
 	this->init();
 }
 
+/**
+ * The constructor of the draw class when the caller whishes to draw the communication channels in the given timeslot.
+ * @param _n The network data structure.
+ * @param _t The timeslot in which to draw the communication channels.
+ */
 draw::draw(const network_t& _n, timeslot _t)
 : n(_n), scale(60), bezel(20), router_size(scale / 2), t(_t) {
 	this->init();
 }
 
+/**
+ * Initializing the xml structure and calls the drawing functions.
+ */
 void draw::init() {
 	const string bezel_s = ::lex_cast<string > (bezel);
 
@@ -86,6 +99,11 @@ void draw::init() {
 	root.AddChild(g);
 }
 
+/**
+ * Calculating the coordinates of a router.
+ * @param p The port of the wanted router.
+ * @return Returns a pair with the coordinates of the router.
+ */
 std::pair<int, int> draw::coords(const port_t& p) {
 	const int router_x = p.parent.address.first * scale + router_size;
 	const int router_y = p.parent.address.second * scale + router_size;
@@ -107,6 +125,11 @@ std::pair<int, int> draw::coords(const port_t& p) {
 	return make_pair(x, y);
 }
 
+/**
+ * Draws the given link.
+ * @param l The given link.
+ * @return Returns the element containing the svg element representing the link.
+ */
 element draw::link(link_t *l) {
 	std::pair<int, int> p1 = coords(l->source);
 	std::pair<int, int> p2 = coords(l->sink);
@@ -115,10 +138,7 @@ element draw::link(link_t *l) {
 	const bool same_col = (p1.first == p2.first);
 	const int d = 2; // half-distance
 
-
 	string color;
-
-
 
 	if (!this->t) {
 		color = "black";
@@ -152,6 +172,11 @@ element draw::link(link_t *l) {
 	}
 }
 
+/**
+ * Draws an arrow head.
+ * @param offset_angle The angle of the arrow head.
+ * @return Returns a string representing the arrow head.
+ */
 string draw::arrow_head(const double offset_angle) {
 	const double a = 25; // half-angle of head
 	const double len = 3.0; // side-length of head
