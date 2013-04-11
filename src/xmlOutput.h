@@ -19,6 +19,7 @@
 #include "lex_cast.h"
 #include "pugixml.hpp"
 
+namespace snts {
 
 class xmlOutput: public IOutput {
 private:
@@ -34,6 +35,8 @@ public:
     bool output_schedule(const network_t& n);
     
 };
+
+}
 
 #endif	/* XMLOUTPUT_H */
 

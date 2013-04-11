@@ -17,12 +17,14 @@
 #include <cstdlib>
 #include <memory>
 
+namespace snts {
+
 class draw {
 	const int scale;
 	const int bezel;
 	const int router_size; // width and height of a router
 	boost::optional<timeslot> t;
-	const network_t& n;	
+	const snts::network_t& n;	
 	
 	void init();
 	element link(link_t *l);
@@ -34,9 +36,11 @@ class draw {
 	
 public:
 	element root;
-	draw(const network_t& _n);
-	draw(const network_t& _n, timeslot _t);
+	draw(const snts::network_t& _n);
+	draw(const snts::network_t& _n, timeslot _t);
 };
+
+}
 
 #endif	/* DRAW_HPP */
 

@@ -28,13 +28,13 @@ int main(int argc, char* argv[])
 	global::opts = new options(argc, argv);
 
 	parser p(global::opts->input_file);
-	network_t& n = *(p.n);
+	snts::network_t& n = *(p.n);
 
 	
-	if (global::opts->draw) draw_network(n); // draw network before scheduling anything
+	if (global::opts->draw) snts::draw_network(n); // draw network before scheduling anything
 	
 	
-	singleshot_scheduler *s = ::get_heuristic(global::opts->metaheuristic, n);
+	snts::singleshot_scheduler *s = snts::get_heuristic(global::opts->metaheuristic, n);
 	s->main_run();
 	s->verify( global::opts->save_best );
 	cout << "Schedule verified." << endl;
@@ -42,12 +42,12 @@ int main(int argc, char* argv[])
 	cout << "Best schedule period: " << n.best << endl;
 	
 
-	if (global::opts->draw) draw_schedule(n); // finally draw the schedule itself 
+	if (global::opts->draw) snts::draw_schedule(n); // finally draw the schedule itself 
 	
 	if (!global::opts->output_dir.empty())
 	{
 		cout << "Printing shedule...";
-		xmlOutput* o = new xmlOutput(global::opts->output_dir);
+		snts::xmlOutput* o = new snts::xmlOutput(global::opts->output_dir);
 		o->output_schedule(n);
 		cout << "Done." << endl;
 	}

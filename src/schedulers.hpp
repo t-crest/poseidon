@@ -26,6 +26,8 @@
 #include <memory>
 #include <algorithm>
 
+namespace snts {
+
 std::function<void(std::vector<port_out_t*>&) > get_next_mutator();
 
 
@@ -152,6 +154,7 @@ public:
 
 singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
 
+}
 
 #endif	/* SCHEDULERS_HPP */
 

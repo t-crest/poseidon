@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
 	
 	// Channels
 	pugi::xml_node channels = doc.append_child("channels");
-	channels.append_attribute("type").set_value("arbitrary");
+	channels.append_attribute("type").set_value("custom");
 	
 	
 	vector<pair<coord,vector<pair<coord,double> > > > nodes(pbs) ;

@@ -1,8 +1,8 @@
-
 #include "network_t.hpp"
 
 using namespace std;
 
+namespace snts {
 /**
  * The constructor of the network data structure.
  * @param rows The number of rows in the network topology.
@@ -440,3 +440,4 @@ void network_t::check_channel(const channel* c, const bool best)
 	return;
 }
 
+}

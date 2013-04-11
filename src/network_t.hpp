@@ -16,13 +16,18 @@
 #include "options.h"
 #include <limits>
 
+namespace snts {
+
 class network_t {
     matrix<router_t*> m_routers;
     std::vector<router_t*> router_ts;
     std::vector<link_t*> link_ts;
-    std::vector<channel> specification;
+    
     friend class parser;
-          
+    
+public:
+	std::vector<channel> specification;
+	
 public:
     int curr;
     int best;
@@ -69,5 +74,6 @@ private:
     bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(std::vector<port_out_t*>&)> next_mutator = next_identity);
 };
 
+}
 #endif	/* NETWORK_T_HPP */
 

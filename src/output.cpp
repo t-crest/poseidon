@@ -2,6 +2,8 @@
 
 using namespace std;
 
+namespace snts {
+
 /**
  * Draws a picture of the network topology and output it to an svg file.
  * @param n The data structure representing the network.
@@ -32,4 +34,6 @@ void draw_schedule(const network_t& n)
 		file f("./cartoon/t" + ::lex_cast<string > (t) + ".svg", fstream::out);
 		f << d.root.toString() << "\n";
 	}
+}
+
 }

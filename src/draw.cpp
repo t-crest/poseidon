@@ -3,11 +3,13 @@
 
 using namespace std;
 
+namespace snts {
+
 /**
  * The constructor of the draw class when the caller whishes to draw the network topology.
  * @param _n The network data structure.
  */
-draw::draw(const network_t& _n)
+draw::draw(const snts::network_t& _n)
 : n(_n), scale(60), bezel(20), router_size(scale / 2) {
 	this->init();
 }
@@ -17,7 +19,7 @@ draw::draw(const network_t& _n)
  * @param _n The network data structure.
  * @param _t The timeslot in which to draw the communication channels.
  */
-draw::draw(const network_t& _n, timeslot _t)
+draw::draw(const snts::network_t& _n, timeslot _t)
 : n(_n), scale(60), bezel(20), router_size(scale / 2), t(_t) {
 	this->init();
 }
@@ -243,7 +245,7 @@ element draw::arrow_wrapped(const float x1, const float y1, const float x2, cons
 
 	const bool same_row = (y1 == y2);
 	const bool same_col = (x1 == x2);
-	assert(same_col ^ same_row && "Arbitary positions not allowed, must be in either same row or col");
+	assert(same_col ^ same_row && "custom positions not allowed, must be in either same row or col");
 
 	const bool down = (same_col * (y1 < y2));
 	const bool right = (same_row * (x1 < x2));
@@ -385,4 +387,6 @@ uint32_t draw::hsv(float h, float s, float v) {
 
 	// Pack farve komponenterne sammen til én værdi
 	return (uint32_t(c.b) << 16) | (uint32_t(c.g) << 8) | uint32_t(c.r);
+}
+
 }

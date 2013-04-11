@@ -18,12 +18,12 @@
 #define ALL_ATTR(ITR, NODE)			pugi::xml_attribute ITR = NODE.first_attribute(); ITR; ITR = ITR.next_attribute()
 
 
-class network_t;
+//class snts::network_t;
 class channel;
 
 class parser {
 public:
-    network_t *n;
+    snts::network_t *n;
     parser(std::string file);
 
 private:
@@ -35,7 +35,7 @@ private:
         return ::lex_cast<T > (attr.value());
     }
 
-    void parse_arbitary(pugi::xml_node& graph);
+    void parse_custom(pugi::xml_node& graph);
     void create_mesh();
     void create_bitorus();
     channel parse_channel(pugi::xml_node& chan);

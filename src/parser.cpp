@@ -2,7 +2,8 @@
 
 using namespace std;
 using namespace pugi;
-
+using namespace snts;
+	
 parser::parser(string file) {
 	xml_document doc;
 	xml_parse_result foo = doc.load_file(file.c_str());
@@ -20,11 +21,11 @@ parser::parser(string file) {
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
 	
-	this->n = new network_t(rows, cols);
+	this->n = new snts::network_t(rows, cols);
 
 	const string graph_type = graph.attribute("type").value();
-	if (graph_type == "arbitary") {
-		this->parse_arbitary(graph);
+	if (graph_type == "custom") {
+		this->parse_custom(graph);
 	} else if (graph_type == "bitorus") {
 		ensure(cols == rows, "Graph does not qualify to be bi-torus");
 		this->create_bitorus();
@@ -39,7 +40,7 @@ parser::parser(string file) {
 	this->n->shortest_path(); // Calculate all the shortests paths, and store in routing tables
 
 	const string channel_type = channels.attribute("type").value();
-	if (channel_type == "arbitrary") {
+	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr);
 
@@ -61,7 +62,7 @@ parser::parser(string file) {
 
 }
 
-void parser::parse_arbitary(xml_node& graph) {
+void parser::parse_custom(xml_node& graph) {
 	for (EACH_TAG(node_itr, "link", graph)) {
 		const router_id r1 = get_attr<router_id > (node_itr, "source");
 		const router_id r2 = get_attr<router_id > (node_itr, "sink");

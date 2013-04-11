@@ -11,6 +11,8 @@
 using namespace std;
 using namespace pugi;
 
+namespace snts {
+
 bool xmlOutput::output_schedule(const network_t& n)
 {	
 	int numOfNodes = n.routers().size();
@@ -211,5 +213,7 @@ xmlOutput::xmlOutput(string _output_dir) : output_dir(_output_dir){
 }
 
 xmlOutput::~xmlOutput(){
+
+}
 
 }

@@ -3,6 +3,8 @@
 
 using namespace std;
 
+namespace snts {
+
 std::function<void(vector<port_out_t*>&)>
 get_next_mutator() 
 {
@@ -632,7 +634,7 @@ void meta_scheduler::print_stats() {
 
 s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
 	assert(&_n == &n);
-	singleshot_scheduler *s = ::get_heuristic(global::opts->meta_inital, this->n);
+	singleshot_scheduler *s = snts::get_heuristic(global::opts->meta_inital, this->n);
 	s->run(); // make initial solution
 	n.updatebest();
 	
@@ -736,3 +738,4 @@ singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n)
 	return s;
 }
 
+}

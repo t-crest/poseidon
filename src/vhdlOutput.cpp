@@ -9,6 +9,8 @@
 
 using namespace std;
 
+namespace snts {
+
 bool vhdlOutput::output_schedule(const network_t& n)
 {
 	int numOfNodes = n.routers().size();
@@ -294,4 +296,4 @@ void vhdlOutput::endArchNI(){
 	niST << "end data;\n";
 }
 
-
+}

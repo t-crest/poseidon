@@ -36,7 +36,7 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 //	cout << "init done" << endl;
 	// Channels
 	pugi::xml_node channels = doc.append_child("channels");
-	channels.append_attribute("type").set_value("arbitrary");
+	channels.append_attribute("type").set_value("custom");
 	
 	for (int i = 0; i < n; i++) { // first coordinate from
 		for (int j = 0; j < n; j++) { // second coordinate from

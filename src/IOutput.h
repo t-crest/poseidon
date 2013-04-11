@@ -10,6 +10,7 @@
 
 #include "network_t.hpp"
 
+namespace snts{
 /** The interface of the schedule output module. */
 class IOutput
 {
@@ -21,6 +22,8 @@ public:
      */
     virtual bool output_schedule(const network_t& n) =0;
 };
+
+}
 
 #endif	/* IOUTPUT_H */
 

@@ -16,6 +16,7 @@
 #include "IOutput.h"
 #include "lex_cast.h"
 
+namespace snts{
 
 class vhdlOutput: public IOutput {
 private:
@@ -69,6 +70,8 @@ public:
     bool output_schedule(const network_t& n);
     
 };
+
+}
 
 #endif	/* VHDLOUTPUT_H */
 

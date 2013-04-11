@@ -18,10 +18,12 @@
 #include <cstdlib>
 #include <memory>
 
+namespace snts {
 
 void draw_network(const network_t& n);
 void draw_schedule(const network_t& n);
 
+}
 
 #endif	/* OUTPUT_HPP */
 

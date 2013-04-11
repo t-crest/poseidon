@@ -1,5 +1,3 @@
-//#include <limits>
-
 #include "schedule.hpp"
 
 router_id operator-(const router_id& lhs, const router_id& rhs) {
@@ -8,7 +6,7 @@ router_id operator-(const router_id& lhs, const router_id& rhs) {
 }
 
 router_id abs(const router_id& arg) {
-	router_id ret = {abs(arg.first), abs(arg.second)};
+	router_id ret = {std::abs(arg.first), std::abs(arg.second)};
 	return ret;
 }
 
