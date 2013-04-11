@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 {
 	global::opts = new options(argc, argv);
 
-	parser p(global::opts->input_file);
+	parser p(global::opts->input_platform,global::opts->input_com);
 	snts::network_t& n = *(p.n);
 
 	
@@ -44,10 +44,10 @@ int main(int argc, char* argv[])
 
 	if (global::opts->draw) snts::draw_schedule(n); // finally draw the schedule itself 
 	
-	if (!global::opts->output_dir.empty())
+	if (!global::opts->output_file.empty())
 	{
 		cout << "Printing shedule...";
-		snts::xmlOutput* o = new snts::xmlOutput(global::opts->output_dir);
+		snts::xmlOutput* o = new snts::xmlOutput(global::opts->output_file);
 		o->output_schedule(n);
 		cout << "Done." << endl;
 	}

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <getopt.h>
 #include "file.hpp"
 #include "lex_cast.h"
 
@@ -20,8 +21,9 @@ public:
 
 	enum meta_t {GREEDY, rGREEDY, CROSS, RANDOM, BAD_RANDOM, GRASP, ALNS, ERR};
 	meta_t metaheuristic;
-	std::string input_file;
-	std::string output_dir;
+	std::string input_platform;
+	std::string input_com;
+	std::string output_file;
 	bool draw;
 	meta_t meta_inital;
 	bool save_best;
@@ -31,8 +33,10 @@ public:
 	
 private:
 	meta_t parse_meta_t(std::string str);
+	meta_t parse_init_t(std::string str);
     void print_help();
     void print_option(char opt, std::string text);
+	void print_option(char opt, std::string long_opt, std::string text);
 };
 
 namespace global {

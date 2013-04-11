@@ -22,7 +22,8 @@ class network_t {
     matrix<router_t*> m_routers;
     std::vector<router_t*> router_ts;
     std::vector<link_t*> link_ts;
-    
+    const uint router_depth;
+	
     friend class parser;
     
 public:
@@ -34,7 +35,7 @@ public:
     int prev;
 
 	// Constructor
-    network_t(uint rows, uint cols);
+    network_t(uint rows, uint cols, uint router_depth);
 	
 	// Get functions
     timeslot p() const;

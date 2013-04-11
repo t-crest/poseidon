@@ -30,8 +30,9 @@ string get_stat_name(int argc, char *argv[])
 
 options::options(int argc, char *argv[])
 // Option defaults:
-:	input_file(""),
-	output_dir(""),
+:	input_platform(""),
+	input_com(""),
+	output_file(""),
 	metaheuristic(ERR),
 	draw(false),
 	meta_inital(ERR),
@@ -41,18 +42,37 @@ options::options(int argc, char *argv[])
 	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
 {
 	bool output = false;
+	
+	static struct option long_options[] =
+	{
+		{"meta",          required_argument, 0, 'm'},
+		{"initial",       required_argument, 0, 'i'},
+		{"platform",      required_argument, 0, 'p'},
+		{"communication", required_argument, 0, 'c'},
+		{"schedule",      required_argument, 0, 's'},
+		{"time",          required_argument, 0, 't'},
+		{"draw",          no_argument,       0, 'd'},
+		{"quick",         no_argument,       0, 'q'},
+		{"beta",          required_argument, 0, 'b'},
+		{"help",          no_argument,       0, 'h'},
+		{0,0,0,0}
+	};
+	int option_index = 0;
+	
 	/* Set options as specified by user */
-	for (int c; (c = getopt(argc, argv, "f:m:di:qt:b:ho:")) != -1;) {
+	for (int c; (c = getopt_long(argc, argv, "f:m:di:qt:b:ho:", long_options, &option_index)) != -1;) {
 		switch (c) {
+			case  0 :	/* The option sets a flag */					break;
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
-			case 'f':	input_file = optarg;							break; // f for xml input file
+			case 'i':	meta_inital = parse_init_t(string(optarg));		break; // i for initial sol
+			case 'p':	input_platform = optarg;						break; // p for xml input file describing the platform
+			case 'c':	input_com = optarg;								break; // c for xml input file describing the communicaiton
+			case 's':   output_file = optarg; output = true;			break; // s for specifying the output schedule
+			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
 			case 'd':	draw = true;									break; // d for draw
-			case 'i':	meta_inital = parse_meta_t(string(optarg));		break; // i for initial sol
 			case 'q':	save_best = false;								break; // q for quick
 			case 'b':	beta_percent = ::lex_cast<float>(string(optarg)); break; // b for beta_percent
-			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
 			case 'h':   print_help();									break; // h for the help menu
-			case 'o':   output_dir = optarg; output = true;				break; // o for specifying the output directory
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
 	}
@@ -62,7 +82,7 @@ options::options(int argc, char *argv[])
 	}
 
 	/* Some input validation */
-	ensure(input_file.size() > 0, "Empty file name given.");
+	ensure(input_platform.size() > 0, "Empty file name given for platform specification.");
 	ensure(metaheuristic != ERR, "Metaheuristic must be set to GRASP or ALNS, etc.");
 	if (meta_inital != ERR)
 		ensure(metaheuristic == ALNS, "ALNS-inital given, but we don't run ALNS");
@@ -79,7 +99,7 @@ options::options(int argc, char *argv[])
 		ensure(0.0 <= beta_percent && beta_percent <= 1.0, "Beta not from 0.0 to 1.0");
 	
 	if (output)
-		ensure(output_dir.size() > 0, "Empty output directory given.");
+		ensure(output_file.size() > 0, "Empty output directory given.");
 }
 
 options::meta_t options::parse_meta_t(string str) 
@@ -95,28 +115,51 @@ options::meta_t options::parse_meta_t(string str)
 	return ret;
 }
 
+options::meta_t options::parse_init_t(string str) 
+{
+	meta_t ret = ERR;
+	if		(str=="RANDOM")		ret=RANDOM;
+	else if	(str=="BAD_RANDOM")	ret=BAD_RANDOM;
+	else if (str=="GREEDY")		ret=GREEDY;
+	else if (str=="rGREEDY")	ret=rGREEDY;
+	else if (str=="CROSS")		ret=CROSS;
+	return ret;
+}
+
 void options::print_help()
 {
 	cout << endl << "Help menu for SNTs" << endl;
 	cout << "\tMandatory options:" << endl; 
-	print_option('m',"Choose the Metaheuristic to apply schedule [CROSS, GRASP, ALNS].");
-	print_option('f',"The file containing the scheduling problem.");
-	print_option('i',"Choose the initial solutionused by the Metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
-	print_option('t',"The time in seconds for which the metaheuristic should run.");
+	print_option('m',"meta","Choose the Metaheuristic to apply schedule [GRASP, ALNS].");
+	print_option('p',"platform","The file containging a specification of the platform.");
+	print_option('i',"initial","Choose the initial solutionused by the Metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
+	print_option('t',"time","The time in seconds for which the metaheuristic should run.");
+	cout << endl;
 	cout << "\tOptional options:" << endl;
-	print_option('d',"If specified the network is drawn in an SVG file.");
-	print_option('q',"If specified the scheulder will make a dry run, does not save the result.");
-	print_option('b',"Specify the beta value, only applicable when using the GRASP metaheuristic.");
-	print_option('o',"Specify the output directory for VHDL routing tables.");
-	print_option('h',"Shows the help menu, I guess you know that.");
+	print_option('c',"communication","The file containing the scheduling problem. If not specified the scheduler assumes all-to-all communication.");
+	print_option('d',"draw","If specified the network is drawn in an SVG file.");
+	print_option('q',"quick","If specified the scheulder will make a dry run, does not save the result.");
+	print_option('b',"beta","Specify the beta value, only applicable when using the GRASP metaheuristic.");
+	print_option('s',"schedule","Specify the output directory for the generated XML schedule.");
+	print_option('h',"help","Shows the help menu, I guess you know that.");
 	cout << endl;
 	
 	delete this;
 	return exit(0);
+	
 }
 
 void options::print_option(char opt, string text){
-	cout << "\t-" << opt << "\t" << text << endl;
+	cout << "\t-" << opt << "\t\t" << text << endl;
+}
+
+void options::print_option(char opt, string long_opt, string text){
+	if(long_opt.length() > 10) {
+		cout << "\t-" << opt << " --" << long_opt << endl;
+		cout << "\t\t\t" << text << endl;
+	} else {
+		cout << "\t-" << opt << " --" << long_opt << "\t" << text << endl << endl;
+	}
 }
 
 options::~options()

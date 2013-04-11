@@ -48,6 +48,7 @@ struct channel {
 	router_id to;
 	int bandwidth; // We desire so many packets in the period p.
 	// Add Response delay
+	int phits;
 
 	timeslot t_start;
 	timeslot t_best_start;
@@ -94,6 +95,7 @@ public:
     schedule local_schedule; // A link always has a schedule (which may be empty)
     schedule best_schedule; // The schedule on the link for the best overall solution
     bool wrapped; // true if must be drawn wrapped in SVG
+	int depth;
 
     link_t(port_out_t& _source, port_in_t& _sink);
     link_t(port_out_t& _source, port_in_t& _sink, bool in);
@@ -149,7 +151,6 @@ public:
     const router_id address; // Fixed address
     std::map<router_id, std::vector<port_out_t*> > next; // shortest path 
     std::map<router_id, int> hops; // hops from this to router_id
-
 
     router_t(router_id _address);
     port_in_t& in(port_id p);

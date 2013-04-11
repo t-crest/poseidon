@@ -8,7 +8,7 @@ namespace snts {
  * @param rows The number of rows in the network topology.
  * @param cols The number of columns in the network topology.
  */
-network_t::network_t(uint rows, uint cols) : m_routers(rows, cols) 
+network_t::network_t(uint rows, uint cols, uint router_depth) : m_routers(rows, cols) , router_depth(router_depth)
 {
 	this->curr = this->best = this->prev = ::numeric_limits<int>::max();
 }

@@ -24,7 +24,7 @@ class channel;
 class parser {
 public:
     snts::network_t *n;
-    parser(std::string file);
+    parser(std::string platform_file, std::string com_file);
 
 private:
 
@@ -35,11 +35,11 @@ private:
         return ::lex_cast<T > (attr.value());
     }
 
-    void parse_custom(pugi::xml_node& graph);
-    void create_mesh();
-    void create_bitorus();
+    void parse_custom(pugi::xml_node& graph, const int link_depth);
+    void create_mesh(const int link_depth);
+    void create_bitorus(const int link_depth);
     channel parse_channel(pugi::xml_node& chan);
-    void create_all2all();
+    void create_all2all(int phits);
 };
 
 #endif	/* PARSER_HPP */

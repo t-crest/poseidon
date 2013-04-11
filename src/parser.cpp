@@ -4,41 +4,68 @@ using namespace std;
 using namespace pugi;
 using namespace snts;
 	
-parser::parser(string file) {
-	xml_document doc;
-	xml_parse_result foo = doc.load_file(file.c_str());
-	ensure(foo.status != status_file_not_found, "File " << file << " could not be found");
+parser::parser(string platform_file, string com_file) {
+	// First the platform specification is parsed, later we parse the communication specification.
+	xml_document platform_doc;
+	xml_parse_result foo = platform_doc.load_file(platform_file.c_str());
+	ensure(foo.status != status_file_not_found, "File " << platform_file << " could not be found");
 
-	xml_node topology = doc.child("topology");
-	xml_node channels = doc.child("channels");
-	xml_node graph = topology.child("graph");
-	ensure(!topology.empty(), "File " << file << " has no topology");
-	ensure(!channels.empty(), "File " << file << " has no channels");
-	ensure(!graph.empty(), "File " << file << " has no topology-graph");
+	xml_node platform = platform_doc.child("platform");
+	xml_node topology = platform.child("topology");
+	ensure(!platform.empty(), "File " << platform_file << " has no platform");
+	ensure(!topology.empty(), "File " << platform_file << " has no topology-graph");
 	
-	const int cols = ::lex_cast<int>(topology.attribute("width").value());
-	const int rows = ::lex_cast<int>(topology.attribute("height").value());
+	const int cols = ::lex_cast<int>(platform.attribute("width").value());
+	const int rows = ::lex_cast<int>(platform.attribute("height").value());
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
 	
-	this->n = new snts::network_t(rows, cols);
+	int router_depth = 1; // default router depth
+	xml_node router = platform.child("router");
+	if (!router.empty()) {
+		router_depth = ::lex_cast<int>(router.attribute("depth").value());
+	}
+	int link_depth = 0; // default link depth
+	xml_node link = platform.child("link");
+	if (!link.empty()) {
+		link_depth = ::lex_cast<int>(link.attribute("depth").value());
+	}
+	int available_timeslots = -1; // Default not limited
+	xml_node timeslots = platform.child("timeslots");
+	if (!timeslots.empty()) {
+		available_timeslots = ::lex_cast<int>(timeslots.attribute("available").value());
+	}
+	
+	this->n = new snts::network_t(rows, cols, router_depth);
 
-	const string graph_type = graph.attribute("type").value();
-	if (graph_type == "custom") {
-		this->parse_custom(graph);
-	} else if (graph_type == "bitorus") {
+	const string topology_type = topology.attribute("type").value();
+	if (topology_type == "custom") {
+		this->parse_custom(topology, link_depth);
+	} else if (topology_type == "bitorus") {
 		ensure(cols == rows, "Graph does not qualify to be bi-torus");
-		this->create_bitorus();
+		this->create_bitorus(link_depth);
 		//ensure(false, "Not implemented yet");
-	} else if (graph_type == "mesh") {
+	} else if (topology_type == "mesh") {
 		ensure(cols == rows, "Graph does not qualify to be mesh");
-		this->create_mesh();
+		this->create_mesh(link_depth);
 	} else {
 		ensure(false, "Graph type not recognized");
 	}
 
 	this->n->shortest_path(); // Calculate all the shortests paths, and store in routing tables
-
+	
+	// Time to parse communication specification
+	if (com_file==""){
+		this->create_all2all(1); // Default one phit 
+		return;
+	}
+	
+	xml_document com_doc;
+	xml_parse_result bar = com_doc.load_file(com_file.c_str());
+	ensure(bar.status != status_file_not_found, "File " << com_file << " could not be found");
+	xml_node channels = com_doc.child("communication");
+	ensure(!channels.empty(), "File " << com_file << " has no channels");
+	
 	const string channel_type = channels.attribute("type").value();
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
@@ -54,18 +81,24 @@ parser::parser(string file) {
 			}
 		}
 	} else if (channel_type == "all2all") {
-		this->create_all2all();
+		const int phits = get_attr<int>(channels, "phits");
+		this->create_all2all(phits);
 	} else {
 		ensure(false, "Channel type not recognized");
 	}
 
-
+	
 }
 
-void parser::parse_custom(xml_node& graph) {
+void parser::parse_custom(xml_node& graph, const int link_depth) {
 	for (EACH_TAG(node_itr, "link", graph)) {
 		const router_id r1 = get_attr<router_id > (node_itr, "source");
 		const router_id r2 = get_attr<router_id > (node_itr, "sink");
+		int depth = link_depth;
+		auto attr = node_itr.attribute("depth");
+		if (!attr.empty()){
+			depth = ::lex_cast<int >(attr.value());
+		}
 
 		const router_id absdiff = abs(r1 - r2); // element-wise abs
 		const bool same_row = (absdiff.second == 0); // equal y coords
@@ -98,77 +131,99 @@ void parser::parse_custom(xml_node& graph) {
 
 		link_t *l = n->add(n->add(r1)->out(p1), n->add(r2)->in(p2)); // add routers r1 and r2, and the link between them
 		l->wrapped = long_link;
+		l->depth = depth;
 	}
 }
 
-void parser::create_mesh() {
+void parser::create_mesh(const int link_depth) {
 	link_t *l;
 	for (int i = 0; i < n->cols(); i++) {
 		for (int j = 0; j < n->rows(); j++) {
 			if (i == 0) {
 				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else if (i == n->cols() - 1) {
 				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else {
 				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			}
 			if (j == 0) {
 				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else if (j == n->rows() - 1) {
 				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else {
 				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			}
+			
 		}
 	}
 }
 
 
-void parser::create_bitorus() {
+void parser::create_bitorus(const int link_depth) {
 	link_t *l;
 	for (int i = 0; i < n->cols(); i++) {
 		for (int j = 0; j < n->rows(); j++) {
 			if (i == 0) {
 				l = n->add(n->add({i, j})->out({W}), n->add({n->cols() - 1, j})->in({E}));
 				l->wrapped = true;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else if (i == n->cols() - 1) {
 				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({E}), n->add({0, j})->in({W}));
 				l->wrapped = true;
+				l->depth = link_depth;
 			} else {
 				l = n->add(n->add({i, j})->out({W}), n->add({i - 1, j})->in({E}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({E}), n->add({i + 1, j})->in({W}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			}
 			if (j == 0) {
 				l = n->add(n->add({i, j})->out({N}), n->add({i, n->rows() - 1})->in({S}));
 				l->wrapped = true;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			} else if (j == n->rows() - 1) {
 				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({S}), n->add({i, 0})->in({N}));
 				l->wrapped = true;
+				l->depth = link_depth;
 			} else {
 				l = n->add(n->add({i, j})->out({N}), n->add({i, j - 1})->in({S}));
 				l->wrapped = false;
+				l->depth = link_depth;
 				l = n->add(n->add({i, j})->out({S}), n->add({i, j + 1})->in({N}));
 				l->wrapped = false;
+				l->depth = link_depth;
 			}
 		}
 	}
@@ -180,16 +235,18 @@ channel parser::parse_channel(xml_node& chan) {
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
 	const int bw = get_attr<int>(chan, "bandwidth");
+	const int phits = get_attr<int>(chan, "phits");
 
 	ret.from = r1;
 	ret.to = r2;
 	ret.bandwidth = bw;
+	ret.phits = phits;
 
 	ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");
 	return ret;
 }
 
-void parser::create_all2all(){
+void parser::create_all2all(int phits){
 	for_each(this->n->routers(),[&](router_t *r1){
 		for_each(this->n->routers(),[&](router_t *r2){
 			if(r1 != r2){
@@ -197,6 +254,7 @@ void parser::create_all2all(){
 				c.from = r1->address;
 				c.to = r2->address;
 				c.bandwidth = 1;
+				c.phits = phits;
 				this->n->specification.push_back(c);
 				
 			}
