@@ -34,6 +34,14 @@ private:
         ensure(!attr.empty(), "XML attribute '" << attr_name << "' not found under '" << xn.name() << "' tag");
         return ::lex_cast<T > (attr.value());
     }
+	
+	template<typename T>
+    T get_opt_attr(pugi::xml_node& xn, const std::string& attr_name, T default_val) {
+		if (xn.empty()) return default_val;
+		auto attr = xn.attribute(attr_name.c_str());
+		if (attr.empty()) return default_val;
+        return ::lex_cast<T > (attr.value());
+    }
 
     void parse_custom(pugi::xml_node& graph, const int link_depth);
     void create_mesh(const int link_depth);

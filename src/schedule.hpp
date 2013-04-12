@@ -95,7 +95,7 @@ public:
     schedule local_schedule; // A link always has a schedule (which may be empty)
     schedule best_schedule; // The schedule on the link for the best overall solution
     bool wrapped; // true if must be drawn wrapped in SVG
-	int depth;
+	timeslot depth;
 
     link_t(port_out_t& _source, port_in_t& _sink);
     link_t(port_out_t& _source, port_in_t& _sink, bool in);

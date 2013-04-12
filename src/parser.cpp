@@ -15,30 +15,21 @@ parser::parser(string platform_file, string com_file) {
 	ensure(!platform.empty(), "File " << platform_file << " has no platform");
 	ensure(!topology.empty(), "File " << platform_file << " has no topology-graph");
 	
-	const int cols = ::lex_cast<int>(platform.attribute("width").value());
-	const int rows = ::lex_cast<int>(platform.attribute("height").value());
+	const int cols = get_attr<int>(platform,"width");
+	const int rows = get_attr<int>(platform,"height");
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
-	
-	int router_depth = 1; // default router depth
-	xml_node router = platform.child("router");
-	if (!router.empty()) {
-		router_depth = ::lex_cast<int>(router.attribute("depth").value());
-	}
-	int link_depth = 0; // default link depth
-	xml_node link = platform.child("link");
-	if (!link.empty()) {
-		link_depth = ::lex_cast<int>(link.attribute("depth").value());
-	}
-	int available_timeslots = -1; // Default not limited
-	xml_node timeslots = platform.child("timeslots");
-	if (!timeslots.empty()) {
-		available_timeslots = ::lex_cast<int>(timeslots.attribute("available").value());
-	}
-	
-	this->n = new snts::network_t(rows, cols, router_depth);
 
-	const string topology_type = topology.attribute("type").value();
+	xml_node router = platform.child("router");	
+	const int router_depth = get_opt_attr<int>(router,"depth",1); // default router depth is set to 1.
+	xml_node link = platform.child("link");
+	int link_depth = get_opt_attr<int>(link,"depth",0); // default link depth is set to 0.
+	xml_node timeslots = platform.child("timeslots");
+	int available_timeslots = get_opt_attr<int>(timeslots,"available",-1); // Default available timeslots is not limited, indicated by -1.
+	
+	this->n = new snts::network_t(rows, cols, router_depth, available_timeslots);
+
+	const string topology_type = get_attr<string>(topology,"type");
 	if (topology_type == "custom") {
 		this->parse_custom(topology, link_depth);
 	} else if (topology_type == "bitorus") {
@@ -66,7 +57,7 @@ parser::parser(string platform_file, string com_file) {
 	xml_node channels = com_doc.child("communication");
 	ensure(!channels.empty(), "File " << com_file << " has no channels");
 	
-	const string channel_type = channels.attribute("type").value();
+	const string channel_type = get_attr<string>(channels,"type");
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr);
@@ -81,7 +72,7 @@ parser::parser(string platform_file, string com_file) {
 			}
 		}
 	} else if (channel_type == "all2all") {
-		const int phits = get_attr<int>(channels, "phits");
+		const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
 		this->create_all2all(phits);
 	} else {
 		ensure(false, "Channel type not recognized");
@@ -94,12 +85,8 @@ void parser::parse_custom(xml_node& graph, const int link_depth) {
 	for (EACH_TAG(node_itr, "link", graph)) {
 		const router_id r1 = get_attr<router_id > (node_itr, "source");
 		const router_id r2 = get_attr<router_id > (node_itr, "sink");
-		int depth = link_depth;
-		auto attr = node_itr.attribute("depth");
-		if (!attr.empty()){
-			depth = ::lex_cast<int >(attr.value());
-		}
-
+		const int depth = get_opt_attr<int>(node_itr,"depth",link_depth);
+		
 		const router_id absdiff = abs(r1 - r2); // element-wise abs
 		const bool same_row = (absdiff.second == 0); // equal y coords
 		const bool same_col = (absdiff.first == 0); // equal x coords
@@ -234,8 +221,8 @@ channel parser::parse_channel(xml_node& chan) {
 
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
-	const int bw = get_attr<int>(chan, "bandwidth");
-	const int phits = get_attr<int>(chan, "phits");
+	const int bw = get_opt_attr<int>(chan, "bandwidth",1);
+	const int phits = get_opt_attr<int>(chan, "phits",1);
 
 	ret.from = r1;
 	ret.to = r2;
@@ -255,13 +242,10 @@ void parser::create_all2all(int phits){
 				c.to = r2->address;
 				c.bandwidth = 1;
 				c.phits = phits;
-				this->n->specification.push_back(c);
-				
+				this->n->specification.push_back(c);	
 			}
-			
 		});
 	});
-//	debugf(this->n->specification.size());
-	
+
 }
 

@@ -60,7 +60,7 @@ options::options(int argc, char *argv[])
 	int option_index = 0;
 	
 	/* Set options as specified by user */
-	for (int c; (c = getopt_long(argc, argv, "f:m:di:qt:b:ho:", long_options, &option_index)) != -1;) {
+	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:dqb:h", long_options, &option_index)) != -1;) {
 		switch (c) {
 			case  0 :	/* The option sets a flag */					break;
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
