@@ -37,9 +37,11 @@ options::options(int argc, char *argv[])
 	draw(false),
 	meta_inital(ERR),
 	save_best(true), // normally, we want to remember the best globally solution
+	cal_stats(false),
 	run_for(0),
-	beta_percent(-1.0),
-	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
+	beta_percent(-1.0)
+//	stat_file()
+//	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
 {
 	bool output = false;
 	
@@ -51,6 +53,7 @@ options::options(int argc, char *argv[])
 		{"communication", required_argument, 0, 'c'},
 		{"schedule",      required_argument, 0, 's'},
 		{"time",          required_argument, 0, 't'},
+		{"cal-stats",	  no_argument,		 0, 'a'},
 		{"draw",          no_argument,       0, 'd'},
 		{"quick",         no_argument,       0, 'q'},
 		{"beta",          required_argument, 0, 'b'},
@@ -60,7 +63,7 @@ options::options(int argc, char *argv[])
 	int option_index = 0;
 	
 	/* Set options as specified by user */
-	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:dqb:h", long_options, &option_index)) != -1;) {
+	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:adqb:h", long_options, &option_index)) != -1;) {
 		switch (c) {
 			case  0 :	/* The option sets a flag */					break;
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
@@ -69,6 +72,8 @@ options::options(int argc, char *argv[])
 			case 'c':	input_com = optarg;								break; // c for xml input file describing the communicaiton
 			case 's':   output_file = optarg; output = true;			break; // s for specifying the output schedule
 			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
+			case 'a':	stat_file.open(get_stat_name(argc, argv).c_str(), fstream::out);
+						cal_stats = true;								break; // a for calculation of bounds
 			case 'd':	draw = true;									break; // d for draw
 			case 'q':	save_best = false;								break; // q for quick
 			case 'b':	beta_percent = ::lex_cast<float>(string(optarg)); break; // b for beta_percent
@@ -80,7 +85,7 @@ options::options(int argc, char *argv[])
 	if (argc < 2){ // If no comand line options are given, the help menu is printet.
 		print_help();
 	}
-
+	
 	/* Some input validation */
 	ensure(input_platform.size() > 0, "Empty file name given for platform specification.");
 	ensure(metaheuristic != ERR, "Metaheuristic must be set to GRASP or ALNS, etc.");
@@ -98,8 +103,11 @@ options::options(int argc, char *argv[])
 	if (metaheuristic == GRASP)
 		ensure(0.0 <= beta_percent && beta_percent <= 1.0, "Beta not from 0.0 to 1.0");
 	
-	if (output)
+	if (output){
 		ensure(output_file.size() > 0, "Empty output directory given.");
+		string extension = output_file.substr(output_file.find_last_of(".") + 1);
+		ensure((extension == "xml") || (extension == "XML"),"File extension of output file was not .xml or .XML");
+	}
 }
 
 options::meta_t options::parse_meta_t(string str) 
@@ -137,6 +145,7 @@ void options::print_help()
 	cout << endl;
 	cout << "\tOptional options:" << endl;
 	print_option('c',"communication","The file containing the scheduling problem. If not specified the scheduler assumes all-to-all communication.");
+	print_option('a',"cal-stats","If specified the scheduler will output statistical data such as link utilization and lower bound on the schedule");
 	print_option('d',"draw","If specified the network is drawn in an SVG file.");
 	print_option('q',"quick","If specified the scheulder will make a dry run, does not save the result.");
 	print_option('b',"beta","Specify the beta value, only applicable when using the GRASP metaheuristic.");

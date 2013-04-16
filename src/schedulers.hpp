@@ -15,6 +15,7 @@
 #include "draw.hpp"
 #include "options.h"
 #include "network_t.hpp"
+#include "stats.hpp"
 #include <array>
 #include <ctime>
 #include <stack>
@@ -32,22 +33,14 @@ std::function<void(std::vector<port_out_t*>&) > get_next_mutator();
 
 
 class singleshot_scheduler {
-private:
-	float percent;
-	int initial;
 
 protected:
 	time_t t0;
 	network_t& n;
-
-	void percent_set(const int init);
-	void percent_set(const int init, const std::string);
-	void percent_up(const int curr);
-	void print_stats_linkutil();
-	void print_stats();
+	stats* b;
 	
 public:
-	singleshot_scheduler(network_t& _n);
+	singleshot_scheduler(network_t& _n, stats* _b);
 	virtual void run() = 0;
 	virtual void main_run();
 	void verify(const bool best);
@@ -56,7 +49,7 @@ public:
 class s_greedy : public singleshot_scheduler {
 	bool random;
 public:
-	s_greedy(network_t& _n, bool _random);
+	s_greedy(network_t& _n, stats* _b, bool _random);
 	void run();
 };
 
@@ -65,19 +58,19 @@ public:
 class s_cross : public singleshot_scheduler {
 	float beta;
 public:
-	s_cross(network_t& _n, float _beta);
+	s_cross(network_t& _n, stats* _b, float _beta);
 	void run();
 };
 
 class s_random : public singleshot_scheduler {
 public:
-	s_random(network_t& _n);
+	s_random(network_t& _n, stats* _b);
 	void run();
 };
 
 class s_bad_random : public singleshot_scheduler {
 public:
-	s_bad_random(network_t& _n);
+	s_bad_random(network_t& _n, stats* _b);
 	void run();
 };
 
@@ -132,27 +125,26 @@ protected:
 	chosen_t choose_dom_crater();
 
 public:
-	meta_scheduler(network_t& _n);
+	meta_scheduler(network_t& _n, stats* _b);
 	void main_run();
 	void destroy();
 	void repair();
-	void print_stats();
 };
 
 class s_alns : public meta_scheduler {
 public:
-	s_alns(network_t& _n);
+	s_alns(network_t& _n, stats* _b);
 	void run();
 };
 
 class s_grasp : public meta_scheduler {
 public:
-	s_grasp(network_t& _n);
+	s_grasp(network_t& _n, stats* _b);
 	void run();
 };
 
 
-singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n);
+singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n, stats* b);
 
 }
 

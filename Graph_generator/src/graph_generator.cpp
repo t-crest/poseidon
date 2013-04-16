@@ -19,16 +19,16 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	// Initialize
 	pugi::xml_document doc;
 	
-	pugi::xml_node topology = doc.append_child("topology");
-	topology.append_attribute("width").set_value(n);
-	topology.append_attribute("height").set_value(n);
+	pugi::xml_node platform = doc.append_child("platform");
+	platform.append_attribute("width").set_value(n);
+	platform.append_attribute("height").set_value(n);
 	
-	pugi::xml_node graph = topology.append_child("graph");
+	pugi::xml_node topology = platform.append_child("topology");
 	if (type == "b") { // b = "bitorus"
-		graph.append_attribute("type").set_value("bitorus");
+		topology.append_attribute("type").set_value("bitorus");
 	}
 	else if (type == "m") { // m = "mesh"
-		graph.append_attribute("type").set_value("mesh");
+		topology.append_attribute("type").set_value("mesh");
 	}
 
 	srand(time(NULL));

@@ -25,6 +25,7 @@ public:
 	std::string input_com;
 	std::string output_file;
 	bool draw;
+	bool cal_stats;
 	meta_t meta_inital;
 	bool save_best;
 	time_t run_for;

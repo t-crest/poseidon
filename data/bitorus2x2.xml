@@ -1,8 +1,7 @@
 <?xmlversion="1.0" encoding="UTF-8"?>
-
-  <topology width="2" height="2">
-    <graph type="bitorus"></graph>
-  </topology>
+  <platform width="2" height="2">
+    <topology type="bitorus"></topology>
+  </platform>
   <channels type="all2all">
   </channels>
 

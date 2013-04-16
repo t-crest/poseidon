@@ -1,9 +1,6 @@
 <?xmlversion="1.0" encoding="UTF-8"?>
-
-  <topology width="4" height="4">
-    <graph type="mesh"></graph>
-  </topology>
-
+  <platform width="4" height="4">
+    <topology type="mesh"></topology>
+  </platform>
   <channels type="all2all">
   </channels>
-

@@ -155,7 +155,7 @@ void network_t::shortest_path() {
 	});
 }
 
-void network_t::print_next_table() {
+void network_t::print_next_table() const {
 	for_each(this->routers(), [&](router_t * r) {
 		for_each(r->next, [&](const pair<router_id, vector<port_out_t*> >& p) {
 			for_each(p.second, [&](port_out_t * o) {
@@ -165,7 +165,7 @@ void network_t::print_next_table() {
 	});
 }
 
-void network_t::print_channel_specification() {
+void network_t::print_channel_specification() const {
 	for_each(this->channels(), [&](const channel& c){
 		cout << "Network has channel " << c << endl;
 	});
@@ -174,7 +174,7 @@ void network_t::print_channel_specification() {
   * 
   * @return The number of link in the topology
   */
-timeslot network_t::links_in_topology() {
+int network_t::links_in_topology() const {
 	return this->link_ts.size();
 }
 
@@ -183,7 +183,7 @@ timeslot network_t::links_in_topology() {
  * @param best
  * @return 
  */
-timeslot network_t::occupied_links(bool best) {
+timeslot network_t::occupied_links(bool best) const {
 	timeslot links_used = 0;
 	
 	for_each(this->link_ts, [&](link_t *l){
@@ -194,29 +194,30 @@ timeslot network_t::occupied_links(bool best) {
 	return links_used;
 }
 
-/**
- * This function calculates the utilization of links in a schedule.
- * @param best If true the function uses the best observed schedule, otherwise the current schedule is used.
- * @return The calcualted link utilization as a float value between 1 and 0.
- */
-float network_t::link_utilization(bool best) {
 
-	const timeslot length = (best ? this->p_best() : this->p());
-	const timeslot max_links_used = links_in_topology() * length;
-	timeslot links_used = occupied_links(best);
-	
-	assert(links_used <= max_links_used);
-	return float(links_used)/max_links_used;
+int network_t::io_activity(router_t* r) const {
+	int in_activity = r->local_in_best_schedule.table.size();
+	int out_activity = r->local_out_best_schedule.table.size();
+	return (in_activity > out_activity) ? in_activity : out_activity;
 }
 
+int network_t::max_io_activity() const {
+	int max_io = 0;
+	auto r = this->routers();
+	for(int i = 0; i < r.size(); i++){
+		int new_io = io_activity(r.at(i));
+		if ( new_io > max_io ){
+			max_io = new_io;
+		}
+	}
+	return max_io;
+}
 
 void network_t::updatebest() {
 	if (global::opts->save_best == false) return;
 	
-
 	this->curr = this->p();
 	
-
 	if (this->curr < this->best) {
 		this->best = this->curr;
 

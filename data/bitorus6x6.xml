@@ -1,16 +1,14 @@
 <?xmlversion="1.0" encoding="UTF-8"?>
-
-  <topology width="6" height="6">
-    <graph type="bitorus"></graph>
-
-    <!--
-    <graph type="arbitary">
-      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
-      <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
-      ...      
-    </graph>
-    -->
-  </topology>
+  <platform width="6" height="6">
+    <topology type="bitorus"></topology>
+  </platform>
   <channels type="all2all">
   </channels>
 
+<!--
+<graph type="arbitary">
+  <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+  <edge type="bidrectional" srcx="2" srcy="2" destx="0" desty="2"/>
+  ...      
+</graph>
+-->

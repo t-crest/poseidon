@@ -26,45 +26,19 @@ get_next_mutator()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-singleshot_scheduler::singleshot_scheduler(network_t& _n) : n(_n) {
+singleshot_scheduler::singleshot_scheduler(network_t& _n, stats* _b) : n(_n), b(_b) {
 	this->t0 = time(NULL);
-	percent = 0.0;
+	
 //	best_for_print = 0;
 //	curr_for_print = 0;
 //	print_cnt = 0;
-	initial = 0;
-}
-
-void singleshot_scheduler::percent_set(const int init, const string text){
-	percent = 0.0;
-	initial = init;
-	cout << text << endl;
-}
-
-void singleshot_scheduler::percent_set(const int init){
-	percent = 0.0;
-	initial = init;
-}
-
-void singleshot_scheduler::percent_up(const int curr){
-	
-	float curr_percent = (float)curr/initial;
-	curr_percent = round(curr_percent*1e4)/1e2; // Rounding to 2 decimal point precision
-	if(curr_percent > percent){
-		percent = curr_percent;
-		printf("\rProgress: %.2f%%",curr_percent);
-		fflush(stdout);
-		if (int(curr_percent) >= 100)
-			cout << " Done." << endl;
-	}
-
 }
 
 void singleshot_scheduler::main_run() {
 	util::srand();
 	this->run();
-	this->print_stats();
-	this->print_stats_linkutil();
+	b->write_stats(this->t0);
+	b->write_stats_linkutil();
 }
 
 void singleshot_scheduler::verify(const bool best){
@@ -98,21 +72,11 @@ void singleshot_scheduler::verify(const bool best){
 //	cout << " Metahueristic ran out of time." << endl;
 //}
 
-void singleshot_scheduler::print_stats() {
-	time_t now = time(NULL);
-	global::opts->stat_file 
-		<< (now - this->t0) << "\t" 
-		<< this->n.curr << endl;
-}
 
-void singleshot_scheduler::print_stats_linkutil() {
-	global::opts->stat_file << "# Link_util_best\t" << this->n.link_utilization(true) << endl;
-//	global::opts->stat_file << "# best\t" << this->best_for_print << endl;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_greedy::s_greedy(network_t& _n, bool _random) : singleshot_scheduler(_n), random(_random) {
+s_greedy::s_greedy(network_t& _n, stats* _b, bool _random) : singleshot_scheduler(_n,_b), random(_random) {
 }
 
 void s_greedy::run() {
@@ -126,7 +90,7 @@ void s_greedy::run() {
 	
 	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
 	int orig_size = pq.size();
-	percent_set(orig_size, "Creating initial solution:");
+	b->percent_set(orig_size, "Creating initial solution:");
 	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
@@ -138,14 +102,14 @@ void s_greedy::run() {
 				break;
 			}
 		}
-		percent_up(orig_size - pq.size());
+		b->percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_cross::s_cross(network_t& _n, float _beta) : singleshot_scheduler(_n), beta(_beta)
+s_cross::s_cross(network_t& _n, stats* _b, float _beta) : singleshot_scheduler(_n,_b), beta(_beta)
 {
 }
 
@@ -199,7 +163,7 @@ void s_cross::run()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_random::s_random(network_t& _n) : singleshot_scheduler(_n) {
+s_random::s_random(network_t& _n, stats* _b) : singleshot_scheduler(_n,_b) {
 }
 
 void s_random::run() 
@@ -215,7 +179,7 @@ void s_random::run()
 	auto next_mutator = get_next_mutator();
 
 	int orig_size = pq.size();
-	percent_set(orig_size, "Creating initial solution:");
+	b->percent_set(orig_size, "Creating initial solution:");
 	// Routes channels and mutates the network. 
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second;
@@ -230,7 +194,7 @@ void s_random::run()
 				break;
 			}
 		}
-		percent_up(orig_size - pq.size());
+		b->percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
@@ -238,7 +202,7 @@ void s_random::run()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_bad_random::s_bad_random(network_t& _n) : singleshot_scheduler(_n) {
+s_bad_random::s_bad_random(network_t& _n, stats* _b) : singleshot_scheduler(_n,_b) {
 }
 
 void s_bad_random::run() 
@@ -254,7 +218,7 @@ void s_bad_random::run()
 	auto next_mutator = get_next_mutator();
 	
 	int orig_size = pq.size();
-	percent_set(orig_size, "Creating initial solution:");
+	b->percent_set(orig_size, "Creating initial solution:");
 	timeslot t_start = 0;
 
 	// Routes channels and mutates the network. 
@@ -271,7 +235,7 @@ void s_bad_random::run()
 				break;
 			}
 		}
-		percent_up(orig_size - pq.size());
+		b->percent_up(orig_size - pq.size());
 	}
 	n.updatebest();
 }
@@ -280,8 +244,8 @@ void s_bad_random::run()
 
 network_t* meta_scheduler::minor_t::this_n; // UGLY HACK
 
-meta_scheduler::meta_scheduler(network_t& _n) 
-:	singleshot_scheduler(_n), 
+meta_scheduler::meta_scheduler(network_t& _n, stats* _b) 
+:	singleshot_scheduler(_n,_b), 
 	iterations(0)
 {
 	meta_scheduler::minor_t::this_n = &this->n; // UGLY HACK
@@ -290,7 +254,7 @@ meta_scheduler::meta_scheduler(network_t& _n)
 void meta_scheduler::main_run() {
 	util::srand();
 	this->run();
-	this->print_stats_linkutil();
+	b->write_stats_linkutil();
 }
 
 void meta_scheduler::destroy() {
@@ -615,26 +579,11 @@ meta_scheduler::chosen_t meta_scheduler::find_depend_rectangle(const channel* c)
 	return ret;
 }
 
-void meta_scheduler::print_stats() {
-	static time_t prev = 0;
-	time_t now = time(NULL);
-	if (prev + 1 <= now) {
-		prev = now;
-
-		global::opts->stat_file 
-			<< (now - this->t0) << "\t" 
-			<< this->n.curr << "\t" 
-			<< this->n.best << "\t" 
-			<< this->iterations << "\t" 
-			<< this->choose_table << endl; 
-	}
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
-s_alns::s_alns(network_t& _n) : meta_scheduler(_n) {
+s_alns::s_alns(network_t& _n, stats* _b) : meta_scheduler(_n,_b) {
 	assert(&_n == &n);
-	singleshot_scheduler *s = snts::get_heuristic(global::opts->meta_inital, this->n);
+	singleshot_scheduler *s = snts::get_heuristic(global::opts->meta_inital, this->n, this->b);
 	s->run(); // make initial solution
 	n.updatebest();
 	
@@ -659,13 +608,12 @@ void s_alns::run()
 
 	// destroy noget
 	// repair igen
-	percent_set(global::opts->run_for, "Applying ALNS");
+	b->percent_set(global::opts->run_for, "Applying ALNS");
 	for (; time(NULL) <= this->t0 + global::opts->run_for;  ) 
 	{
 //		debugf(time(NULL)- this->t0);
 		
-		
-		percent_up(time(NULL)- this->t0 );
+		b->percent_up(time(NULL)- this->t0 );
 		
 		this->destroy();
 		this->repair();
@@ -673,14 +621,14 @@ void s_alns::run()
 		this->n.updatebest();
 		this->punish_or_reward();
 		
-		this->print_stats();
+		b->write_stats(this->t0, ::lex_cast<string>(n.best) + "\t" + ::lex_cast<string>(this->iterations) + "\t" + ::lex_cast<string>(this->choose_table));
 		this->iterations++;
 	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
+s_grasp::s_grasp(network_t& _n, stats* _b) : meta_scheduler(_n,_b) {
 	assert(&_n == &n);
 	
 	this->choose_table.push_back({1.0, &s_grasp::choose_late_paths});
@@ -693,11 +641,13 @@ s_grasp::s_grasp(network_t& _n) : meta_scheduler(_n) {
 
 void s_grasp::run() 
 {
+	b->percent_set(global::opts->run_for, "Applying GRASP");
 	for (; time(NULL) <= this->t0 + global::opts->run_for; ) 
 	{
+		b->percent_up(time(NULL)- this->t0 );
 		this->n.clear(); // make sure nothing has been scheduled
 
-		s_cross s(this->n, global::opts->beta_percent); 
+		s_cross s(this->n, this->b, global::opts->beta_percent); 
 		s.run(); // make initial solution
 
 		// Also check initial sol
@@ -712,7 +662,7 @@ void s_grasp::run()
 		this->n.updatebest();
 
 		
-		this->print_stats();
+		b->write_stats(this->t0, ::lex_cast<string>(n.best) + "\t" + ::lex_cast<string>(this->iterations) + "\t" + ::lex_cast<string>(this->choose_table));
 		this->iterations++;
 	}
 	debugf(n.p_best());
@@ -721,17 +671,17 @@ void s_grasp::run()
 ////////////////////////////////////////////////////////////////////////////////
 
 
-singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n) 
+singleshot_scheduler* get_heuristic(options::meta_t meta_id, network_t& n, snts::stats* b) 
 {
 	singleshot_scheduler *s;
 	switch (meta_id) 
 	{
-		case options::GREEDY	: s = new s_greedy(n, false);	break;
-		case options::rGREEDY	: s = new s_greedy(n, true);	break;
-		case options::RANDOM	: s = new s_random(n);			break;
-		case options::BAD_RANDOM: s = new s_bad_random(n);		break;
-		case options::ALNS		: s = new s_alns(n);			break;
-		case options::GRASP		: s = new s_grasp(n);			break;
+		case options::GREEDY	: s = new s_greedy(n, b, false);	break;
+		case options::rGREEDY	: s = new s_greedy(n, b, true);	break;
+		case options::RANDOM	: s = new s_random(n, b);			break;
+		case options::BAD_RANDOM: s = new s_bad_random(n, b);		break;
+		case options::ALNS		: s = new s_alns(n, b);			break;
+		case options::GRASP		: s = new s_grasp(n, b);			break;
 		default:		ensure(false, "Uknown metaheuristic, or not implemented yet");
 	}	
 	assert(s != NULL);

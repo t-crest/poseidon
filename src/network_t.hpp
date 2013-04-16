@@ -58,11 +58,12 @@ public:
     void shortest_path();
 	
 	// Print schedule information
-    void print_next_table();
-    void print_channel_specification();
-	timeslot links_in_topology();
-	timeslot occupied_links(bool best);
-    float link_utilization(bool best);
+    void print_next_table() const;
+    void print_channel_specification() const;
+	int links_in_topology() const;
+	timeslot occupied_links(bool best) const;
+	int io_activity(router_t* r) const;
+	int max_io_activity() const;
 	
 	// Functions for updating the schedule information
     void updatebest();
