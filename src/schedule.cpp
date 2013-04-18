@@ -45,7 +45,13 @@ std::istream& operator>>(std::istream& stream, routerport_id& rhs) {
 }
 
 std::ostream& operator<<(std::ostream& stream, const channel& rhs) {
-    stream << "[from=" << rhs.from << ", to=" << rhs.to << ", bandwith=" << rhs.bandwidth << "]";
+    stream << "[from=" << rhs.from <<
+			", to=" << rhs.to <<
+			", t_start=" << rhs.t_start <<
+			", t_best_start=" << rhs.t_best_start <<
+			", channel_id=" << rhs.channel_id <<
+			", phits=" << rhs.phits <<
+			"]";
     return stream;
 }
 
@@ -66,9 +72,29 @@ void schedule::refresh_max() {
 }
 #endif
 
+std::set<const channel*> schedule::channels() const {
+	std::set<const channel*> ret;
+	for(auto it = this->table.cbegin(); it != this->table.cend(); ++it)
+		ret.insert(it->second);
+	
+	return ret;
+}
+
 /** Returns true if nothing has been scheduled at timeslot t */
-bool schedule::available(timeslot t) {
-	return ! util::contains(this->table, t);
+bool schedule::available(timeslot t, timeslot phits) {
+#ifdef USE_NAIVE_LOOKUP
+	bool ret = true;
+	for(int i = 0; i < phits; i++) {
+		bool contain = util::contains(this->table, t + i);
+		if (contain) {
+			ret = false;
+			break;
+		}
+	}
+	return ret;
+#else
+	return false;
+#endif
 }
 
 /** Returns true if something has been scheduled at timeslot t */
@@ -76,19 +102,25 @@ bool schedule::has(const timeslot t) {
 	return util::contains(this->table, t);
 }
 
-bool schedule::is(const timeslot t, const channel* c){
+bool schedule::is(const channel* c, const timeslot t){
 	if(!this->has(t)) return false;
 	if(this->get(t) != c) return false;
 	return true;
 }
 
-/** Returns true if channel c is contained in the schedule */
-boost::optional<timeslot> schedule::time(const channel *c) {
-	boost::optional<timeslot> ret;
-	for (auto it = this->table.begin(); it != this->table.end(); ++it) {
-		if (it->second == c) return it->first;
+/** Schedule channel c in timeslot t */
+void schedule::add(const channel *c, timeslot t) {
+#ifdef USE_NAIVE_LOOKUP
+	for(uint i = 0; i < c->phits; i++){
+		this->table[t+i] = c;
 	}
-	return ret;
+#else
+	this->table[t] = c;
+#endif
+	
+#ifdef USE_SCHEDULE_HASHMAP
+	this->max = util::max(this->max, t);
+#endif
 }
 
 /** Get the channel which is scheduled in timeslot t */
@@ -99,37 +131,19 @@ const channel* schedule::get(const timeslot t) {
 	return this->table.at(t);
 }
 
-std::set<const channel*> schedule::channels() const {
-	std::set<const channel*> ret;
-	for(auto it = this->table.cbegin(); it != this->table.cend(); ++it)
-		ret.insert(it->second);
-	
-	return ret;
-}
-
-/** Returns the last timeslot where we have something scheduled */
-timeslot schedule::max_time() {
-	if (this->table.empty()) return 0;
-
-#ifdef USE_SCHEDULE_HASHMAP
-	return this->max;
+/** 
+ * Removes the given channel scheduled at t
+ * This function is not safe in the sense that no checking
+ * whether the right channel is removed.
+ */
+void schedule::remove(const channel *c, timeslot t) {
+#ifdef USE_NAIVE_LOOKUP
+	for(uint i = 0; i < c->phits; i++){
+		this->table.erase(t+i);
+	}
 #else
-	return (this->table.rbegin()->first); // rbegin is iterator to pair having the greatest key (and timeslot is the key)
-#endif
-}
-
-/** Schedule channel c in timeslot t */
-void schedule::add(const channel *c, timeslot t) {
-	this->table[t] = c;
-
-#ifdef USE_SCHEDULE_HASHMAP
-	this->max = util::max(this->max, t);
-#endif
-}
-
-/** Removes whatever channel is scheduled at t */
-void schedule::remove(timeslot t) {
 	this->table.erase(t);
+#endif
 
 #ifdef USE_SCHEDULE_HASHMAP
 	this->refresh_max();
@@ -157,6 +171,26 @@ void schedule::clear() {
 	this->max = 0;
 #endif
 	this->table.clear();
+}
+
+/** Returns the last timeslot where we have something scheduled */
+timeslot schedule::max_time() {
+	if (this->table.empty()) return 0;
+
+#ifdef USE_SCHEDULE_HASHMAP
+	return this->max;
+#else
+	return (this->table.rbegin()->first); // rbegin is iterator to pair having the greatest key (and timeslot is the key)
+#endif
+}
+
+/** Returns true if channel c is contained in the schedule */
+boost::optional<timeslot> schedule::time(const channel *c) {
+	boost::optional<timeslot> ret;
+	for (auto it = this->table.begin(); it != this->table.end(); ++it) {
+		if (it->second == c) return it->first;
+	}
+	return ret;
 }
 
 schedule& schedule::operator == (const schedule& rhs) {

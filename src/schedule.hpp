@@ -46,9 +46,9 @@ std::ostream& operator<<(std::ostream& stream, const channel& rhs);
 struct channel {
 	router_id from;
 	router_id to;
-	int bandwidth; // We desire so many packets in the period p.
 	// Add Response delay
-	int phits;
+	uint channel_id;
+	uint phits;
 
 	timeslot t_start;
 	timeslot t_best_start;
@@ -56,6 +56,7 @@ struct channel {
 
 ////////////////////////////////////////////////////////////////////////////////
 //#define USE_SCHEDULE_HASHMAP 
+#define USE_NAIVE_LOOKUP
 
 class schedule {
 public:
@@ -69,17 +70,17 @@ public:
 
 public:
     schedule();
-    bool available(timeslot t);
+	std::set<const channel*> channels() const;
+    bool available(timeslot t, timeslot phits);
     bool has(timeslot t);
-    bool is(timeslot t, const channel *c);
-    boost::optional<timeslot> time(const channel *c);
-    const channel* get(timeslot t);
-    std::set<const channel*> channels() const;
-    timeslot max_time();
+    bool is(const channel *c, timeslot t);
     void add(const channel *c, timeslot t);
-    void remove(timeslot t);
+	const channel* get(timeslot t);
+    void remove(const channel *c, timeslot t);
     void remove(channel *c);
     void clear();
+	timeslot max_time();
+	boost::optional<timeslot> time(const channel *c);
     schedule& operator == (const schedule& rhs);
 };
 

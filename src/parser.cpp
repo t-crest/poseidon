@@ -46,14 +46,22 @@ parser::parser(string platform_file, string com_file) {
 	this->n->shortest_path(); // Calculate all the shortests paths, and store in routing tables
 	
 	// Time to parse communication specification
+	xml_document com_doc;
+	
 	if (com_file==""){
-		this->create_all2all(1); // Default one phit 
-		return;
+		if (!platform_doc.child("communication").empty()) {
+			com_doc.reset(platform_doc);
+		} else {
+			this->create_all2all(1); // Default one phit 
+			return;
+		}
+	} else {
+		xml_parse_result bar = com_doc.load_file(com_file.c_str());
+		ensure(bar.status != status_file_not_found, "File " << com_file << " could not be found");
 	}
 	
-	xml_document com_doc;
-	xml_parse_result bar = com_doc.load_file(com_file.c_str());
-	ensure(bar.status != status_file_not_found, "File " << com_file << " could not be found");
+	
+	
 	xml_node channels = com_doc.child("communication");
 	ensure(!channels.empty(), "File " << com_file << " has no channels");
 	
@@ -61,15 +69,6 @@ parser::parser(string platform_file, string com_file) {
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr);
-
-			ensure(this->n->has(c.from), "Network does not have router " << c.from << " used in channel.");
-			ensure(this->n->has(c.to), "Network does not have router " << c.to << " used in channel.");
-
-			bool pathexist = !this->n->router(c.from)->next[c.to].empty();
-			ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
-			for(int i = 0; i < c.bandwidth; i++){
-				this->n->specification.push_back(c);
-			}
 		}
 	} else if (channel_type == "all2all") {
 		const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
@@ -217,20 +216,28 @@ void parser::create_bitorus(const int link_depth) {
 }
 
 channel parser::parse_channel(xml_node& chan) {
-	channel ret;
+	channel c;
 
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
 	const int bw = get_opt_attr<int>(chan, "bandwidth",1);
 	const int phits = get_opt_attr<int>(chan, "phits",1);
 
-	ret.from = r1;
-	ret.to = r2;
-	ret.bandwidth = bw;
-	ret.phits = phits;
+	c.from = r1;
+	c.to = r2;
+	c.phits = phits;
 
 	ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");
-	return ret;
+	ensure(this->n->has(c.from), "Network does not have router " << c.from << " used in channel.");
+	ensure(this->n->has(c.to), "Network does not have router " << c.to << " used in channel.");
+
+	bool pathexist = !this->n->router(c.from)->next[c.to].empty();
+	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
+	for(int i = 0; i < bw; i++){
+		c.channel_id = i;
+		this->n->specification.push_back(c);
+	}
+	return c;
 }
 
 void parser::create_all2all(int phits){
@@ -240,8 +247,8 @@ void parser::create_all2all(int phits){
 				channel c;
 				c.from = r1->address;
 				c.to = r2->address;
-				c.bandwidth = 1;
 				c.phits = phits;
+				c.channel_id = 0;
 				this->n->specification.push_back(c);	
 			}
 		});

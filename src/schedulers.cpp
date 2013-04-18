@@ -91,11 +91,10 @@ void s_greedy::run() {
 	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
 	int orig_size = pq.size();
 	b->percent_set(orig_size, "Creating initial solution:");
-	
 	// Routes channels and mutates the network. Long channels routed first.
 	while (!pq.empty()) {
 		channel *c = (channel*) pq.top().second; pq.pop(); 
-
+		
 		for (timeslot t = 0;; t++) {
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
 			if (path_routed) {
@@ -186,7 +185,7 @@ void s_random::run()
 		pq.pop(); // ignore .first
 
 		for (timeslot t = 0;; t++) {
-			if (n.router(c->from)->local_in_schedule.available(t) == false)
+			if (n.router(c->from)->local_in_schedule.available(t,c->phits) == false)
 				continue;
 
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
@@ -226,7 +225,7 @@ void s_bad_random::run()
 		channel *c = (channel*) pq.top().second; pq.pop(); // ignore .first
 
 		for (timeslot t = t_start;; t++) {
-			if (n.router(c->from)->local_in_schedule.available(t) == false)
+			if (n.router(c->from)->local_in_schedule.available(t,c->phits) == false)
 				continue;
 
 			const bool path_routed = n.route_channel_wrapper(c, t, next_mutator);
@@ -502,7 +501,7 @@ meta_scheduler::chosen_t meta_scheduler::choose_dom_crater()
 				if (!n.router(r_curr)->out((port_id)i).has_link())
 					continue;
 
-				if (n.router(r_curr)->out((port_id)i).link().local_schedule.is(t_curr,c_dom)) {
+				if (n.router(r_curr)->out((port_id)i).link().local_schedule.is(c_dom,t_curr)) {
 					p = &n.router(r_curr)->out((port_id)i);
 					break;
 				}

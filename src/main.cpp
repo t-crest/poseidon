@@ -40,6 +40,13 @@ int main(int argc, char* argv[])
 	
 	snts::singleshot_scheduler *s = snts::get_heuristic(global::opts->metaheuristic, n, b);
 	s->main_run();
+	//--------- Remove --------------
+//	if (global::opts->draw) {
+//		cout << "Drawing shedule...";
+//		snts::draw_schedule(n); // finally draw the schedule itself 
+//		cout << "Done." << endl;
+//	} 
+	//-------------------------------
 	s->verify( global::opts->save_best );
 	cout << "Schedule verified." << endl;
 	cout << "Best schedule period: " << n.best << endl;

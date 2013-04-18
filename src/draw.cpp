@@ -71,15 +71,15 @@ void draw::init() {
 			const int circle_y = y * scale + scale / 2;
 
 			if (n.has({x, y})) {
-			layer1.AddChild(element().Tag("circle")
-				.Set("cx", circle_x)
-				.Set("cy", circle_y) // coordinates are to the center 
-				.Set("r", router_size / 2)
-				.Set("fill", "#ffeecc")
-				.Set("stroke", "#ddaa66")
-				.Set("stroke-width", 2)
-				);
-		}
+				layer1.AddChild(element().Tag("circle")
+					.Set("cx", circle_x)
+					.Set("cy", circle_y) // coordinates are to the center 
+					.Set("r", router_size / 2)
+					.Set("fill", "#ffeecc")
+					.Set("stroke", "#ddaa66")
+					.Set("stroke-width", 2)
+					);
+			}
 
 			layer1.AddChild(element().Tag("text")
 				.Set("x", circle_x)

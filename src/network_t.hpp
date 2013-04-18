@@ -47,6 +47,7 @@ public:
     const std::vector<router_t*>& routers() const;
     const std::vector<channel>& channels() const;
     bool has(const router_id r) const;
+	const timeslot get_router_depth() const;
 	
 	// Topology mutators
     link_t* add(port_out_t& source, port_in_t& sink);
