@@ -139,6 +139,7 @@ const channel* schedule::get(const timeslot t) {
 void schedule::remove(const channel *c, timeslot t) {
 #ifdef USE_NAIVE_LOOKUP
 	for(uint i = 0; i < c->phits; i++){
+		ensure(this->is(c,t+i), "Remove channel call was unaligned. At time t = " << t << " , channel = " << c);
 		this->table.erase(t+i);
 	}
 #else

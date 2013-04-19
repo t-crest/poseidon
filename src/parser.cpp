@@ -52,6 +52,7 @@ parser::parser(string platform_file, string com_file) {
 		if (!platform_doc.child("communication").empty()) {
 			com_doc.reset(platform_doc);
 		} else {
+			std::cout << "No communication specification: Creating all-to-all communication pattern." << std::endl;
 			this->create_all2all(1); // Default one phit 
 			return;
 		}
@@ -59,7 +60,6 @@ parser::parser(string platform_file, string com_file) {
 		xml_parse_result bar = com_doc.load_file(com_file.c_str());
 		ensure(bar.status != status_file_not_found, "File " << com_file << " could not be found");
 	}
-	
 	
 	
 	xml_node channels = com_doc.child("communication");

@@ -31,32 +31,34 @@ bool xmlOutput::output_schedule(const network_t& n)
 		// Vector for saving data to calculate Worst-Case Latencies
 		
 		vector<router_id> destinations(n.best,(*r)->address);
-		std::cout << "Tile: " << (*r)->address << std::endl;
+//		std::cout << "Tile: " << (*r)->address << std::endl; // Only for debugging
+		int router_depth = n.get_router_depth();
 		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
-			if ((*r)->local_in_best_schedule.has(t))
-			{
-				const channel* c = (*r)->local_in_best_schedule.get(t);
-				std::cout << "Timeslot: " << t << " = " << c->to << std::endl;
-			} else{	
-				std::cout << "Timeslot: " << t << std::endl;
-			}
+//			if ((*r)->local_in_best_schedule.has(t)) // Only for debugging purposes.
+//			{
+//				const channel* c = (*r)->local_in_best_schedule.get(t);
+//				std::cout << "Timeslot: " << t << " = " << c->to << std::endl;
+//			} else{	
+//				std::cout << "Timeslot: " << t << std::endl;
+//			}
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
 			ts.append_attribute("value") = t;
-			int t0 = t-1;
-			int t1 = t;
-			if(t == 0){
-				t0 = n.best-1;
-				t1 = n.best;
-			}
+			
+			int t_in = t;
+			int t_out = (t+router_depth)%(n.best+router_depth);
+//			if(t == 0){
+//				t_in = n.best-1;
+//				t_out = n.best;
+//			}
 			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
 			if ((*r)->local_in_best_schedule.has((t)%n.best)){	// Used to be t+2 to account for pipelining in the network interface.
 				dest_id = (*r)->local_in_best_schedule.get((t)%n.best)->to;	// Used to be t+2 to account for pipelining in the network interface.
 			}
-			if ((*r)->local_out_best_schedule.has(t1))
-				src_id = (*r)->local_out_best_schedule.get(t1)->from;
+			if ((*r)->local_out_best_schedule.has(t))
+				src_id = (*r)->local_out_best_schedule.get(t)->from;
 			destinations[t] = dest_id;	
 			// New na
 			xml_node na = ts.append_child("na");
@@ -76,19 +78,19 @@ bool xmlOutput::output_schedule(const network_t& n)
 				if(!(*r)->out((port_id)out_p).has_link()){
 					continue; // No outgoing link from the port.
 				}
-				if(!(*r)->out((port_id)out_p).link().best_schedule.has(t)){
+				if(!(*r)->out((port_id)out_p).link().best_schedule.has(t_out)){
 					ports[(port_id)out_p] = __NUM_PORTS; // No outgoing channel on link
 					continue;
 				}
 				// If there is a channel comming out of the port, find the
 				// input port from which the channel is comming from.
-				const channel* out_c =(*r)->out((port_id)out_p).link().best_schedule.get(t);
+				const channel* out_c =(*r)->out((port_id)out_p).link().best_schedule.get(t_out);
 				for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
 					// For all 4 input ports not being the local port.
 					if(!(*r)->in((port_id)in_p).has_link())
 						continue; // No link into this port
-					if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){
-						const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t0);
+					if((*r)->in((port_id)in_p).link().best_schedule.has(t_in)){
+						const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t_in);
 						if(out_c == in_c){
 							// The correct link found
 							ports[(port_id)out_p] = (port_id)in_p;
@@ -100,25 +102,22 @@ bool xmlOutput::output_schedule(const network_t& n)
 					continue; // Channel was found on one of the input ports.
 				}
 				// It should be on the local in port, but we test it anyway.
-				if((*r)->local_in_best_schedule.has(t)){
-					const channel* in_c = (*r)->local_in_best_schedule.get(t);
-					if(out_c == in_c){
-						// The correct link found
-						ports[(port_id)out_p] = L;
-					} else {
-						cout << "Failure: Channel rose from nothing like a fenix." << endl;
-					}
+				if((*r)->local_in_best_schedule.has(t_in)){
+					const channel* in_c = (*r)->local_in_best_schedule.get(t_in);
+					ensure(out_c == in_c,"Channel rose from nothing like a fenix. Channel: " << out_c);
+					// The correct link found
+					ports[(port_id)out_p] = L;
 				}
 			}
 			
-			if((*r)->local_out_best_schedule.has(t1)){ // For the local out port.
-				const channel* out_c = (*r)->local_out_best_schedule.get(t1);
+			if((*r)->local_out_best_schedule.has(t_out)){ // For the local out port.
+				const channel* out_c = (*r)->local_out_best_schedule.get(t_out);
 				for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
 					// For all 4 input ports not being the local port.
 					if(!(*r)->in((port_id)in_p).has_link())
 						continue; // No link into this port
-					if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){
-						const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t0);
+					if((*r)->in((port_id)in_p).link().best_schedule.has(t_in)){
+						const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t_in);
 						if(out_c == in_c){
 							// The correct link found
 							ports[L] = (port_id)in_p;
@@ -126,11 +125,12 @@ bool xmlOutput::output_schedule(const network_t& n)
 						}
 					}
 				}
-				if(ports[L] == __NUM_PORTS){
-					// If channel was not found on any of the 4 input ports.
-					// It should be on the local in port, but we test it anyway.
-					cout << "Failure: Not allowed to route back in to local." << endl;
-				}
+				ensure(ports[L] != __NUM_PORTS,"Channel not allowed to route back into local port. Channel: " << out_c);
+//				if(ports[L] == __NUM_PORTS){
+//					// If channel was not found on any of the 4 input ports.
+//					// It should be on the local in port, but we test it anyway.
+//					cout << "Failure: Not allowed to route back in to local." << endl;
+//				}
 				// and so on...
 			} 
 			for(int p = 0; p < __NUM_PORTS; p++){
@@ -152,7 +152,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 				return; // Channel not from router
 			}
 			// For each channel from router
-			int WCL = 0;
+			int slotswaittime = 0;
 			int late = 0;
 			int inlate = 0;
 			bool init = true;
@@ -167,20 +167,20 @@ bool xmlOutput::output_schedule(const network_t& n)
 					init = false;
 					inlate = late;
 				}
-				if(late > WCL){
-					WCL = late;
+				if(late > slotswaittime){
+					slotswaittime = late;
 				}
 				late = 0;
 			}
 			late += inlate;
-			if(late > WCL){
-				WCL = late;
+			if(late > slotswaittime){
+				slotswaittime = late;
 			}
 			// Analyze the latency
 			xml_node destination = latency.append_child("destination");
 			print_coord(c.to,co,sizeof(co));
 			destination.append_attribute("id") = co;
-			destination.append_attribute("WCL") = WCL;
+			destination.append_attribute("slotwaittime") = slotswaittime;
 		});
 	}	
 	char co [500];
