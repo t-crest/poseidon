@@ -63,7 +63,7 @@ parser::parser(string platform_file, string com_file) {
 	
 	
 	xml_node channels = com_doc.child("communication");
-	ensure(!channels.empty(), "File " << com_file << " has no channels");
+	ensure(!channels.empty(), "File " << com_file << " has no communication channels");
 	
 	const string channel_type = get_attr<string>(channels,"type");
 	if (channel_type == "custom") {

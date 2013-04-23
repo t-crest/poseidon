@@ -133,3 +133,4 @@ UpgradeLog*.XML
 /nbproject
 /.dep.inc
 /Makefile
+/Converter/nbproject/private/

@@ -104,7 +104,7 @@ options::options(int argc, char *argv[])
 		ensure(0.0 <= beta_percent && beta_percent <= 1.0, "Beta not from 0.0 to 1.0");
 	
 	if (output){
-		ensure(output_file.size() > 0, "Empty output directory given.");
+		ensure(output_file.size() > 0, "Empty output file given.");
 		string extension = output_file.substr(output_file.find_last_of(".") + 1);
 		ensure((extension == "xml") || (extension == "XML"),"File extension of output file was not .xml or .XML");
 	}

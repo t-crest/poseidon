@@ -183,10 +183,10 @@ bool xmlOutput::output_schedule(const network_t& n)
 			destination.append_attribute("slotwaittime") = slotswaittime;
 		});
 	}	
-	char co [500];
-	sprintf(co,"%soutput.xml",output_dir.c_str()); // Should be snprintf, avoiding buffer overflow
+	//char co [500];
+	//sprintf(co,"%s",); // Should be snprintf, avoiding buffer overflow
 	//sprintf(co,sizeof(co),"%soutput.xml",output_dir.c_str());
-	doc.save_file(co);	
+	doc.save_file(output_dir.c_str());	
 
 	delete this;
 	return true;
