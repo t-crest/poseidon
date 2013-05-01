@@ -17,7 +17,7 @@ class SourceTextPrinter extends Printer {
 	@Override
 	protected void printHeader() {
 		String str =	"# AUTO-Generated file DO NOT EDIT!!!\n"+
-						"# This file contains configureation data for T-CREST NoC\n"+
+						"# This file contains configuration data for the T-CREST NoC\n"+
 						"# with DMA controllers in network interfaces and source routing\n\n";
 		try{
 			ofile.write(str);
@@ -47,6 +47,7 @@ class SourceTextPrinter extends Printer {
 		int i = 0;
 		for(List<List<Integer> > initCpu: initArray){
 			str += "# Configuration of network interface: " + i + "\n"+
+				   "# NI" + i + "\n"+
 				   "# SLOT_TABLE\n";
 			for(int j = 0; j < timeslots; j++){
 				int phase = 0;
@@ -77,7 +78,7 @@ class SourceTextPrinter extends Printer {
 //			}
 			str += "# ROUTE_TABLE\n";
 			for(int route: initCpu.get(ROUTE_TABLE)){
-				str += Integer.toBinaryString(route) + "\n";
+				str += Integer.toBinaryString((1 << 16) | route).substring(1) + "\n";
 			}
 			str += "\n";
 			i++;

@@ -138,16 +138,16 @@ void options::print_help()
 {
 	cout << endl << "Help menu for SNTs" << endl;
 	cout << "\tMandatory options:" << endl; 
-	print_option('m',"meta","Choose the Metaheuristic to apply schedule [GRASP, ALNS].");
-	print_option('p',"platform","The file containging a specification of the platform.");
-	print_option('i',"initial","Choose the initial solutionused by the Metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
+	print_option('m',"meta","Choose the Metaheuristic to apply schedule [GRASP, ALNS, GREEDY, rGREEDY].");
+	print_option('p',"platform","The file containing a specification of the platform.");
+	print_option('i',"initial","Choose the initial solution used by the Metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
 	print_option('t',"time","The time in seconds for which the metaheuristic should run.");
 	cout << endl;
 	cout << "\tOptional options:" << endl;
 	print_option('c',"communication","The file containing the scheduling problem. If not specified the scheduler assumes all-to-all communication.");
 	print_option('a',"cal-stats","If specified the scheduler will output statistical data such as link utilization and lower bound on the schedule");
 	print_option('d',"draw","If specified the network is drawn in an SVG file.");
-	print_option('q',"quick","If specified the scheulder will make a dry run, does not save the result.");
+	print_option('q',"quick","If specified the scheduler will make a dry run, does not save the result.");
 	print_option('b',"beta","Specify the beta value, only applicable when using the GRASP metaheuristic.");
 	print_option('s',"schedule","Specify the output directory for the generated XML schedule.");
 	print_option('h',"help","Shows the help menu, I guess you know that.");
