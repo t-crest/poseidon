@@ -138,9 +138,9 @@ void options::print_help()
 {
 	cout << endl << "Help menu for SNTs" << endl;
 	cout << "\tMandatory options:" << endl; 
-	print_option('m',"meta","Choose the Metaheuristic to apply schedule [GRASP, ALNS, GREEDY, rGREEDY].");
+	print_option('m',"meta","Choose the metaheuristic to apply schedule [GRASP, ALNS, GREEDY, rGREEDY].");
 	print_option('p',"platform","The file containing a specification of the platform.");
-	print_option('i',"initial","Choose the initial solution used by the Metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
+	print_option('i',"initial","Choose the initial solution used by the metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
 	print_option('t',"time","The time in seconds for which the metaheuristic should run.");
 	cout << endl;
 	cout << "\tOptional options:" << endl;
