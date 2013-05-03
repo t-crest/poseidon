@@ -10,6 +10,18 @@ router_id abs(const router_id& arg) {
 	return ret;
 }
 
+char p2c(const port_id p){
+		char c;
+		if (p == N) c = 'N';
+		if (p == E)	c = 'E';
+		if (p == S)	c = 'S';
+		if (p == W)	c = 'W';
+		if (p == L)	c = 'L';
+		if (p == __NUM_PORTS)	c = 'D';
+
+		return c;
+	}
+
 std::ostream& operator<<(std::ostream& stream, const port_id& rhs) {
 	static const std::map<port_id, char> m = {
 		{N, 'N'},

@@ -91,6 +91,10 @@ router_t* network_t::router(router_id r) {
 	return this->m_routers(r);
 }
 
+router_t* network_t::router(router_id r) const {
+	return this->m_routers(r);
+}
+
 const vector<link_t*>& network_t::links() const {
 	return this->link_ts;
 }
@@ -389,6 +393,52 @@ void network_t::ripup_channel(const channel* c, router_id start)
 	return;
 }
 
+
+string network_t::get_route(const channel* c) const
+{
+	if (c == NULL) {return "";}
+	string route = "";
+	router_id curr = c->from;
+	router_id next_curr = c->from;
+	const router_id dest = c->to;
+	timeslot t_curr = c->t_best_start;
+	schedule* from_in_schedule = &this->router(c->from)->local_in_best_schedule;;
+	schedule* to_out_schedule = &this->router(c->to)->local_out_best_schedule;
+	schedule* link_schedule;
+	
+	if (!from_in_schedule->is(c, t_curr)) {	
+		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
+	}
+	
+	while (curr != dest)
+	{
+		int count = 0;
+		timeslot next_t_curr = t_curr;
+		for (int i = 0; i < __NUM_PORTS; i++) {
+			if(!this->router(curr)->out((port_id)i).has_link()) continue;
+			
+			link_t& l = this->router(curr)->out((port_id)i).link();
+			link_schedule = &l.best_schedule;
+			
+			if (link_schedule->is(c, t_curr + this->router_depth + l.depth)) {
+				route += p2c((const port_id)i);
+				next_curr = l.sink.parent.address;
+				count++;
+				next_t_curr = t_curr + this->router_depth + l.depth;
+			}	
+		}
+		curr = next_curr;
+		t_curr = next_t_curr;
+		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " <<
+				curr << " has non or multiple output ports for channel " << *c << ".");
+	}
+	
+	if(!to_out_schedule->is(c, t_curr + this->router_depth))
+		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
+	
+	route += 'L';
+	return route;
+}
 
 void network_t::check_channel(const channel* c, const bool best) 
 {

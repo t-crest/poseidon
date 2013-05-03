@@ -15,6 +15,7 @@
 #include "higher_order.h"
 #include "options.h"
 #include <limits>
+#include <string>
 
 namespace snts {
 
@@ -53,6 +54,7 @@ public:
     link_t* add(port_out_t& source, port_in_t& sink);
     router_t* add(router_id r);
     router_t* router(router_id r);
+	router_t* router(router_id r) const;
 	
 	// Functions for calculating inital routing information
     void shortest_path_bfs(router_t *dest);
@@ -74,6 +76,7 @@ public:
     bool route_channel_wrapper(channel* c, timeslot t, std::function<void(std::vector<port_out_t*>&)> next_mutator = next_identity);
     void ripup_channel(const channel* c, router_id start);
     void check_channel(const channel* c, const bool best);
+	std::string get_route(const channel* c) const;
 private:
     bool route_channel(channel* c, router_id curr, timeslot t, std::function<void(std::vector<port_out_t*>&)> next_mutator = next_identity);
 };

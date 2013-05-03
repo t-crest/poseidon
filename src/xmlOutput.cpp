@@ -54,8 +54,10 @@ bool xmlOutput::output_schedule(const network_t& n)
 			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
+			const channel* dest_chan = NULL;
 			if ((*r)->local_in_best_schedule.has((t)%n.best)){	// Used to be t+2 to account for pipelining in the network interface.
-				dest_id = (*r)->local_in_best_schedule.get((t)%n.best)->to;	// Used to be t+2 to account for pipelining in the network interface.
+				dest_chan = (*r)->local_in_best_schedule.get((t)%n.best);
+				dest_id = dest_chan->to;	// Used to be t+2 to account for pipelining in the network interface.
 			}
 			if ((*r)->local_out_best_schedule.has(t))
 				src_id = (*r)->local_out_best_schedule.get(t)->from;
@@ -66,6 +68,11 @@ bool xmlOutput::output_schedule(const network_t& n)
 			na.append_attribute("rx") = co;
 			print_coord(dest_id,co,sizeof(co));
 			na.append_attribute("tx") = co;
+			string route;
+			route = n.get_route(dest_chan);
+			if(route.length() > 0){
+				na.append_attribute("route") = route.c_str();
+			}
 			
 			// Write row in Router table 
 			port_id ports[5] = {__NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS};

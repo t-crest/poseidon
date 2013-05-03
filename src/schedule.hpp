@@ -25,6 +25,7 @@ typedef std::pair<coord, coord> router_id;
 enum port_id {
 	N, S, E, W, L, __NUM_PORTS // HACK!!
 };
+char p2c(const port_id p);
 typedef std::pair<router_id, port_id> routerport_id;
 
 
