@@ -153,13 +153,17 @@ bool xmlOutput::output_schedule(const network_t& n)
 			
 		}
 		xml_node latency = tile.append_child("latency");
-		// The following for loop is slow and unnecessary, can be changed to improve runtime
+		// The following for loop is slow and unnecessary, can be changed to improve runtime.
+		// What is needed is all the channels with the current router as the source.
 		for_each(n.channels(), [&](const channel & c) {
 			if(c.from != (*r)->address){
 				return; // Channel not from router
 			}
 			// For each channel from router
 			int slotswaittime = 0;
+			int channellatency = 0;
+			int num_phits = 0;
+			double rate = 0.0;
 			int late = 0;
 			int inlate = 0;
 			bool init = true;
@@ -170,6 +174,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 					continue;
 				}
 				// Correct destination
+				num_phits++; // Used to calculate rate.
 				if(init){
 					init = false;
 					inlate = late;
@@ -183,11 +188,16 @@ bool xmlOutput::output_schedule(const network_t& n)
 			if(late > slotswaittime){
 				slotswaittime = late;
 			}
+			slotswaittime += c.phits; // Only in the beginning of a timeslot can a packet be transmitted
+			channellatency = (*r)->hops[c.to];
+			rate = ((double)num_phits)/n.p_best();
 			// Analyze the latency
 			xml_node destination = latency.append_child("destination");
 			print_coord(c.to,co,sizeof(co));
 			destination.append_attribute("id") = co;
 			destination.append_attribute("slotwaittime") = slotswaittime;
+			destination.append_attribute("channellatency") = channellatency;
+			destination.append_attribute("rate") = rate;
 		});
 	}	
 	//char co [500];
