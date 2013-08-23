@@ -132,5 +132,4 @@ UpgradeLog*.XML
 /snts.exe.stackdump
 /nbproject
 /.dep.inc
-/Makefile
 /Converter/nbproject/private/
