@@ -1,10 +1,13 @@
-.PHONY: clean realclean
+.PHONY: clean realclean Converter
 
-all: pugixml SNTs
+all: pugixml Converter SNTs
 
 SNTs: 
 	@-mkdir -p build 2>&1
 	cd build &&	cmake ../src && make
+
+Converter:
+	cd Converter/src/converter && make
 
 pugixml:
 	@-mkdir -p lib 2>&1
