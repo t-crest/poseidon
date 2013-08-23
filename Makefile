@@ -14,22 +14,32 @@ pugixml:
 	cd lib && svn checkout http://pugixml.googlecode.com/svn/tags/release-1.2 pugixml
 	@-mkdir -p lib/pugixml/build 2>&1
 	cd lib/pugixml/build && cmake ../scripts && make
-	
-Converter:
 
 help:
-	@echo "=================================="
+
+	@echo "================================================================================"
 	@echo "== This is the help function"
 	@echo "== of the SNTs main Makefile."
 	@echo "== Targets:"
-	@echo "==     all  : Builds the scheduler"
-	@echo "==             and the converter"
-	@echo "==     SNTs : Builds the scheduler"
-	@echo "=================================="
+	@echo "==     all       : Builds third-party library, the scheduler and the schedule"
+	@echo "==                 \tconverter."
+	@echo "=="
+	@echo "==     SNTs      : Builds the C++ source files of the scheduler"
+	@echo "=="
+	@echo "==     Converter : Builds the Java files for the schedule converter."
+	@echo "=="
+	@echo "==     pugixml   : Updates and builds the third party xml library."
+	@echo "=="
+	@echo "==     clean     : Cleans the build directories."
+	@echo "=="
+	@echo "==     realclean : Cleans the build directories and library directory."
+	@echo "=="
+	@echo "================================================================================"
 
 
 clean:
+	cd Converter/src/converter && make clean
 	-rm -rf build
 
-realclean: clean 
+realclean: clean
 	-rm -rf lib
