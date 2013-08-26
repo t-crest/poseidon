@@ -140,5 +140,7 @@ UpgradeLog*.XML
 /Converter/nbproject/private/
 /MCSL/MCSL_NoC_Benchmark_Suite_v1.5
 /MCSL/xml
+/MCSL/test/xml_in
 /lib
+/scripts/paths.sh
 

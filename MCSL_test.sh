@@ -1,29 +1,9 @@
 #!/bin/bash
-GRAMME=true
-command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
-if [ "${GRAMME}" = "true" ]
-then
-	RUNFOR=7200
-	FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
-else
-	RUNFOR=10
-	FULL_PROG="dist/Release/Cygwin_4.x-Windows/snts"
-fi
+source ./scripts/define.sh ./scripts
 
 DATA_DIR="./MCSL/xml"
 APPLICATIONS="FFT-1024_complex Fpppp H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse"
 
-function run {
-#	echo "Queing $FULL_PROG $@"
-#	sleep $(( $RANDOM % 1 )).$(( $RANDOM % 1000 ))
-
-	while [ $(pgrep snts | wc -l) -ge $CORES ] ; do 
-		sleep $(( $RANDOM % 5 )).$(( $RANDOM % 1000 ))
-	done
-
-	echo "Executing $FULL_PROG $@"	
-	$FULL_PROG $@ &
-}
 
 for t in torus mesh ; do
 	for s in 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do

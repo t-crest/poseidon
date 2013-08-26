@@ -1,24 +1,8 @@
 #!/bin/bash
-command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
+
+source ./srcipts/define.sh ./scripts
 RUNFOR=7200
-PROG=snts
-FULL_PROG="dist/Gramme/GNU-Linux-x86/snts"
-#FULL_PROG="dist/Release/Cygwin_4.x-Windows/${PROG}"
 DATA_DIR="./MCSL/xml"
-
-
-function run {
-#	echo "Queing $FULL_PROG $@"
-	sleep $(( $RANDOM % 15 )).$(( $RANDOM % 1000 ))
-
-	while [ $(pgrep snts | wc -l) -ge $CORES ] ; do 
-		sleep $(( $RANDOM % 5 )).$(( $RANDOM % 1000 ))
-	done
-
-	echo "Executing $FULL_PROG $@"	
-	$FULL_PROG $@
-}
-
 
 
 #for t in torus mesh ; do

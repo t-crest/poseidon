@@ -1,5 +1,5 @@
 #!/bin/bash
-FULL_PROG="../bin/MCSL"
+FULL_PROG="../build/MCSL"
 TRAFFIC_DIR="../MCSL_NoC_Benchmark_Suite_v1.5/traffic"
 OUTPUT_DIR="./xml_in"
 APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec"
