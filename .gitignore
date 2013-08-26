@@ -49,6 +49,11 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 
+##############
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
 
 ##############
 ## Ignore Visual Studio temporary files, build results, and
@@ -133,3 +138,7 @@ UpgradeLog*.XML
 /nbproject
 /.dep.inc
 /Converter/nbproject/private/
+/MCSL/MCSL_NoC_Benchmark_Suite_v1.5
+/MCSL/xml
+/lib
+
