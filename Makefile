@@ -1,4 +1,4 @@
-.PHONY: clean realclean Converter MCSL
+.PHONY: clean realclean Converter MCSL SNTs
 
 all: pugixml Converter MCSL SNTs
 
