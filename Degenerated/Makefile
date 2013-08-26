@@ -1,23 +1,13 @@
-.PHONY: create_xml clean realclean init all
-SHELL := /bin/bash
-#CXX	= g++
-CC	= g++
-OPT	= -g -std=c++0x -O3
-WARN	= -Wall
-CXXFLAGS= $(OPT) $(WARN)
-SRC_DIR	= ./src
-OBJ_DIR	= ./obj
-EXE_DIR	= ./bin
+.PHONY: create_xml clean init all DEGEN
+
+EXE_DIR	= ./build
 XML_DIR = ./xml
-OBJECTS	= $(OBJ_DIR)/DEGEN.o $(OBJ_DIR)/pugixml.o $(OBJ_DIR)/options.o
 TOPO=torus
 SIZE=16
 
 all: DEGEN
 
 init:
-	-mkdir bin
-	-mkdir obj
 	-mkdir xml
 	
 create_xml: DEGEN
@@ -37,36 +27,13 @@ create_xml: DEGEN
     # done
 
 	
-DEGEN: $(OBJECTS)
-	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $(EXE_DIR)/DEGEN
-	
-$(OBJ_DIR)/DEGEN.o: $(src)/DEGEN.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/DEGEN.cpp -o $(OBJ_DIR)/DEGEN.o
-	
-$(OBJ_DIR)/pugixml.o: $(src)/pugixml.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/pugixml.cpp -o $(OBJ_DIR)/pugixml.o
-	
-$(OBJ_DIR)/options.o: $(src)/options.cpp
-	$(CXX) $(CXXFLAGS) -c $(SRC_DIR)/options.cpp -o $(OBJ_DIR)/options.o
+DEGEN: 
+	@-mkdir -p build 2>&1
+	cd build &&	cmake ../src && make
 	
 clean:
-	@rm -f $(OBJ_DIR)/*.o 
-	
-realclean: clean
-	@rm -f $(BIN_DIR)/MCSL*
+	@rm -rf $(BIN_DIR)
 
-#File dependencies
-$(src)/pugiconfig.hpp:
-	
-$(src)/pugixml.hpp: $(src)/pugiconfig.hpp 
-
-$(src)/pugixml.cpp: $(src)/pugixml.hpp $(src)/pugiconfig.hpp
-
-$(src)/options.h: 
-
-$(src)/options.cpp: $(src)/options.h 
-
-$(src)/DEGEN.cpp: $(src)/pugixml.hpp $(src)/options.h
 	
 
 	

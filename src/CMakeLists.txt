@@ -53,4 +53,5 @@ add_executable(SNTs ${SOURCES} ${HEADERS})
 
 target_link_libraries(SNTs ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a)
 
-
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)

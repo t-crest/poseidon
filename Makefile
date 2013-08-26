@@ -1,6 +1,6 @@
-.PHONY: clean realclean Converter
+.PHONY: clean realclean Converter MCSL
 
-all: pugixml Converter SNTs
+all: pugixml Converter MCSL SNTs
 
 SNTs: 
 	@-mkdir -p build 2>&1
@@ -15,6 +15,13 @@ pugixml:
 	@-mkdir -p lib/pugixml/build 2>&1
 	cd lib/pugixml/build && cmake ../scripts && make
 
+MCSL:
+	cd MCSL && make
+
+#	DEGEN is not compiling at the moment
+#DEGEN:
+#	cd Degenerated && make
+
 help:
 
 	@echo "================================================================================"
@@ -25,6 +32,11 @@ help:
 	@echo "==                 \tconverter."
 	@echo "=="
 	@echo "==     SNTs      : Builds the C++ source files of the scheduler"
+	@echo "=="
+	@echo "==     MCSL      : Builds the C++ source files of the MCSL converter"
+	@echo "=="
+	@echo "==     DEGEN     : Builds the C++ source files of the Degenerated"
+	@echo "=="                  NOT COMPILING!!!!!
 	@echo "=="
 	@echo "==     Converter : Builds the Java files for the schedule converter."
 	@echo "=="
