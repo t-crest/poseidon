@@ -79,16 +79,16 @@ int main(int argc, char** argv) {
 	
 	pugi::xml_document doc;
 	
-	pugi::xml_node topology = doc.append_child("topology");
-	topology.append_attribute("width").set_value(rows);
-	topology.append_attribute("height").set_value(cols);
+	pugi::xml_node platform = doc.append_child("platform");
+	platform.append_attribute("width").set_value(rows);
+	platform.append_attribute("height").set_value(cols);
 	
-	pugi::xml_node graph = topology.append_child("graph");
+	pugi::xml_node topology = platform.append_child("topology");
 	if (topo == 1) { // b = "bitorus"
-		graph.append_attribute("type").set_value("bitorus");
+		topology.append_attribute("type").set_value("bitorus");
 	}
 	else if (topo == 0) { // m = "mesh"
-		graph.append_attribute("type").set_value("mesh");
+		topology.append_attribute("type").set_value("mesh");
 	}
 	else {
 		cout << "Wrong topology found." << std::endl;
@@ -119,8 +119,8 @@ int main(int argc, char** argv) {
 	
 	
 	// Channels
-	pugi::xml_node channels = doc.append_child("channels");
-	channels.append_attribute("type").set_value("custom");
+	pugi::xml_node communication = doc.append_child("communication");
+	communication.append_attribute("type").set_value("custom");
 	
 	
 	vector<pair<coord,vector<pair<coord,double> > > > nodes(pbs) ;
@@ -197,7 +197,7 @@ int main(int argc, char** argv) {
 				char* from_node = new char[30];
 				char* to_node = new char[30];
 				int bw = ceil(nodes[i].second[j].second/(min_bw*global::opts->sigma));
-				pugi::xml_node channel = channels.append_child("channel");
+				pugi::xml_node channel = communication.append_child("channel");
 				//sprintf(from_node,"(%i,%i)",src_x,src_y);
 				sprintf(from_node,"(%i,%i)",nodes[i].first.first,nodes[i].first.second);
 				channel.append_attribute("from").set_value(from_node);

@@ -144,3 +144,5 @@ UpgradeLog*.XML
 /lib
 /scripts/paths.sh
 
+# Stat files produced by the scheduler
+stat-*
