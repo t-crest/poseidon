@@ -1,6 +1,6 @@
-.PHONY: clean realclean Converter MCSL SNTs pugixml clean_stats
+.PHONY: clean realclean Converter MCSL SNTs pugixml clean_stats GRAPH_GEN
 
-all: pugixml Converter MCSL SNTs
+all: pugixml Converter MCSL GRAPH_GEN SNTs
 
 SNTs: 
 	@-mkdir -p build 2>&1
@@ -17,6 +17,9 @@ pugixml:
 
 MCSL:
 	cd MCSL && make
+
+GRAPH_GEN:
+	cd Graph_generator && make
 
 #	DEGEN is not compiling at the moment
 #DEGEN:
@@ -54,6 +57,7 @@ help:
 clean:
 	cd Converter/src/converter && make clean
 	cd MCSL && make clean
+	cd Graph_generator && make clean
 	-rm -rf build
 	-rm ./scripts/paths.sh
 
