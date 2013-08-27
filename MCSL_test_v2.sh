@@ -1,8 +1,8 @@
 #!/bin/bash
-
-source ./srcipts/define.sh ./scripts
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/scripts/define.sh
 RUNFOR=7200
-DATA_DIR="./MCSL/xml"
+DATA_DIR="${DIR}/MCSL/xml"
 
 
 #for t in torus mesh ; do
@@ -12,15 +12,15 @@ for t in torus ; do
 		for APPLICATIONS in RS-32_28_8_dec; do
 			# Single shot solutions
 #			for m in GREEDY rGREEDY; do
-#				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
+#				SNTsRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
 #			done 	
 
 #			for b in 0.01 0.02 0.1 0.2 ; do
-#				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
+#				SNTsRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
 #			done 
 
 			for i in GREEDY rGREEDY ; do
-				run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
+				SNTsRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
 			done 
 		done
 	done 

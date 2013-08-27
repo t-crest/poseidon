@@ -1,7 +1,8 @@
 #!/bin/bash
-source ./scripts/define.sh ./scripts
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source ${DIR}/scripts/define.sh
 
-DATA_DIR="./MCSL/xml"
+DATA_DIR="${DIR}/MCSL/xml"
 APPLICATIONS="FFT-1024_complex Fpppp H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse"
 
 
@@ -11,15 +12,15 @@ for t in torus mesh ; do
 			for r in mean max_rate ; do
 				# Single shot solutions
 				for m in GREEDY rGREEDY; do
-					run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m ${m}"
+					SNTsRun "-p ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m ${m}"
 				done 	
 
 				for b in 0.01 0.02 0.1 0.2 ; do
-					run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m GRASP -t $RUNFOR -b ${b}"
+					SNTsRun "-p ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m GRASP -t $RUNFOR -b ${b}"
 				done 
 
 				for i in GREEDY rGREEDY ; do
-					run "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m ALNS -t $RUNFOR -i ${i}"
+					SNTsRun "-p ${DATA_DIR}/${t}/${t}_${s}x${s}/${a}_${t}_${s}x${s}_${r}.stp.xml -m ALNS -t $RUNFOR -i ${i}"
 				done 
 			done
 		done

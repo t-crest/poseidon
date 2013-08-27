@@ -1,7 +1,8 @@
 #!/bin/bash
-EXE="./build/MCSL"
-TRAFFIC_DIR=./MCSL_NoC_Benchmark_Suite_v1.5/traffic
-XML_DIR=./xml
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+EXE="${DIR}/build/MCSL"
+TRAFFIC_DIR="${DIR}/MCSL_NoC_Benchmark_Suite_v1.5/traffic"
+XML_DIR="${DIR}/xml"
 APPLICATIONS="Sparse FFT-1024_complex Fpppp Robot RS-32_28_8_dec RS-32_28_8_enc H264-720p_dec"
 
 for t in torus mesh ; do
