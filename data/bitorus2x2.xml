@@ -1,9 +1,7 @@
 <?xmlversion="1.0" encoding="UTF-8"?>
   <platform width="2" height="2">
     <topology type="bitorus"></topology>
-	<router depth="2"/>
-	<link depth="0"/>
   </platform>
-  <communication type="all2all" phits="3">
+  <communication type="all2all">
   </communication>
 

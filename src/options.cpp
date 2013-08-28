@@ -1,8 +1,46 @@
+/*******************************************************************************
+ * Copyright 2012 Mark Ruvald Pedersen <mark@radix63.dk>
+ * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
+ * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
+ * Copyright 2013 Technical University of Denmark, DTU Compute.
+ * 
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted (subject to the limitations in the
+ * disclaimer below) provided that the following conditions are met:
+ * 
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
+ * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ * The views and conclusions contained in the software and documentation
+ * are those of the authors and should not be interpreted as representing
+ * official policies, either expressed or implied, of the copyright holder.
+ ******************************************************************************/
+ 
 #include "options.h"
 
 using namespace std;
 
-string get_stat_name(int argc, char *argv[]) 
+string options::get_stat_name(int argc, char *argv[]) 
 {
 	string ret;
 	ret += "stat";
@@ -53,7 +91,7 @@ options::options(int argc, char *argv[])
 		{"communication", required_argument, 0, 'c'},
 		{"schedule",      required_argument, 0, 's'},
 		{"time",          required_argument, 0, 't'},
-		{"cal-stats",	  no_argument,		 0, 'a'},
+		{"cal-stats",	  optional_argument, 0, 'a'},
 		{"draw",          no_argument,       0, 'd'},
 		{"quick",         no_argument,       0, 'q'},
 		{"beta",          required_argument, 0, 'b'},
@@ -72,7 +110,7 @@ options::options(int argc, char *argv[])
 			case 'c':	input_com = optarg;								break; // c for xml input file describing the communicaiton
 			case 's':   output_file = optarg; output = true;			break; // s for specifying the output schedule
 			case 't':	run_for = ::lex_cast<time_t>(string(optarg));	break; // t for run time, in seconds
-			case 'a':	stat_file.open(get_stat_name(argc, argv).c_str(), fstream::out);
+			case 'a':	open_stat_file(argc, argv, optarg);
 						cal_stats = true;								break; // a for calculation of bounds
 			case 'd':	draw = true;									break; // d for draw
 			case 'q':	save_best = false;								break; // q for quick
@@ -132,6 +170,17 @@ options::meta_t options::parse_init_t(string str)
 	else if (str=="rGREEDY")	ret=rGREEDY;
 	else if (str=="CROSS")		ret=CROSS;
 	return ret;
+}
+
+void options::open_stat_file(int argc, char *argv[], char *dir){
+	string str = "";
+	if (dir){
+		str = string(dir);
+	} else {
+		str = "./stats/";
+	}
+	str += get_stat_name(argc, argv);
+	stat_file.open(str.c_str(), fstream::out);
 }
 
 void options::print_help()

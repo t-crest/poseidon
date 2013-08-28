@@ -9,8 +9,6 @@ set(SOURCES
 	draw.cpp
 	file.cpp
 	lex_cast.cpp
-	matrix.cpp
-	maxset.cpp
 	network_t.cpp
 	options.cpp
 	output.cpp

@@ -16,7 +16,7 @@ if [[ -z "$SNTS_PATH" ]]; then
 fi
 
 PROG=SNTs
-RUNFOR=10
+RUNFOR=300
 FULL_PROG="${SNTS_PATH}/${PROG}"
 command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
 
