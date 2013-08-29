@@ -143,6 +143,8 @@ UpgradeLog*.XML
 /MCSL/test/xml_in
 /lib
 /scripts/paths.sh
+/.check_tools
+/.pugixml
 
 # Stat files produced by the scheduler
 stat-*
