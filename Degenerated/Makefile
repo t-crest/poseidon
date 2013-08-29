@@ -29,7 +29,7 @@ create_xml: DEGEN
 	
 DEGEN: 
 	@-mkdir -p build 2>&1
-	cd build &&	cmake ../src && make
+	cd build && cmake ../src && make
 	
 clean:
 	@rm -rf $(BIN_DIR)

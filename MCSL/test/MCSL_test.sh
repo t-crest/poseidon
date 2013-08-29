@@ -12,15 +12,15 @@ for a in ${APPLICATIONS} ; do
 				# Single shot solutions
 		#		for m in GREEDY rGREEDY; do
 				for m in GREEDY ; do
-					SNTsRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m ${m}"
+					PoseidonRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m ${m}"
 				done 	
 
 				for b in 0.02 0.2 ; do
-				 	SNTsRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}"
+				 	PoseidonRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m GRASP -t $RUNFOR -b ${b}"
 				done 
 
 				for i in GREEDY ; do #rGREEDY
-				 	SNTsRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}"
+				 	PoseidonRun "-p ${DATA_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${s}.xml -m ALNS -t $RUNFOR -i ${i}"
 				done 
 			done
 		done

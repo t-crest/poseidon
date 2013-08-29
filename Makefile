@@ -32,9 +32,9 @@
 # official policies, either expressed or implied, of the copyright holder.
 # 
 
-.PHONY: clean realclean Converter MCSL SNTs pugixml clean_stats GRAPH_GEN
+.PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
 
-all: .check_tools pugixml Converter MCSL GRAPH_GEN SNTs
+all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 
 .check_tools:
 	@command -v make >/dev/null 2>&1 || { echo >&2 "I require make but it's not installed.  Aborting."; exit 1; }
@@ -44,9 +44,9 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN SNTs
 	@command -v cmake >/dev/null 2>&1 || { echo >&2 "I require cmake but it's not installed.  Aborting."; exit 1; }
 	@echo "Tools checked" > .check_tools
 
-SNTs: 
+Poseidon: 
 	@-mkdir -p build 2>&1
-	@cd build && cmake ../src && make -s && echo "SNTS_PATH=$$(pwd)" >> ../scripts/paths.sh
+	@cd build && cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
 	@cd Converter/src/converter && make -s
@@ -73,13 +73,13 @@ GRAPH_GEN:
 help:
 
 	@echo "================================================================================"
-	@echo "== This is the help target of the SNTs main Makefile."
+	@echo "== This is the help target of the Poseidon main Makefile."
 	@echo "=="
 	@echo "== Targets:"
 	@echo "==     all        : Builds third-party library, the scheduler and the schedule"
 	@echo "==                  \tconverter."
 	@echo "=="
-	@echo "==     SNTs       : Builds the C++ source files of the scheduler"
+	@echo "==     Poseidon       : Builds the C++ source files of the scheduler"
 	@echo "=="
 	@echo "==     MCSL       : Builds the C++ source files of the MCSL converter"
 	@echo "=="
@@ -110,6 +110,6 @@ clean_stats:
 	-rm stat-*
 
 realclean: clean
-	-rm -r lib
+	-rm -rf lib
 	-rm .check_tools
 	-rm .pugixml

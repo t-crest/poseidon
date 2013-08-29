@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (SNTs)
+project (Poseidon)
 
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/../lib/pugixml/src")
@@ -47,9 +47,23 @@ ADD_DEFINITIONS(
     -std=c++0x
     # Other flags
 )
-add_executable(SNTs ${SOURCES} ${HEADERS})
+add_executable(Poseidon ${SOURCES} ${HEADERS})
 
-target_link_libraries(SNTs ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a)
+target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a)
 
 set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
+
+
+ENABLE_TESTING()
+INCLUDE(Dart)
+
+macro (do_test arg result)
+  add_test (Poseidon${arg} Poseidon ${arg})
+  set_tests_properties (Poseidon${arg}
+    PROPERTIES PASS_REGULAR_EXPRESSION ${result})
+endmacro (do_test)
+
+add_test(PoseidonRuns Poseidon "")
+
+do_test("-d" *)
