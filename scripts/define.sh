@@ -34,3 +34,11 @@ function PoseidonRun {
 	echo "Executing $FULL_PROG $@"	
 	$FULL_PROG -a $@ &
 }
+
+function SingPoseidonRun {
+	while [ $(pgrep Poseidon | wc -l) -ge $CORES ] ; do 
+		sleep $(( $RANDOM % 5 )).$(( $RANDOM % 1000 ))
+	done
+	echo "Executing $FULL_PROG $@"	
+	$FULL_PROG -a $@
+}

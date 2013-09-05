@@ -70,8 +70,11 @@ public class Converter {
 		} else if ("Source-java".equals(args[2])){
 			printer = new JOPDMAPrinter();
 			parser = new SourceParser();
+		} else if ("Aegean-c".equals(args[2])){
+			printer = new AegeanPrinter();
+			parser = new SourceParser();
 		} else if ("Dist-c".equals(args[2])) {
-			throw new UnsupportedOperationException("Not supported yet."); 
+			throw new UnsupportedOperationException("Dist-c: Not supported yet."); 
 		} else {
 			System.out.println("No printer specified...");
 			return;
