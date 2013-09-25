@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DATA_DIR="${DIR}/data"
-source ${DIR}/scripts/define.sh
+DATA_DIR="${DIR}/../data"
+source ${DIR}/../scripts/define.sh
 
 for t in bitorus ; do # mesh
 	for s in 2 6 10 11 12 13; do # 3 4 5 6 7 8 9 10 15

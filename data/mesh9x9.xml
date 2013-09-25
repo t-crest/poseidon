@@ -2,5 +2,5 @@
   <platform width="9" height="9">
     <topology type="mesh"></topology>
   </platform>
-  <channels type="all2all">
-  </channels>
+  <communication type="all2all">
+  </communication>

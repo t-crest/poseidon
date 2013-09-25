@@ -2,5 +2,5 @@
   <platform width="7" height="7">
     <topology type="bitorus"></topology>
   </platform>
-  <channels type="all2all">
-  </channels>
+  <communication type="all2all">
+  </communication>
