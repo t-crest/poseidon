@@ -1,0 +1,78 @@
+Found 12 	for bitorus3x3 mGREEDY	 	Link_util 0.25
+Found 21 	for bitorus4x4 mGREEDY	 	Link_util 0.380952
+Found 32 	for bitorus5x5 mGREEDY	 	Link_util 0.46875
+Found 45 	for bitorus6x6 mGREEDY	 	Link_util 0.6
+Found 64 	for bitorus7x7 mGREEDY	 	Link_util 0.65625
+Found 87 	for bitorus8x8 mGREEDY	 	Link_util 0.735632
+Found 113 	for bitorus9x9 mGREEDY	 	Link_util 0.79646
+Found 154 	for bitorus10x10 mGREEDY	 	Link_util 0.811688
+Pending... 	for bitorus11x11 mGREEDY
+Pending... 	for bitorus12x12 mGREEDY
+Pending... 	for bitorus13x13 mGREEDY
+Pending... 	for bitorus14x14 mGREEDY
+Found 471 	for bitorus15x15 mGREEDY	 	Link_util 0.89172
+Found 10 	for bitorus3x3 mALNS	Iterations 158053986 	Link_util 0.3
+Found 19 	for bitorus4x4 mALNS	Iterations 56433799 	Link_util 0.421053
+Found 30 	for bitorus5x5 mALNS	Iterations 18608735 	Link_util 0.5
+Found 45 	for bitorus6x6 mALNS	Iterations 4909932 	Link_util 0.6
+Found 63 	for bitorus7x7 mALNS	Iterations 2437629 	Link_util 0.666667
+Found 87 	for bitorus8x8 mALNS	Iterations 736681 	Link_util 0.735632
+Found 113 	for bitorus9x9 mALNS	Iterations 441219 	Link_util 0.79646
+Found 154 	for bitorus10x10 mALNS	Iterations 172013 	Link_util 0.811688
+Pending... 	for bitorus11x11 mALNS
+Pending... 	for bitorus12x12 mALNS
+Pending... 	for bitorus13x13 mALNS
+Pending... 	for bitorus14x14 mALNS
+Found 471 	for bitorus15x15 mALNS	Iterations 18138 	Link_util 0.89172
+Found 10 	for bitorus3x3 mGRASP	Iterations 28943294 	Link_util 0.3
+Found 19 	for bitorus4x4 mGRASP	Iterations 5443578 	Link_util 0.421053
+Found 30 	for bitorus5x5 mGRASP	Iterations 1691722 	Link_util 0.5
+Found 43 	for bitorus6x6 mGRASP	Iterations 516767 	Link_util 0.627907
+Found 61 	for bitorus7x7 mGRASP	Iterations 196076 	Link_util 0.688525
+Found 85 	for bitorus8x8 mGRASP	Iterations 69923 	Link_util 0.752941
+Found 113 	for bitorus9x9 mGRASP	Iterations 30364 	Link_util 0.79646
+Found 151 	for bitorus10x10 mGRASP	Iterations 12684 	Link_util 0.827815
+Pending... 	for bitorus11x11 mGRASP
+Pending... 	for bitorus12x12 mGRASP
+Pending... 	for bitorus13x13 mGRASP
+Pending... 	for bitorus14x14 mGRASP
+Found 477 	for bitorus15x15 mGRASP	Iterations 737 	Link_util 0.880503
+Found 13 	for mesh3x3 mGREEDY	Iterations  	Link_util 0.461538
+Found 24 	for mesh4x4 mGREEDY	Iterations  	Link_util 0.555556
+Found 41 	for mesh5x5 mGREEDY	Iterations  	Link_util 0.609756
+Found 66 	for mesh6x6 mGREEDY	Iterations  	Link_util 0.636364
+Found 98 	for mesh7x7 mGREEDY	Iterations  	Link_util 0.666667
+Found 144 	for mesh8x8 mGREEDY	Iterations  	Link_util 0.666667
+Found 201 	for mesh9x9 mGREEDY	Iterations  	Link_util 0.671642
+Found 271 	for mesh10x10 mGREEDY	Iterations  	Link_util 0.676507
+Pending... 	for mesh11x11 mGREEDY
+Pending... 	for mesh12x12 mGREEDY
+Pending... 	for mesh13x13 mGREEDY
+Pending... 	for mesh14x14 mGREEDY
+Found 886 	for mesh15x15 mGREEDY	Iterations  	Link_util 0.677201
+Found 11 	for mesh3x3 mALNS	Iterations 107307564 	Link_util 0.545455
+Found 21 	for mesh4x4 mALNS	Iterations 29796283 	Link_util 0.634921
+Found 39 	for mesh5x5 mALNS	Iterations 7744350 	Link_util 0.641026
+Found 65 	for mesh6x6 mALNS	Iterations 2354677 	Link_util 0.646154
+Found 98 	for mesh7x7 mALNS	Iterations 854883 	Link_util 0.666667
+Found 143 	for mesh8x8 mALNS	Iterations 332171 	Link_util 0.671329
+Found 201 	for mesh9x9 mALNS	Iterations 130388 	Link_util 0.671642
+Found 271 	for mesh10x10 mALNS	Iterations 65919 	Link_util 0.676507
+Pending... 	for mesh11x11 mALNS
+Pending... 	for mesh12x12 mALNS
+Pending... 	for mesh13x13 mALNS
+Pending... 	for mesh14x14 mALNS
+Found 886 	for mesh15x15 mALNS	Iterations 5408 	Link_util 0.677201
+Found 11 	for mesh3x3 mGRASP	Iterations 19982118 	Link_util 0.545455
+Found 21 	for mesh4x4 mGRASP	Iterations 3995524 	Link_util 0.634921
+Found 37 	for mesh5x5 mGRASP	Iterations 1085730 	Link_util 0.675676
+Found 61 	for mesh6x6 mGRASP	Iterations 296089 	Link_util 0.688525
+Found 95 	for mesh7x7 mGRASP	Iterations 91745 	Link_util 0.687719
+Found 139 	for mesh8x8 mGRASP	Iterations 31045 	Link_util 0.690647
+Found 195 	for mesh9x9 mGRASP	Iterations 11523 	Link_util 0.692308
+Found 267 	for mesh10x10 mGRASP	Iterations 4653 	Link_util 0.686642
+Pending... 	for mesh11x11 mGRASP
+Pending... 	for mesh12x12 mGRASP
+Pending... 	for mesh13x13 mGRASP
+Pending... 	for mesh14x14 mGRASP
+Found 900 	for mesh15x15 mGRASP	Iterations 104 	Link_util 0.666667

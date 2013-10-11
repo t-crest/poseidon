@@ -1,18 +1,18 @@
-# Copyright 2013 Technical University of Denmark, DTU Compute. 
-# 
+# Copyright 2013 Technical University of Denmark, DTU Compute.
+#
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted (subject to the limitations in the
 # disclaimer below) provided that the following conditions are met:
-# 
+#
 #  * Redistributions of source code must retain the above copyright
 #    notice, this list of conditions and the following disclaimer.
-# 
+#
 #  * Redistributions in binary form must reproduce the above copyright
 #    notice, this list of conditions and the following disclaimer in the
 #    documentation and/or other materials provided with the distribution.
-# 
+#
 # NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
 # GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
 # HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -26,11 +26,11 @@
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# 
+#
 # The views and conclusions contained in the software and documentation
 # are those of the authors and should not be interpreted as representing
 # official policies, either expressed or implied, of the copyright holder.
-# 
+#
 
 .PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
 
@@ -44,12 +44,12 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 	@command -v cmake >/dev/null 2>&1 || { echo >&2 "I require cmake but it's not installed.  Aborting."; exit 1; }
 	@echo "Tools checked" > .check_tools
 
-Poseidon: 
+Poseidon:
 	@-mkdir -p build 2>&1
 	@cd build && cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
-	@cd Converter/src/converter && make -s
+	@cd ./Converter/src/converter && make -s
 
 .pugixml:
 	@-mkdir -p lib 2>&1

@@ -16,7 +16,7 @@ if [[ -z "$Poseidon_PATH" ]]; then
 fi
 
 PROG=Poseidon
-RUNFOR=900
+RUNFOR=7200
 FULL_PROG="${Poseidon_PATH}/${PROG}"
 command -v nproc >/dev/null && CORES=$(nproc) || CORES=32
 

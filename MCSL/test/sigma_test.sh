@@ -10,8 +10,8 @@ NETWORK_SIZE=16
 
 
 for a in ${APPLICATIONS} ; do
-	for topo in torus ; do # turus mesh
-		for size in 8 16 ; do
+	for topo in torus mesh ; do # turus mesh
+		for size in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ; do
 			for si in 1 1.2 1.5 2 3 5 10 20 30 50 100 200 300 500 ; do
 				mkdir -p ${OUTPUT_DIR}/${a}/${topo}/${topo}_${size}x${size} 2>/dev/null
 				${MCSL} -f "${TRAFFIC_DIR}/${topo}/${topo}_${size}x${size}/${a}_${topo}_${size}x${size}.stp" \
