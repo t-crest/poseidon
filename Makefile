@@ -39,9 +39,9 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 .check_tools:
 	@command -v make >/dev/null 2>&1 || { echo >&2 "I require make but it's not installed.  Aborting."; exit 1; }
 	@command -v cmake >/dev/null 2>&1 || { echo >&2 "I require cmake but it's not installed.  Aborting."; exit 1; }
-	@command -v javac >/dev/null 2>&1 || { echo >&2 "I require cmake but it's not installed.  Aborting."; exit 1; }
+	@command -v java >/dev/null 2>&1 || { echo >&2 "I require java but it's not installed.  Aborting."; exit 1; }
+	@command -v javac >/dev/null 2>&1 || { echo >&2 "I require javac but it's not installed.  Aborting."; exit 1; }
 	@command -v svn >/dev/null 2>&1 || { echo >&2 "I require svn but it's not installed.  Aborting."; exit 1; }
-	@command -v cmake >/dev/null 2>&1 || { echo >&2 "I require cmake but it's not installed.  Aborting."; exit 1; }
 	@echo "Tools checked" > .check_tools
 
 Poseidon:
