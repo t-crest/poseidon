@@ -6,6 +6,17 @@ Poseidon uses Metaheuristics to optimize the schedule.
 
 Poseidon generates a schedule from a specification of the platform and a specification of the communication requirements.
 
+
+Getting Started
+===============
+Poseidon is integrated with the T-CREST project and is checked out by the Patmos configuration.
+Because Poseidon is very generic it can be used by other platforms as well.
+Checking out and building Poseidon can be done as follows:
+
+    git clone https://github.com/t-crest/poseidon.git poseidon
+    make
+
+
 Platform Specification
 ----------------------
 
@@ -25,19 +36,10 @@ Communication Specification
         <channel from="(1,1)" to="(2,2)" bandwidth="2" response="false"/>
     </communication>
 
-Getting Started
-===============
-Poseidon is integrated with the T-CREST project and is checked out by the Patmos configuration.
-Because Poseidon is very generic it can be used by other platforms as well.
-Checking out and building Poseidon can be done as follows:
-
-    git clone https://github.com/t-crest/poseidon.git poseidon
-    make
-
-
 TODO
-====
+----
 - Because of pipelining the emptying in the end of a schedule can be folded to the beginning of the schedule.
 - Calculation of the bisection bound for arbitrary communication patterns.
 - Check local source and destination links before other links.
 - Predecessor structure with constant lookup time for next free time slot.
+- Termination of program when solution falls in some interval of lower bound.

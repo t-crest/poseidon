@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,18 +30,18 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include "parser.hpp"
 
 using namespace std;
 using namespace pugi;
 using namespace snts;
-	
+
 parser::parser(string platform_file, string com_file) {
 	// First the platform specification is parsed, later we parse the communication specification.
 	xml_document platform_doc;
@@ -52,22 +52,25 @@ parser::parser(string platform_file, string com_file) {
 	xml_node topology = platform.child("topology");
 	ensure(!platform.empty(), "File " << platform_file << " has no platform");
 	ensure(!topology.empty(), "File " << platform_file << " has no topology-graph");
-	
+
 	const int cols = get_attr<int>(platform,"width");
 	const int rows = get_attr<int>(platform,"height");
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
 
-	xml_node router = platform.child("router");	
+	xml_node router = platform.child("router");
 	const int router_depth = get_opt_attr<int>(router,"depth",1); // default router depth is set to 1.
 	xml_node link = platform.child("link");
 	int link_depth = get_opt_attr<int>(link,"depth",0); // default link depth is set to 0.
 	xml_node timeslots = platform.child("timeslots");
 	int available_timeslots = get_opt_attr<int>(timeslots,"available",-1); // Default available timeslots is not limited, indicated by -1.
-	
+
 	this->n = new snts::network_t(rows, cols, router_depth, available_timeslots);
 
-	const string topology_type = get_attr<string>(topology,"type");
+	string topology_type = get_opt_attr<string>(topology,"type","NOT FOUND");
+	if (topology_type == "NOT FOUND"){
+		topology_type = get_attr<string>(topology,"ttype");
+	}
 	if (topology_type == "custom") {
 		this->parse_custom(topology, link_depth);
 	} else if (topology_type == "bitorus") {
@@ -82,28 +85,31 @@ parser::parser(string platform_file, string com_file) {
 	}
 
 	this->n->shortest_path(); // Calculate all the shortests paths, and store in routing tables
-	
+
 	// Time to parse communication specification
 	xml_document com_doc;
-	
+
 	if (com_file==""){
 		if (!platform_doc.child("communication").empty()) {
 			com_doc.reset(platform_doc);
 		} else {
 			std::cout << "No communication specification: Creating all-to-all communication pattern." << std::endl;
-			this->create_all2all(1); // Default one phit 
+			this->create_all2all(1); // Default one phit
 			return;
 		}
 	} else {
 		xml_parse_result bar = com_doc.load_file(com_file.c_str());
 		ensure(bar.status != status_file_not_found, "File " << com_file << " could not be found");
 	}
-	
-	
+
+
 	xml_node channels = com_doc.child("communication");
 	ensure(!channels.empty(), "File " << com_file << " has no communication channels");
-	
-	const string channel_type = get_attr<string>(channels,"type");
+
+	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
+	if (channel_type == "NOT FOUND"){
+		channel_type = get_attr<string>(channels,"ctype");
+	}
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr);
@@ -115,7 +121,7 @@ parser::parser(string platform_file, string com_file) {
 		ensure(false, "Channel type not recognized");
 	}
 
-	
+
 }
 
 void parser::parse_custom(xml_node& graph, const int link_depth) {
@@ -123,7 +129,7 @@ void parser::parse_custom(xml_node& graph, const int link_depth) {
 		const router_id r1 = get_attr<router_id > (node_itr, "source");
 		const router_id r2 = get_attr<router_id > (node_itr, "sink");
 		const int depth = get_opt_attr<int>(node_itr,"depth",link_depth);
-		
+
 		const router_id absdiff = abs(r1 - r2); // element-wise abs
 		const bool same_row = (absdiff.second == 0); // equal y coords
 		const bool same_col = (absdiff.first == 0); // equal x coords
@@ -195,7 +201,7 @@ void parser::create_mesh(const int link_depth) {
 				l->wrapped = false;
 				l->depth = link_depth;
 			}
-			
+
 		}
 	}
 }
@@ -287,7 +293,7 @@ void parser::create_all2all(int phits){
 				c.to = r2->address;
 				c.phits = phits;
 				c.channel_id = 0;
-				this->n->specification.push_back(c);	
+				this->n->specification.push_back(c);
 			}
 		});
 	});
