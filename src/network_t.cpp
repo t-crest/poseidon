@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,12 +30,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include "network_t.hpp"
 
 using namespace std;
@@ -52,7 +52,7 @@ network_t::network_t(uint rows, uint cols, uint router_depth, int availavble_tim
 }
 
 /**
- * 
+ *
  * @return Returns the number of rows in the network topology.
  */
 uint network_t::rows() const {
@@ -60,7 +60,7 @@ uint network_t::rows() const {
 }
 
 /**
- * 
+ *
  * @return Returns the number of columns in the network topology.
  */
 uint network_t::cols() const {
@@ -68,7 +68,7 @@ uint network_t::cols() const {
 }
 
 /**
- * 
+ *
  * @return Returns the period of the current schedule.
  */
 timeslot network_t::p() const {
@@ -79,7 +79,7 @@ timeslot network_t::p() const {
 	return ret;
 }
  /**
-  * 
+  *
   * @return Returns the period of the best observed schedule.
   */
 timeslot network_t::p_best() const {
@@ -87,7 +87,7 @@ timeslot network_t::p_best() const {
 	for_each(this->links(), [&](link_t *l){
 		ret = util::max(ret, l->best_schedule.max_time()+1); // +1 because we want the number of time slots not the maximum time
 	});
-	// 
+	//
 //	for_each(this->routers(), [&](router_t *t){
 //		ret = util::max(ret, t->local_out_best_schedule.max_time()+1);
 //	});
@@ -95,13 +95,13 @@ timeslot network_t::p_best() const {
 }
 
 /**
- * 
- * @param r 
- * @return 
+ *
+ * @param r
+ * @return
  */
 bool network_t::has(const router_id r) const {
-	if (!(0 <= r.first && r.first < this->rows())) return false;
-	if (!(0 <= r.second && r.second < this->cols())) return false;
+	if (!(0 <= r.first && r.first < this->cols())) return false;
+	if (!(0 <= r.second && r.second < this->rows())) return false;
 	return (this->m_routers(r) != NULL);
 }
 
@@ -157,8 +157,8 @@ const timeslot network_t::get_router_depth() const {
 void network_t::shortest_path_bfs(router_t *dest) {
 	std::queue<router_t*> Q; // the BFS queue
 
-	// We don't want to pollute our router_t's class with ad-hoc members, 
-	// instead we use std::maps to associate these properties 
+	// We don't want to pollute our router_t's class with ad-hoc members,
+	// instead we use std::maps to associate these properties
 	std::map<router_t*, bool> marked;
 	std::map<router_t*, int> hops;
 
@@ -172,12 +172,12 @@ void network_t::shortest_path_bfs(router_t *dest) {
 //		cout << "Router " << t->address << " is " << hops[t] << " hops away from "<< dest->address << endl;
 
 		t->hops[dest->address] = hops[t]; // If hops does not contain t an element with key t is inserted with an empty value.
-		
+
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!t->out((port_id) i).has_link()) continue; // If out port has no link continue.
 			router_t *c = &t->out((port_id) i).link().sink.parent; // The router at the end of the outgoing link.
 			if (!util::contains(hops, c)) continue; // If hops does not contain the router at the end of the outgoing link continue;
-			
+
 			int link_depth = t->out((port_id) i).link().depth;
 			if (hops[c] == hops[t] - router_depth - link_depth) {
 //				assert( ! util::contains(t->next[dest->address], &t->out((port_id) i)));
@@ -188,7 +188,7 @@ void network_t::shortest_path_bfs(router_t *dest) {
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if (!t->in((port_id) i).has_link()) continue; // If in port has no link continue
 			router_t *o = &t->in((port_id) i).link().source.parent; // visit backwards
-			
+
 
 			if (!marked[o]) {
 				marked[o] = true;
@@ -233,7 +233,7 @@ void network_t::print_channel_specification() const {
 	});
 }
  /**
-  * 
+  *
   * @return The number of link in the topology
   */
 int network_t::links_in_topology() const {
@@ -243,16 +243,16 @@ int network_t::links_in_topology() const {
 /**
  * Count the number of link timeslots on which a communication channel is routed.
  * @param best
- * @return 
+ * @return
  */
 timeslot network_t::occupied_links(bool best) const {
 	timeslot links_used = 0;
-	
+
 	for_each(this->link_ts, [&](link_t *l){
 		schedule* sched = (best ? &l->best_schedule : &l->local_schedule);
 		links_used += sched->table.size();
 	});
-	
+
 	return links_used;
 }
 
@@ -277,9 +277,9 @@ int network_t::max_io_activity() const {
 
 void network_t::updatebest() {
 	if (global::opts->save_best == false) return;
-	
+
 	this->curr = this->p();
-	
+
 	if (this->curr < this->best) {
 		this->best = this->curr;
 
@@ -296,7 +296,7 @@ void network_t::updatebest() {
 		});
 
 	}
-		
+
 }
 
 void network_t::clear() {
@@ -312,13 +312,13 @@ void network_t::clear() {
 
 
 bool network_t::route_channel_wrapper(
-	channel* c, timeslot t, 
+	channel* c, timeslot t,
 	std::function<void(vector<port_out_t*>&)> next_mutator
-) 
+)
 {
 	const bool already = this->router(c->from)->local_in_schedule.is(c, t);
 	const bool available = this->router(c->from)->local_in_schedule.available(t,c->phits);
-	
+
 	if (!available || already){
 	//if (!already && !available){
 		return false;
@@ -329,23 +329,23 @@ bool network_t::route_channel_wrapper(
 		this->router(c->from)->local_in_schedule.add(c, t);
 		c->t_start = t;
 		return true;
-	} 
+	}
 	return false;
 }
 
 bool network_t::route_channel(
-	channel* c, router_id curr, timeslot t, 
+	channel* c, router_id curr, timeslot t,
 	std::function<void(vector<port_out_t*>&)> next_mutator
-) 
+)
 {
 	const bool dest_reached = (curr == c->to);
 
 	if (dest_reached) {
 		const bool already = this->router(c->to)->local_out_schedule.is(c, t + this->router_depth);
 		const bool available = this->router(c->to)->local_out_schedule.available(t + this->router_depth, c->phits);
-		
+
 		if (available || already) {
-			this->router(c->to)->local_out_schedule.add(c, t + this->router_depth); 
+			this->router(c->to)->local_out_schedule.add(c, t + this->router_depth);
 			return true;
 		} else {
 			return false;
@@ -361,16 +361,16 @@ bool network_t::route_channel(
 
 	for (auto it = next.begin(); it != next.end(); ++it) {
 		port_out_t *p = *it;
-				
+
 		assert(p->has_link());
 		link_t& l = p->link();
 		const timeslot outtime = t + this->router_depth + l.depth;
-		
-		const bool already = l.local_schedule.is(c, outtime); 
-		const bool available = l.local_schedule.available(outtime,c->phits); 
+
+		const bool already = l.local_schedule.is(c, outtime);
+		const bool available = l.local_schedule.available(outtime,c->phits);
 		if (!already && !available)
 			continue;
-				
+
 		if (this->route_channel(c, l.sink.parent.address, outtime, next_mutator)) {
 			l.local_schedule.add(c, outtime);
 			return true;
@@ -383,7 +383,7 @@ bool network_t::route_channel(
 /* Rips up channel c, starting from start (inclusive).
  * This means links (including local ones) on channel c from start to c->to are removed
  */
-void network_t::ripup_channel(const channel* c, router_id start) 
+void network_t::ripup_channel(const channel* c, router_id start)
 {
 //	if (c->from != start) {
 //		debugf(c->from);
@@ -398,9 +398,9 @@ void network_t::ripup_channel(const channel* c, router_id start)
 	router_id curr = c->from;
 	const router_id dest = c->to;
 	timeslot t = c->t_start;
-	
+
 	assert(c->from != c->to);
-	
+
 	while (curr != dest) {
 		port_out_t *p = NULL;
 		link_t *l = NULL;
@@ -423,7 +423,7 @@ void network_t::ripup_channel(const channel* c, router_id start)
 	}
 
 	assert(curr == c->to);
-	
+
 	if(!this->router(c->to)->local_out_schedule.is(c, t + this->router_depth)){
 		ensure(false,"Ripup failed: Channel: " << *c << " is not routed on local out schedule at time slot " << t << ".");
 	}
@@ -443,42 +443,42 @@ string network_t::get_route(const channel* c) const
 	schedule* from_in_schedule = &this->router(c->from)->local_in_best_schedule;;
 	schedule* to_out_schedule = &this->router(c->to)->local_out_best_schedule;
 	schedule* link_schedule;
-	
-	if (!from_in_schedule->is(c, t_curr)) {	
+
+	if (!from_in_schedule->is(c, t_curr)) {
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	}
-	
+
 	while (curr != dest)
 	{
 		int count = 0;
 		timeslot next_t_curr = t_curr;
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if(!this->router(curr)->out((port_id)i).has_link()) continue;
-			
+
 			link_t& l = this->router(curr)->out((port_id)i).link();
 			link_schedule = &l.best_schedule;
-			
+
 			if (link_schedule->is(c, t_curr + this->router_depth + l.depth)) {
 				route += p2c((const port_id)i);
 				next_curr = l.sink.parent.address;
 				count++;
 				next_t_curr = t_curr + this->router_depth + l.depth;
-			}	
+			}
 		}
 		curr = next_curr;
 		t_curr = next_t_curr;
 		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " <<
 				curr << " has non or multiple output ports for channel " << *c << ".");
 	}
-	
+
 	if(!to_out_schedule->is(c, t_curr + this->router_depth))
 		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
-	
+
 	route += 'L';
 	return route;
 }
 
-void network_t::check_channel(const channel* c, const bool best) 
+void network_t::check_channel(const channel* c, const bool best)
 {
 	router_id curr = c->from;
 	router_id next_curr = c->from;
@@ -487,7 +487,7 @@ void network_t::check_channel(const channel* c, const bool best)
 	schedule* from_in_schedule;
 	schedule* to_out_schedule;
 	schedule* link_schedule;
-	
+
 	if (best) {
 		t_curr = c->t_best_start;
 		from_in_schedule = &this->router(c->from)->local_in_best_schedule;
@@ -497,29 +497,29 @@ void network_t::check_channel(const channel* c, const bool best)
 		from_in_schedule = &this->router(c->from)->local_in_schedule;
 		to_out_schedule = &this->router(c->to)->local_out_schedule;
 	}
-	
-	if (!from_in_schedule->is(c, t_curr)) {	
+
+	if (!from_in_schedule->is(c, t_curr)) {
 		debugf(best);
 //		if (from_in_schedule->has(t_curr)){
 //			assert(from_in_schedule->get(t_curr)->t_start == t_curr);
 //		}
 		ensure(false, "EPIC faliure: Channel " << *c << " is not routed to the local in port of " << curr << ".");
 	}
-	
+
 	while (curr != dest)
 	{
 		int count = 0;
 		timeslot next_t_curr = t_curr;
 		for (int i = 0; i < __NUM_PORTS; i++) {
 			if(!this->router(curr)->out((port_id)i).has_link()) continue;
-			
+
 			link_t& l = this->router(curr)->out((port_id)i).link();
 			if(best){
 				link_schedule = &l.best_schedule;
 			} else {
 				link_schedule = &l.local_schedule;
 			}
-			
+
 			if (link_schedule->is(c, t_curr + this->router_depth + l.depth)) {
 				bool is_shortest = false;
 				for_each(this->router(curr)->next[dest], [&](const port_out_t* p){
@@ -530,17 +530,17 @@ void network_t::check_channel(const channel* c, const bool best)
 				next_curr = l.sink.parent.address;
 				count++;
 				next_t_curr = t_curr + this->router_depth + l.depth;
-			}	
+			}
 		}
 		curr = next_curr;
 		t_curr = next_t_curr;
 		ensure(count == 1,"EPIC failure: Count: " << count << " Current: " <<
 				curr << " has non or multiple output ports for channel " << *c << ".");
 	}
-	
+
 	if(!to_out_schedule->is(c, t_curr + this->router_depth))
 		ensure(false,"EPIC faliure: Channel " << *c << " is not routed to the local out port of " << curr << ".");
-	
+
 	return;
 }
 
