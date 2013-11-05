@@ -69,16 +69,16 @@ parser::parser(string platform_file, string com_file) {
 
 	string topology_type = get_opt_attr<string>(topology,"type","NOT FOUND");
 	if (topology_type == "NOT FOUND"){
-		topology_type = get_attr<string>(topology,"ttype");
+		topology_type = get_attr<string>(topology,"topoType");
 	}
 	if (topology_type == "custom") {
 		this->parse_custom(topology, link_depth);
 	} else if (topology_type == "bitorus") {
-		ensure(cols == rows, "Graph does not qualify to be bi-torus");
+		//ensure(cols == rows, "Graph does not qualify to be bi-torus");
 		this->create_bitorus(link_depth);
 		//ensure(false, "Not implemented yet");
 	} else if (topology_type == "mesh") {
-		ensure(cols == rows, "Graph does not qualify to be mesh");
+		//ensure(cols == rows, "Graph does not qualify to be mesh");
 		this->create_mesh(link_depth);
 	} else {
 		ensure(false, "Graph type not recognized");
@@ -108,7 +108,7 @@ parser::parser(string platform_file, string com_file) {
 
 	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
 	if (channel_type == "NOT FOUND"){
-		channel_type = get_attr<string>(channels,"ctype");
+		channel_type = get_attr<string>(channels,"comType");
 	}
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {

@@ -1,7 +1,7 @@
 all: compile
 
 compile:
-	@-mkdir ../../build
+	@-mkdir -p ../../build
 	javac *.java -d ../../build
 #	cd ../../build/converter && jar cf converter.jar *.class
 
