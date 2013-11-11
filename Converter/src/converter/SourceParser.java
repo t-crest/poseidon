@@ -39,6 +39,7 @@ package converter;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.*;
+import java.lang.System;
 
 /**
 *	A converter from xml format to Setup of DMA tables
@@ -82,13 +83,11 @@ public class SourceParser extends Parser {
 				Element slotE = (Element) slot;
 				// Get the coordinates of the receiver for this timeslot
 				TileCoord destCoord = getDestCoord(slotE);
-				//System.out.println("DestTile coordinate: " + destCoord.toString());
 				// Write the destination ID in the slot table.
 				//int slotVal = destCoord.getTileId() | (1 << slotTableWidth);
 				int slotVal = destCoord.getTileId();
 				//System.out.println("slotVal: " + slotVal);
 				initArray.get(tileCoord.getTileId()).get(SLOT_TABLE).add(slotIdx,slotVal);
-				//System.out.println("Finding route...");
 				int route = find_route(destCoord, tileCoord, slotIdx);
 				// Write the route to the route table in the initArray.
 				initArray.get(tileCoord.getTileId()).get(ROUTE_TABLE).set(destCoord.getTileId(), route);
@@ -105,11 +104,12 @@ public class SourceParser extends Parser {
 			for(int i = 0; tempTileCoord.getTileId() != destCoord.getTileId(); i++){ // Increment i with the router depth, plus the link depth on the given link
 				NodeList ports = getPorts(tempTileCoord,slotIdx+(i*ROUTER_DEPTH));
 				char outPort = findOutputPort(ports,inPort);
-
-				//System.out.println("Outport:" + outPort);
 				binRoute = port2bin(outPort) + binRoute; // Must not be changed to binRoute += port2bin(outport), this is string concatenation
 				inPort = oppositPort(outPort);
 				nextTile(tempTileCoord,outPort);
+				if (i >= destCoord.getNumOfNodes()) {
+					System.exit(-1);
+				}
 			}
 			// Must not be changed to binRoute += port2bin(outport), this is string concatenation
 			binRoute = port2bin(inPort) + binRoute; // Route to local port

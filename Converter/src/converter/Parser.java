@@ -58,7 +58,6 @@ public abstract class Parser {
 		printer = __printer;
 		printer.open(outFile);
 		parseXml(inFile);
-		new TileCoord(0,0,(int)Math.sqrt(getNumOfNodes())); // Initializing the static sideLength variable in TileCoord
 		parse();
 
 		printer.close();
@@ -72,6 +71,9 @@ public abstract class Parser {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			doc = dBuilder.parse(fXmlFile);
+			int width = Integer.parseInt(doc.getDocumentElement().getAttribute("width"));
+			int height = Integer.parseInt(doc.getDocumentElement().getAttribute("height"));
+			new TileCoord(0,0,width,height); // Initializing the static size variables in TileCoord
 			doc.getDocumentElement().normalize();
 			tList = doc.getElementsByTagName("tile");
 		} catch (Exception e) {

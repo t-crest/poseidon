@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,12 +30,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include "xmlOutput.h"
 
 using namespace std;
@@ -44,14 +44,16 @@ using namespace pugi;
 namespace snts {
 
 bool xmlOutput::output_schedule(const network_t& n)
-{	
+{
 	int numOfNodes = n.routers().size();
 	int countWidth = ceil(log2(n.best));
-	
+
 	xml_document doc;
 	xml_node schedule = doc.append_child("schedule");
 	schedule.append_attribute("length").set_value(n.best);
-	
+	schedule.append_attribute("width").set_value(n.cols());
+	schedule.append_attribute("height").set_value(n.rows());
+
 	for(vector<router_t*>::const_iterator r = n.routers().begin(); r != n.routers().end(); r++){ // For each router, write Network Adapter Table and Router Table
 		// New xml tile
 		xml_node tile = schedule.append_child("tile");
@@ -59,7 +61,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 		print_coord((*r)->address,co,sizeof(co));
 		tile.append_attribute("id") = co;
 		// Vector for saving data to calculate Worst-Case Latencies
-		
+
 		vector<router_id> destinations(n.best,(*r)->address);
 //		std::cout << "Tile: " << (*r)->address << std::endl; // Only for debugging
 		int router_depth = n.get_router_depth();
@@ -68,13 +70,13 @@ bool xmlOutput::output_schedule(const network_t& n)
 //			{
 //				const channel* c = (*r)->local_in_best_schedule.get(t);
 //				std::cout << "Timeslot: " << t << " = " << c->to << std::endl;
-//			} else{	
+//			} else{
 //				std::cout << "Timeslot: " << t << std::endl;
 //			}
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
 			ts.append_attribute("value") = t;
-			
+
 			int t_in = t;
 			int t_out = (t+router_depth)%(n.best+router_depth);
 //			if(t == 0){
@@ -91,7 +93,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 			}
 			if ((*r)->local_out_best_schedule.has(t))
 				src_id = (*r)->local_out_best_schedule.get(t)->from;
-			destinations[t] = dest_id;	
+			destinations[t] = dest_id;
 			// New na
 			xml_node na = ts.append_child("na");
 			print_coord(src_id,co,sizeof(co));
@@ -103,13 +105,13 @@ bool xmlOutput::output_schedule(const network_t& n)
 			if(route.length() > 0){
 				na.append_attribute("route") = route.c_str();
 			}
-			
-			// Write row in Router table 
+
+			// Write row in Router table
 			port_id ports[5] = {__NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS};
 			// New router
 			xml_node router = ts.append_child("router");
-				
-			
+
+
 			for(int out_p = 0; out_p < __NUM_PORTS-1; out_p++){
 				// For all 4 output ports not being the local port.
 				if(!(*r)->out((port_id)out_p).has_link()){
@@ -146,7 +148,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 					ports[(port_id)out_p] = L;
 				}
 			}
-			
+
 			if((*r)->local_out_best_schedule.has(t_out)){ // For the local out port.
 				const channel* out_c = (*r)->local_out_best_schedule.get(t_out);
 				for(int in_p = 0; in_p < __NUM_PORTS-1; in_p++){
@@ -169,7 +171,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 //					cout << "Failure: Not allowed to route back in to local." << endl;
 //				}
 				// and so on...
-			} 
+			}
 			for(int p = 0; p < __NUM_PORTS; p++){
 				// New output
 				xml_node output = router.append_child("output");
@@ -180,7 +182,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 //				sprintf(co,sizeof(co),"%c",p2c(ports[(port_id)p]));
 				output.append_attribute("input") = co;
 			}
-			
+
 		}
 		xml_node latency = tile.append_child("latency");
 		// The following for loop is slow and unnecessary, can be changed to improve runtime.
@@ -229,11 +231,11 @@ bool xmlOutput::output_schedule(const network_t& n)
 			destination.append_attribute("channellatency") = channellatency;
 			destination.append_attribute("rate") = rate;
 		});
-	}	
+	}
 	//char co [500];
 	//sprintf(co,"%s",); // Should be snprintf, avoiding buffer overflow
 	//sprintf(co,sizeof(co),"%soutput.xml",output_dir.c_str());
-	doc.save_file(output_dir.c_str());	
+	doc.save_file(output_dir.c_str());
 
 	delete this;
 	return true;
@@ -241,7 +243,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 
 void xmlOutput::print_coord(const pair<int, int> r,char* co, const size_t buffer_size){
 	sprintf(co,"(%i,%i)",r.first,r.second); // Should be snprintf, avoiding buffer overflow
-//	sprintf(co,buffer_size,"(%i,%i)",c.to.first,c.to.second); 
+//	sprintf(co,buffer_size,"(%i,%i)",c.to.first,c.to.second);
 }
 
 char xmlOutput::p2c(port_id p){
