@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -28,12 +28,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include <string>
 #include <streambuf>
 #include <fstream>
@@ -58,23 +58,23 @@ using namespace std;
 typedef pair<int,int> coord;
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv) {
-	
+
 	global::opts = new options(argc, argv);
 	cout << global::opts->input_file << endl;
-	
+
 	//std::ifstream in("../traffic_data/mesh/mesh_3x3/Sparse_mesh_3x3.stp");
-	std::ifstream in(global::opts->input_file);
-	
+	std::ifstream in(global::opts->input_file.c_str());
+
 	if(in.fail()){
 		cout << "File not found!1" << endl;
 		return 0;
 	}
-	
+
     std::cin.rdbuf(in.rdbuf()); //redirect std::cin
-	
+
 	int trace = 0;
 	int topo = 0;
 	int pbs = 0;
@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
 	int tasks = 0;
 	int edges = 0;
 	int trash_count = 0;
-	
+
 	for(int i = 0; i < 14; i++){
 		cin.ignore(200,'\n');
 	}
@@ -105,13 +105,13 @@ int main(int argc, char** argv) {
 	for(int i = 0; i <= trash_count; i++){
 		cin.ignore(20,'\t');
 	}
-	
+
 	pugi::xml_document doc;
-	
+
 	pugi::xml_node platform = doc.append_child("platform");
 	platform.append_attribute("width").set_value(rows);
 	platform.append_attribute("height").set_value(cols);
-	
+
 	pugi::xml_node topology = platform.append_child("topology");
 	if (topo == 1) { // b = "bitorus"
 		topology.append_attribute("type").set_value("bitorus");
@@ -123,13 +123,13 @@ int main(int argc, char** argv) {
 		cout << "Wrong topology found." << std::endl;
 		return 0;
 	}
-	
-	
+
+
 	vector<pair<coord,int> > task_list;
 	for(int i = 0; i < tasks; i++){
 		// Parse the tasks of the graph
 		int id;
-		int avg ; 
+		int avg ;
 		int x = 0;
 		int y = 0;
 		char trash;
@@ -142,23 +142,23 @@ int main(int argc, char** argv) {
 		cin >> avg;
 		debugf(avg);
 		cin.ignore(20,'\n');
-		
+
 		task_list.push_back(make_pair(make_pair(x,y),avg));
 	}
-	
-	
+
+
 	// Channels
 	pugi::xml_node communication = doc.append_child("communication");
 	communication.append_attribute("type").set_value("custom");
-	
-	
+
+
 	vector<pair<coord,vector<pair<coord,double> > > > nodes(pbs) ;
 	for(size_t i = 0; i < nodes.size(); i++){
 		nodes[i].first = make_pair(-1,-1);
 		nodes[i].second.resize(pbs,make_pair(make_pair(-1,-1),-1));
 	}
-	
-	
+
+
 	for(int i = 0; i < edges; i++){
 		// Parse the edges of the graph
 		int id, src, dest;
@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
 		//debugf(mean);
 		//debugf(devi);
 		debugf(rate);
-		
+
 		int src_x, src_y, dest_x, dest_y;
 		int src_id, dest_id;
 		src_x = task_list.at(src).first.first; // x
@@ -183,7 +183,7 @@ int main(int argc, char** argv) {
 		dest_x = task_list.at(dest).first.first; // x
 		dest_y = task_list.at(dest).first.second; // y
 		dest_id = dest_x + dest_y*rows;
-		
+
 		if (src_x == dest_x && src_y == dest_y)
 			continue;
 
@@ -192,16 +192,16 @@ int main(int argc, char** argv) {
 		if(nodes[src_id].second[dest_id].second == -1){
 			nodes[src_id].second[dest_id].second = 0;
 		}
-		
+
 		if(global::opts->mean){
-			nodes[src_id].second[dest_id].second += mean; 
+			nodes[src_id].second[dest_id].second += mean;
 		} else {
 			if(nodes[src_id].second[dest_id].second <= rate){
-				nodes[src_id].second[dest_id].second = rate; 
+				nodes[src_id].second[dest_id].second = rate;
 			}
 		}
 	}
-	
+
 	double min_bw = numeric_limits<double>::max();
 	double max_bw = 0.0;
 	for(int i = 0; i < pbs; i++){
@@ -219,7 +219,7 @@ int main(int argc, char** argv) {
 	}
 	cout << "Min_bw: " << min_bw << endl;
 	cout << "Max_bw: " << max_bw << endl;
-	
+
 	for(int i = 0; i < pbs; i++){
 		for(int j = 0; j < pbs; j++){
 			if(nodes[i].second[j].second != -1){
@@ -238,15 +238,15 @@ int main(int argc, char** argv) {
 			}
 		}
 	}
-	
-	
+
+
 	//char default_file_name [500] = "testout.xml";
 	//sprintf(default_file_name,"%s%s%ix%i_cf%.2f_(%i_%i).xml");
 	//doc.save_file(default_file_name);
 	//doc.save_file(argv[2]);
 	cout << global::opts->output_file.c_str() << endl;
 	doc.save_file(global::opts->output_file.c_str());
-	
+
 	return 0;
 }
 
