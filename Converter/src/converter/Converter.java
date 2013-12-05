@@ -64,6 +64,7 @@ public class Converter {
 				"\t\tSource-text\n" +
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
+				"\t\tAegean-async-c\n" +
 				"\t\tDist-c\n");
 			return;
 		}
@@ -76,6 +77,9 @@ public class Converter {
 			parser = new SourceParser();
 		} else if ("Aegean-c".equals(args[2])){
 			printer = new AegeanPrinter();
+			parser = new SourceParser();
+		} else if ("Aegean-async-c".equals(args[2])){
+			printer = new AegeanAsyncPrinter();
 			parser = new SourceParser();
 		} else if ("Dist-c".equals(args[2])) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
