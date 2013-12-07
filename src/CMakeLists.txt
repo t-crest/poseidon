@@ -58,12 +58,14 @@ set(CMAKE_BUILD_TYPE Release)
 ENABLE_TESTING()
 INCLUDE(Dart)
 
-macro (do_test arg result)
-  add_test (Poseidon${arg} Poseidon ${arg})
-  set_tests_properties (Poseidon${arg}
-    PROPERTIES PASS_REGULAR_EXPRESSION ${result})
-endmacro (do_test)
+add_test(PoseidonRuns Poseidon -h)
+set_tests_properties(PoseidonRuns PROPERTIES PASS_REGULAR_EXPRESSION "Help menu")
 
-add_test(PoseidonRuns Poseidon "")
+add_test(PoseidonBitorus Poseidon -p ../data/bitorus3x3.xml -m GREEDY)
+set_tests_properties(PoseidonBitorus PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
 
-do_test("-d" *)
+add_test(PoseidonMesh Poseidon -p ../data/mesh3x3.xml -m GREEDY)
+set_tests_properties(PoseidonMesh PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
+
+add_test(PoseidonCustom Poseidon -d -p ../data/ugly.xml -m GREEDY)
+set_tests_properties(PoseidonCustom PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")

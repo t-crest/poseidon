@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,17 +30,17 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include "options.h"
 
 using namespace std;
 
-string options::get_stat_name(int argc, char *argv[]) 
+string options::get_stat_name(int argc, char *argv[])
 {
 	string ret;
 	ret += "stat";
@@ -55,14 +55,14 @@ string options::get_stat_name(int argc, char *argv[])
 	{
 		char buff[30];
 		time_t now = time(NULL);
-		strftime(buff, 30, "%Y-%m-%d_%H:%M:%S", localtime(&now));	
+		strftime(buff, 30, "%Y-%m-%d_%H:%M:%S", localtime(&now));
 		ret += string(buff);
 	}
 	ret += "__";
-	
+
 	std::random_device get_rand;
 	ret += ::lex_cast<string>(get_rand());
-	
+
 	return ret;
 }
 
@@ -82,7 +82,7 @@ options::options(int argc, char *argv[])
 //	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
 {
 	bool output = false;
-	
+
 	static struct option long_options[] =
 	{
 		{"meta",          required_argument, 0, 'm'},
@@ -99,7 +99,7 @@ options::options(int argc, char *argv[])
 		{0,0,0,0}
 	};
 	int option_index = 0;
-	
+
 	/* Set options as specified by user */
 	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:adqb:h", long_options, &option_index)) != -1;) {
 		switch (c) {
@@ -119,11 +119,11 @@ options::options(int argc, char *argv[])
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
 	}
-	
+
 	if (argc < 2){ // If no comand line options are given, the help menu is printet.
 		print_help();
 	}
-	
+
 	/* Some input validation */
 	ensure(input_platform.size() > 0, "Empty file name given for platform specification.");
 	ensure(metaheuristic != ERR, "Metaheuristic must be set to GRASP or ALNS, etc.");
@@ -131,7 +131,7 @@ options::options(int argc, char *argv[])
 		ensure(metaheuristic == ALNS, "ALNS-inital given, but we don't run ALNS");
 	if (metaheuristic == ALNS)
 		ensure(meta_inital != ERR, "ALNS specified, but no inital solution specified");
-	
+
 	const bool both_alns = (metaheuristic == ALNS && meta_inital == ALNS);
 	ensure(!both_alns, "Can not use ALNS as initial solution for ALNS");
 
@@ -140,7 +140,7 @@ options::options(int argc, char *argv[])
 
 	if (metaheuristic == GRASP)
 		ensure(0.0 <= beta_percent && beta_percent <= 1.0, "Beta not from 0.0 to 1.0");
-	
+
 	if (output){
 		ensure(output_file.size() > 0, "Empty output file given.");
 		string extension = output_file.substr(output_file.find_last_of(".") + 1);
@@ -148,7 +148,7 @@ options::options(int argc, char *argv[])
 	}
 }
 
-options::meta_t options::parse_meta_t(string str) 
+options::meta_t options::parse_meta_t(string str)
 {
 	meta_t ret = ERR;
 	if		(str=="RANDOM")		ret=RANDOM;
@@ -156,12 +156,12 @@ options::meta_t options::parse_meta_t(string str)
 	else if (str=="GREEDY")		ret=GREEDY;
 	else if (str=="rGREEDY")	ret=rGREEDY;
 	else if (str=="CROSS")		ret=CROSS;
-	else if (str=="GRASP")		ret=GRASP;		
+	else if (str=="GRASP")		ret=GRASP;
 	else if (str=="ALNS")		ret=ALNS;
 	return ret;
 }
 
-options::meta_t options::parse_init_t(string str) 
+options::meta_t options::parse_init_t(string str)
 {
 	meta_t ret = ERR;
 	if		(str=="RANDOM")		ret=RANDOM;
@@ -186,7 +186,7 @@ void options::open_stat_file(int argc, char *argv[], char *dir){
 void options::print_help()
 {
 	cout << endl << "Help menu for SNTs" << endl;
-	cout << "\tMandatory options:" << endl; 
+	cout << "\tMandatory options:" << endl;
 	print_option('m',"meta","Choose the metaheuristic to apply schedule [GRASP, ALNS, GREEDY, rGREEDY].");
 	print_option('p',"platform","The file containing a specification of the platform.");
 	print_option('i',"initial","Choose the initial solution used by the metaheuristics [RANDOM, BAD_RANDOM, GREEDY, rGREEDY].");
@@ -201,10 +201,10 @@ void options::print_help()
 	print_option('s',"schedule","Specify the output directory for the generated XML schedule.");
 	print_option('h',"help","Shows the help menu, I guess you know that.");
 	cout << endl;
-	
+
 	delete this;
-	return exit(0);
-	
+	return exit(EXIT_FAILURE);
+
 }
 
 void options::print_option(char opt, string text){
