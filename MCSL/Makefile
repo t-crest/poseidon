@@ -16,7 +16,7 @@ down_traffic:
 	@echo "----------------------"
 	@echo "-- Traffic downloaded"
 	@echo "----------------------"
-	
+
 #############################################################
 #	Create the XML files for the different topologies
 #	and applications.
@@ -24,11 +24,11 @@ down_traffic:
 create_xml: MCSL
 	@-mkdir -p xml 2>&1
 	sh create_xml.sh
-	
-MCSL: 
+
+MCSL:
 	@-mkdir -p build 2>&1
-	cd build &&	cmake ../src && make && echo "MCSL_PATH=$$(pwd)" >> ../../scripts/paths.sh
-	
+	cd build &&	$(COMPILER_FLAGS) cmake ../src && make && echo "MCSL_PATH=$$(pwd)" >> ../../scripts/paths.sh
+
 clean:
-	@rm -rf build 
-	
+	@rm -rf build
+

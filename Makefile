@@ -32,6 +32,19 @@
 # official policies, either expressed or implied, of the copyright holder.
 #
 
+ifeq ($(TERM_PROGRAM),Apple_Terminal)
+	COMPILER=CXX=clang++ CC=clang
+	FLAGS=CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++"
+	#FLAGS=CMAKE_CXX_FLAGS="-std=c++0x -stdlib=libstdc++"
+else
+	# Only for testing clang++ on Ubuntu
+	#COMPILER=CXX=clang++ CC=clang
+	#FLAGS=CMAKE_CXX_FLAGS="-std=c++0x -stdlib=libstdc++"
+	COMPILER=
+	FLAGS=
+endif
+COMPILER_FLAGS=$(COMPILER) $(FLAGS)
+
 .PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
 
 all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
@@ -46,7 +59,8 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 
 Poseidon:
 	@-mkdir -p build 2>&1
-	@cd build && cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
+	#cd build && $(COMPILER) cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
+	cd build && $(COMPILER_FLAGS) cmake ../src && make && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
 	@cd ./Converter/src/converter && make -s
@@ -58,13 +72,13 @@ Converter:
 
 pugixml: .pugixml
 	@-mkdir -p lib/pugixml/build 2>&1
-	@cd lib/pugixml/build && cmake ../scripts && make -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
+	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake ../scripts && make -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
 
 MCSL:
-	@cd MCSL && make -s
+	@cd MCSL && $(COMPILER_FLAGS) make -s
 
 GRAPH_GEN:
-	@cd Graph_generator && make -s
+	@cd Graph_generator && $(COMPILER_FLAGS) make -s
 
 #	DEGEN is not compiling at the moment
 #DEGEN:

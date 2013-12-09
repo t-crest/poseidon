@@ -44,15 +44,18 @@ set(HEADERS
 )
 
 ADD_DEFINITIONS(
-    -std=c++0x
+	-std=c++0x
+	#-stdlib=libc++
+	#-stdlib=libstdc++
+    #-std=c++0x
     # Other flags
 )
 add_executable(Poseidon ${SOURCES} ${HEADERS})
 
 target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a)
 
-set(CMAKE_BUILD_TYPE Release)
-#set(CMAKE_BUILD_TYPE Debug)
+#set(CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
 
 
 ENABLE_TESTING()

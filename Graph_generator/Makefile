@@ -2,11 +2,11 @@
 SHELL := /bin/bash
 
 all: GRAPH_GEN
-	
-GRAPH_GEN: 
+
+GRAPH_GEN:
 	@-mkdir -p build 2>&1
-	cd build &&	cmake ../src && make && echo "GRAPH_GEN_PATH=$$(pwd)" >> ../../scripts/paths.sh
-	
+	cd build && $(COMPILER_FLAGS) cmake ../src && make && echo "GRAPH_GEN_PATH=$$(pwd)" >> ../../scripts/paths.sh
+
 clean:
-	@rm -rf build 
-	
+	@rm -rf build
+
