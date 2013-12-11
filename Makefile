@@ -34,7 +34,8 @@
 
 ifeq ($(TERM_PROGRAM),Apple_Terminal)
 	COMPILER=CXX=clang++ CC=clang
-	FLAGS=CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++"
+	#FLAGS=CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++"
+	FLAGS=CMAKE_CXX_FLAGS="-std=c++11 -stdlib=libc++ -I /usr/lib/c++/v1/ -L /usr/lib/c++/v1/"
 	#FLAGS=CMAKE_CXX_FLAGS="-std=c++0x -stdlib=libstdc++"
 else
 	# Only for testing clang++ on Ubuntu
