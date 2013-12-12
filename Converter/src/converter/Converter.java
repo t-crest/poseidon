@@ -61,6 +61,7 @@ public class Converter {
 				"\t0: Inputfile\n" +
 				"\t1: Outputfile\n" +
 				"\t2: Printer name\n" +
+				"\t\tSource-Phase-text\n" +
 				"\t\tSource-text\n" +
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
@@ -68,10 +69,12 @@ public class Converter {
 				"\t\tDist-c\n");
 			return;
 		}
-		if ("Source-text".equals(args[2])){
+		if ("Source-Phase-text".equals(args[2])){
+			printer = new SourcePhaseTextPrinter();
+			parser = new SourceParser();
+		} else if ("Source-text".equals(args[2])){
 			printer = new SourceTextPrinter();
 			parser = new SourceParser();
-
 		} else if ("Source-java".equals(args[2])){
 			printer = new JOPDMAPrinter();
 			parser = new SourceParser();

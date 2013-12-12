@@ -1,6 +1,13 @@
-cmake_minimum_required (VERSION 2.8)
+
 project (Poseidon)
 
+cmake_minimum_required (VERSION 2.8)
+
+# Find boost library
+include(FindBoost)
+find_package( Boost 1.46.0 COMPONENTS program_options REQUIRED)
+
+include_directories(include ${Boost_INCLUDE_DIRS})
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/../lib/pugixml/src")
 link_directories("${PROJECT_BINARY_DIR}")
@@ -52,7 +59,7 @@ ADD_DEFINITIONS(
 )
 add_executable(Poseidon ${SOURCES} ${HEADERS})
 
-target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a)
+target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a ${Boost_LIBRARIES})
 
 #set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_BUILD_TYPE Debug)
