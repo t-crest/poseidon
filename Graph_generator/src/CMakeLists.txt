@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 2.8)
 project (GRAPH_GEN)
 
+# Find boost library
+include(FindBoost)
+find_package( Boost 1.46.0 COMPONENTS program_options REQUIRED)
+
+include_directories(include ${Boost_INCLUDE_DIRS})
 include_directories("${PROJECT_BINARY_DIR}")
 include_directories("${PROJECT_BINARY_DIR}/../../lib/pugixml/src")
 link_directories("${PROJECT_BINARY_DIR}")
