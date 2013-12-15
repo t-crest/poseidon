@@ -48,7 +48,9 @@ parser::parser(string platform_file, string com_file) {
 	xml_parse_result foo = platform_doc.load_file(platform_file.c_str());
 	ensure(foo.status != status_file_not_found, "File " << platform_file << " could not be found");
 
+	// Outer most tag <platform>
 	xml_node platform = platform_doc.child("platform");
+	// Topology tag
 	xml_node topology = platform.child("topology");
 	ensure(!platform.empty(), "File " << platform_file << " has no platform");
 	ensure(!topology.empty(), "File " << platform_file << " has no topology-graph");
@@ -58,13 +60,15 @@ parser::parser(string platform_file, string com_file) {
 	ensure(cols > 0, "Width must be positive");
 	ensure(rows > 0, "Height must be positive");
 
-	xml_node router = platform.child("router");
-	const int router_depth = get_opt_attr<int>(router,"depth",1); // default router depth is set to 1.
-	xml_node link = platform.child("link");
-	int link_depth = get_opt_attr<int>(link,"depth",0); // default link depth is set to 0.
+	//xml_node router = platform.child("router");
+	const int router_depth = get_opt_attr<int>(topology,"routerDepth",1); // default router depth is set to 1.
+	int link_depth = get_opt_attr<int>(topology,"linkDepth",0); // default link depth is set to 0.
 	xml_node timeslots = platform.child("timeslots");
 	int available_timeslots = get_opt_attr<int>(timeslots,"available",-1); // Default available timeslots is not limited, indicated by -1.
 
+	debugs("routerDepth: " << router_depth);
+	debugs("linkDepth: " << link_depth);
+	debugs("availableTimeslots: " << available_timeslots);
 	this->n = new snts::network_t(rows, cols, router_depth, available_timeslots);
 
 	string topology_type = get_opt_attr<string>(topology,"type","NOT FOUND");
@@ -120,7 +124,6 @@ parser::parser(string platform_file, string com_file) {
 	} else {
 		ensure(false, "Channel type not recognized");
 	}
-
 
 }
 

@@ -43,7 +43,7 @@ else
 	#FLAGS=CMAKE_CXX_FLAGS="-std=c++0x -stdlib=libstdc++"
 	COMPILER=
 	FLAGS=
-endif
+endifo
 COMPILER_FLAGS=$(COMPILER) $(FLAGS)
 
 .PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
@@ -60,8 +60,7 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 
 Poseidon:
 	@-mkdir -p build 2>&1
-	#cd build && $(COMPILER) cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
-	cd build && $(COMPILER_FLAGS) cmake ../src && make && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
+	cd build && $(COMPILER_FLAGS) cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
 	@cd ./Converter/src/converter && make -s

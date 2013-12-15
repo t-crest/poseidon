@@ -61,8 +61,13 @@ add_executable(Poseidon ${SOURCES} ${HEADERS})
 
 target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a ${Boost_LIBRARIES})
 
-#set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE Release)
+#set(CMAKE_BUILD_TYPE Debug)
+
+if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+	add_definitions( -DDEBUG_VERBOSE=VERBOSE )
+endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
+
 
 
 ENABLE_TESTING()

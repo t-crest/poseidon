@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,12 +30,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #include "vhdlOutput.h"
 
 using namespace std;
@@ -47,10 +47,10 @@ bool vhdlOutput::output_schedule(const network_t& n)
 	int numOfNodes = n.routers().size();
 	numOfNodesStr = ::lex_cast<string>(numOfNodes);
 	int countWidth = ceil(log2(n.best));
-	
+
 	this->writeHeaderRouter(countWidth);
 	this->writeHeaderNI(countWidth,numOfNodes);
-	
+
 	for(vector<router_t*>::const_iterator r = n.routers().begin(); r != n.routers().end(); r++){ // For each router, write Network Adapter Table and Router Table
 		int r_id = (*r)->address.first + (*r)->address.second * n.cols();
 		this->startniST(r_id);
@@ -70,16 +70,16 @@ bool vhdlOutput::output_schedule(const network_t& n)
 			}
 			if ((*r)->local_out_best_schedule.has(t1))
 				src_id = (*r)->local_out_best_schedule.get(t1)->from;
-			
+
 			int dest = dest_id.first + dest_id.second * n.cols();
 			int src = src_id.first + src_id.second * n.cols();
-			
+
 			this->writeSlotNIDest(t,countWidth,dest);
 			this->writeSlotNISrc(src);
-			// Write row in Router table 
+			// Write row in Router table
 			//this->writeSlotRouter(t,countWidth,ports);
 			port_id ports[5] = {__NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS, __NUM_PORTS};
-			
+
 			for(int out_p = 0; out_p < __NUM_PORTS-1; out_p++){
 				// For all 4 output ports not being the local port.
 				if(!(*r)->out((port_id)out_p).has_link()){
@@ -93,7 +93,7 @@ bool vhdlOutput::output_schedule(const network_t& n)
 						// For all 4 input ports not being the local port.
 						if(!(*r)->in((port_id)in_p).has_link())
 							continue; // No link into this port
-						if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){ // REMEMBER: Change back t-1 -> t 
+						if((*r)->in((port_id)in_p).link().best_schedule.has(t0)){ // REMEMBER: Change back t-1 -> t
 							const channel* in_c =(*r)->in((port_id)in_p).link().best_schedule.get(t0);
 							if(out_c == in_c){
 								// The correct link found
@@ -118,8 +118,8 @@ bool vhdlOutput::output_schedule(const network_t& n)
 				} else {
 					ports[(port_id)out_p] = __NUM_PORTS;
 				}
-				//ports[N] = ; 
-				
+				//ports[N] = ;
+
 			}
 			if((*r)->local_out_best_schedule.has(t1)){ // For the local out port.
 				const channel* out_c = (*r)->local_out_best_schedule.get(t1);
@@ -142,17 +142,17 @@ bool vhdlOutput::output_schedule(const network_t& n)
 					cout << "Failure: Not allowed to route back in to local." << endl;
 				}
 				// and so on...
-			} 
+			}
 			this->writeSlotRouter(t,countWidth,ports);
-			
+
 		}
 		this->endniST(r_id);
 		this->endrouterST(r_id);
 	}
 //	n.router(e)->next;
 	//n.routers().at(n).local_out_best_schedule.get(t).from
-	
-	
+
+
 	this->endArchRouter();
 	this->endArchNI();
 	delete this;
@@ -173,18 +173,6 @@ string vhdlOutput::bin(int val, int bits) {
 	}
 	return s;
 }
-
-char vhdlOutput::p2c(port_id p){
-		char c;
-		if (p == N) c = 'N';
-		if (p == E)	c = 'E';
-		if (p == S)	c = 'S';
-		if (p == W)	c = 'W';
-		if (p == L)	c = 'L';
-		if (p == __NUM_PORTS)	c = 'D';
-
-		return c;
-	}
 
 vhdlOutput::vhdlOutput(string output_dir){
 	niST.open(output_dir + "ni_ST_" + numOfNodesStr + ".vhd", ios::trunc);
@@ -231,7 +219,7 @@ void vhdlOutput::writeHeaderRouter(int countWidth){
 	routerST << "\t\tsels\t: out select_signals\n";
 	routerST << "\t\t);\n";
 	routerST << "end router_ST_" << numOfNodesStr << ";\n\n";
-	
+
 	routerST << "architecture data of router_ST_" << numOfNodesStr << " is\n";
 	routerST << "begin -- data\n\n";
 
@@ -247,7 +235,7 @@ void vhdlOutput::writeSlotRouter(int slotNum, int countWidth, port_id* ports){
 	routerST << "\t\t\tsels(E) <= " << p2c(ports[E]) << ";\n";
 	routerST << "\t\t\tsels(S) <= " << p2c(ports[S]) << ";\n";
 	routerST << "\t\t\tsels(W) <= " << p2c(ports[W]) << ";\n";
-	routerST << "\t\t\tsels(L) <= " << p2c(ports[L]) << ";\n";	
+	routerST << "\t\t\tsels(L) <= " << p2c(ports[L]) << ";\n";
 }
 
 void vhdlOutput::writeHeaderNI(int countWidth, int numOfNodes){

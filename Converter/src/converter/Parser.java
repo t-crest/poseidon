@@ -56,10 +56,9 @@ public abstract class Parser {
 
 	public void start(String inFile, String outFile, Printer __printer){
 		printer = __printer;
-		printer.open(outFile);
 		parseXml(inFile);
+		printer.open(outFile);
 		parse();
-
 		printer.close();
 	}
 

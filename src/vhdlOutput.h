@@ -3,20 +3,20 @@
  * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
  * Copyright 2012 Jaspur Hoejgaard <jaspurh@gmail.com>
  * Copyright 2013 Technical University of Denmark, DTU Compute.
- * 
+ *
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted (subject to the limitations in the
  * disclaimer below) provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 
+ *
  * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
  * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
  * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
@@ -30,12 +30,12 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
+ *
  * The views and conclusions contained in the software and documentation
  * are those of the authors and should not be interpreted as representing
  * official policies, either expressed or implied, of the copyright holder.
  ******************************************************************************/
- 
+
 #ifndef VHDLOUTPUT_H
 #define	VHDLOUTPUT_H
 
@@ -71,13 +71,12 @@ private:
 //            }
 //
 //    };
-    
+
     std::ofstream niST;
     std::ofstream routerST;
     std::string numOfNodesStr;
 
     std::string bin(int val, int bits);
-    char p2c(port_id p);
     void startST(int num, std::ofstream* ST);
     void writeHeaderRouter(int countWidth);
     void endArchRouter();
@@ -96,10 +95,10 @@ private:
 public:
     vhdlOutput(std::string output_dir);
     ~vhdlOutput();
-    
+
 //    bool output_schedule(network_t& n);
     bool output_schedule(const network_t& n);
-    
+
 };
 
 }

@@ -66,24 +66,31 @@ public class Converter {
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
 				"\t\tAegean-async-c\n" +
-				"\t\tDist-c\n");
+				"\t\tDist-c\n"+
+				"\t3: Router depth\n");
 			return;
+		}
+		int routerDepth;
+		if (args.length > 2) {
+			routerDepth = Integer.parseInt(args[3]);
+		} else {
+			routerDepth = 1;
 		}
 		if ("Source-Phase-text".equals(args[2])){
 			printer = new SourcePhaseTextPrinter();
-			parser = new SourceParser();
+			parser = new SourceParser(routerDepth);
 		} else if ("Source-text".equals(args[2])){
 			printer = new SourceTextPrinter();
-			parser = new SourceParser();
+			parser = new SourceParser(routerDepth);
 		} else if ("Source-java".equals(args[2])){
 			printer = new JOPDMAPrinter();
-			parser = new SourceParser();
+			parser = new SourceParser(routerDepth);
 		} else if ("Aegean-c".equals(args[2])){
 			printer = new AegeanPrinter();
-			parser = new SourceParser();
+			parser = new SourceParser(routerDepth);
 		} else if ("Aegean-async-c".equals(args[2])){
 			printer = new AegeanAsyncPrinter();
-			parser = new SourceParser();
+			parser = new SourceParser(routerDepth);
 		} else if ("Dist-c".equals(args[2])) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
 		} else {

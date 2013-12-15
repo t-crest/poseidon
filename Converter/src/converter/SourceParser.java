@@ -49,10 +49,10 @@ public class SourceParser extends Parser {
 	private static List<List<List<Integer> > > initArray;
 	private static final int SLOT_TABLE = 0;
 	private static final int ROUTE_TABLE = 1;
-	private static final int ROUTER_DEPTH = 1;
+	private int routerDepth;
 
-	public SourceParser(){
-
+	public SourceParser(int routerDepth){
+		this.routerDepth = routerDepth;
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class SourceParser extends Parser {
 		printer.printData(initArray);
 	}
 
-	private static void for_each_tile_timeslot(){
+	private void for_each_tile_timeslot(){
 		int slotTableWidth = (int)Math.ceil(Math.log(getNumOfNodes())/Math.log(2));
 		//System.out.println("slotTableWidth: " + slotTableWidth);
 		for (int tileIdx = 0; tileIdx < getNumOfNodes(); tileIdx++) {
@@ -95,19 +95,21 @@ public class SourceParser extends Parser {
 		}
 	}
 
-	private static int find_route(TileCoord destCoord, TileCoord tileCoord, int slotIdx) throws NumberFormatException {
+	private int find_route(TileCoord destCoord, TileCoord tileCoord, int slotIdx) throws NumberFormatException {
 		/* For each transmission slot write an entry in the route table */
 		String binRoute = "";
 		if (destCoord.getTileId() != tileCoord.getTileId()){
 			TileCoord tempTileCoord = new TileCoord(tileCoord.x,tileCoord.y); // Make temporary tile
 			char inPort = 'L';
 			for(int i = 0; tempTileCoord.getTileId() != destCoord.getTileId(); i++){ // Increment i with the router depth, plus the link depth on the given link
-				NodeList ports = getPorts(tempTileCoord,slotIdx+(i*ROUTER_DEPTH));
+				NodeList ports = getPorts(tempTileCoord,slotIdx+(i*routerDepth));
 				char outPort = findOutputPort(ports,inPort);
 				binRoute = port2bin(outPort) + binRoute; // Must not be changed to binRoute += port2bin(outport), this is string concatenation
 				inPort = oppositPort(outPort);
 				nextTile(tempTileCoord,outPort);
 				if (i >= destCoord.getNumOfNodes()) {
+					System.out.println("Binroute: " +binRoute);
+					System.out.print("find_route() missed destination coordinate:\n\ti = " + i + " destCoord.getNumOfNodes() :"+destCoord.getNumOfNodes());
 					System.exit(-1);
 				}
 			}
@@ -118,7 +120,7 @@ public class SourceParser extends Parser {
 		return Integer.parseInt("0" + binRoute, 2);
 	}
 
-	private static NodeList getTimeslots(Node tile) {
+	private  NodeList getTimeslots(Node tile) {
 		if (tile.getNodeType() != Node.ELEMENT_NODE) {throw new Error("Tile is not element node");}
 		Element tileE = (Element) tile;
 		TileCoord tileCoord = getTileCoord(tile);
@@ -126,7 +128,7 @@ public class SourceParser extends Parser {
 		return tileE.getElementsByTagName("timeslot");
 	}
 
-	private static void nextTile(TileCoord tileCoord, char outPort){
+	private void nextTile(TileCoord tileCoord, char outPort){
 		if(outPort == 'N'){tileCoord.moveNorth();}
 		else if(outPort == 'E'){tileCoord.moveEast();}
 		else if(outPort == 'S'){tileCoord.moveSouth();}
@@ -134,7 +136,7 @@ public class SourceParser extends Parser {
 		// If local port do nothing
 	}
 
-	private static String port2bin(char p){
+	private String port2bin(char p){
 		String bin;
 		if(p == 'N'){bin = "00";}
 		else if(p == 'E'){bin = "01";}
@@ -144,7 +146,7 @@ public class SourceParser extends Parser {
 		return bin;
 	}
 
-	private static void initializeArray(int nrCpu){
+	private void initializeArray(int nrCpu){
 		initArray = new ArrayList<List<List<Integer> > >(nrCpu);
 		for (int i = 0; i < nrCpu; i++) {
 			initArray.add(new ArrayList<List<Integer> >(2));

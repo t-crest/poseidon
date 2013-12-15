@@ -320,7 +320,6 @@ bool network_t::route_channel_wrapper(
 	const bool available = this->router(c->from)->local_in_schedule.available(t,c->phits);
 
 	if (!available || already){
-	//if (!already && !available){
 		return false;
 	}
 
@@ -328,6 +327,7 @@ bool network_t::route_channel_wrapper(
 	if (path_routed) {
 		this->router(c->from)->local_in_schedule.add(c, t);
 		c->t_start = t;
+		debugs("Routed channel: " << *c);
 		return true;
 	}
 	return false;
