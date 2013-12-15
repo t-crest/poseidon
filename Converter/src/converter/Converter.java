@@ -71,7 +71,7 @@ public class Converter {
 			return;
 		}
 		int routerDepth;
-		if (args.length > 2) {
+		if (args.length > 3) {
 			routerDepth = Integer.parseInt(args[3]);
 		} else {
 			routerDepth = 1;

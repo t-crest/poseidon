@@ -43,7 +43,7 @@ else
 	#FLAGS=CMAKE_CXX_FLAGS="-std=c++0x -stdlib=libstdc++"
 	COMPILER=
 	FLAGS=
-endifo
+endif
 COMPILER_FLAGS=$(COMPILER) $(FLAGS)
 
 .PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
