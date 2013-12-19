@@ -65,7 +65,7 @@ public class Converter {
 				"\t\tSource-text\n" +
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
-				"\t\tAegean-async-c\n" +
+				"\t\tAegean-phase-c\n" +
 				"\t\tDist-c\n"+
 				"\t3: Router depth\n");
 			return;
@@ -88,7 +88,7 @@ public class Converter {
 		} else if ("Aegean-c".equals(args[2])){
 			printer = new AegeanPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Aegean-async-c".equals(args[2])){
+		} else if ("Aegean-phase-c".equals(args[2])){
 			printer = new AegeanAsyncPrinter();
 			parser = new SourceParser(routerDepth);
 		} else if ("Dist-c".equals(args[2])) {
