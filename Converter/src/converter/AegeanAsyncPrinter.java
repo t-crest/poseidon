@@ -72,7 +72,7 @@ public class AegeanAsyncPrinter extends Printer {
 	public void printData(List<List<List<Integer> > > initArray){
 		String str = openBrac();
 		String head = "";
-		String var = "TIMESLOTS";
+		String var = "NOC_TIMESLOTS";
 		int cores = 0;
 		int tables = 2;
 		int dmas = 0;
@@ -129,14 +129,14 @@ public class AegeanAsyncPrinter extends Printer {
 
 
 		if (dmas > timeslots) {
-			var = "DMAS";
+			var = "NOC_DMAS";
 		}
-		head =    "\n#define CORES " + cores
-				+ "\n#define TABLES " + tables
-				+ "\n#define TIMESLOTS " + timeslots
-				+ "\n#define DMAS " + dmas
+		head =    "\nconst int NOC_CORES = " + cores + ";"
+				+ "\nconst int NOC_TABLES = " + tables + ";"
+				+ "\nconst int NOC_TIMESLOTS = " + timeslots + ";"
+				+ "\nconst int NOC_DMAS = " + dmas + ";"
 				+ "\n"
-				+ "\nconst int init_array[CORES][TABLES][" + var + "] = ";
+				+ "\nconst int noc_init_array[NOC_CORES][NOC_TABLES][" + var + "] = ";
 
 		str = head + str;
 		try{
