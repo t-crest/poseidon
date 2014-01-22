@@ -58,7 +58,7 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 	@command -v svn >/dev/null 2>&1 || { echo >&2 "I require svn but it's not installed.  Aborting."; exit 1; }
 	@echo "Tools checked" > .check_tools
 
-Poseidon:
+Poseidon: lib/pugixml/build/libpugixml.a
 	@-mkdir -p build 2>&1
 	cd build && $(COMPILER_FLAGS) cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
 
@@ -70,14 +70,14 @@ Converter:
 	@cd lib && svn checkout http://pugixml.googlecode.com/svn/tags/release-1.2 pugixml
 	@echo "Pugixml downloaded" > .pugixml
 
-pugixml: .pugixml
+lib/pugixml/build/libpugixml.a: .pugixml
 	@-mkdir -p lib/pugixml/build 2>&1
 	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake ../scripts && make -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
 
-MCSL:
+MCSL: lib/pugixml/build/libpugixml.a
 	@cd MCSL && $(COMPILER_FLAGS) make -s
 
-GRAPH_GEN:
+GRAPH_GEN: lib/pugixml/build/libpugixml.a
 	@cd Graph_generator && $(COMPILER_FLAGS) make -s
 
 #	DEGEN is not compiling at the moment
