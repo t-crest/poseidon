@@ -160,6 +160,7 @@ void xmlOutput::print_coord(const pair<int, int> r,char* co, const int max_dimen
 void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<router_id>* destinations, router_t* r){
 	xml_node latency = (*tile).append_child("latency");
 	char co[2*max(n.rows(),n.cols())+3];
+	char *buf = co; // clang does not allow references to flexible arrays in lambda expressions
 	// The following for loop is slow and unnecessary, can be changed to improve runtime.
 	// What is needed is all the channels with the current router as the source.
 	for_each(n.channels(), [&](const channel & c) {
@@ -200,8 +201,8 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		rate = ((double)num_phits)/n.p_best();
 		// Analyze the latency
 		xml_node destination = latency.append_child("destination");
-		print_coord(c.to,co,max(n.rows(),n.cols()));
-		destination.append_attribute("id") = co;
+		print_coord(c.to, buf, max(n.rows(),n.cols()));
+		destination.append_attribute("id") = buf;
 		destination.append_attribute("slotwaittime") = slotswaittime;
 		destination.append_attribute("channellatency") = channellatency;
 		destination.append_attribute("rate") = rate;
