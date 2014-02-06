@@ -46,9 +46,9 @@ else
 endif
 COMPILER_FLAGS=$(COMPILER) $(FLAGS)
 
-.PHONY: clean realclean Converter MCSL Poseidon pugixml clean_stats GRAPH_GEN
+.PHONY: clean realclean Converter MCSL poseidon pugixml clean_stats GRAPH_GEN
 
-all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
+all: .check_tools pugixml Converter MCSL GRAPH_GEN poseidon
 
 .check_tools:
 	@command -v make >/dev/null 2>&1 || { echo >&2 "I require make but it's not installed.  Aborting."; exit 1; }
@@ -58,9 +58,9 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN Poseidon
 	@command -v svn >/dev/null 2>&1 || { echo >&2 "I require svn but it's not installed.  Aborting."; exit 1; }
 	@echo "Tools checked" > .check_tools
 
-Poseidon: lib/pugixml/build/libpugixml.a
+poseidon: lib/pugixml/build/libpugixml.a
 	@-mkdir -p build 2>&1
-	cd build && $(COMPILER_FLAGS) cmake ../src && make -s && echo "Poseidon_PATH=$$(pwd)" >> ../scripts/paths.sh
+	cd build && $(COMPILER_FLAGS) cmake ../src && make -s && echo "POSEIDON_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
 	@cd ./Converter/src/converter && make -s
@@ -87,13 +87,13 @@ GRAPH_GEN: lib/pugixml/build/libpugixml.a
 help:
 
 	@echo "================================================================================"
-	@echo "== This is the help target of the Poseidon main Makefile."
+	@echo "== This is the help target of the poseidon main Makefile."
 	@echo "=="
 	@echo "== Targets:"
 	@echo "==     all        : Builds third-party library, the scheduler and the schedule"
 	@echo "==                  \tconverter."
 	@echo "=="
-	@echo "==     Poseidon       : Builds the C++ source files of the scheduler"
+	@echo "==     poseidon       : Builds the C++ source files of the scheduler"
 	@echo "=="
 	@echo "==     MCSL       : Builds the C++ source files of the MCSL converter"
 	@echo "=="

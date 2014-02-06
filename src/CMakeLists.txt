@@ -1,5 +1,5 @@
 
-project (Poseidon)
+project (poseidon)
 
 cmake_minimum_required (VERSION 2.8)
 
@@ -57,9 +57,9 @@ ADD_DEFINITIONS(
     #-std=c++0x
     # Other flags
 )
-add_executable(Poseidon ${SOURCES} ${HEADERS})
+add_executable(poseidon ${SOURCES} ${HEADERS})
 
-target_link_libraries(Poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a ${Boost_LIBRARIES})
+target_link_libraries(poseidon ${PROJECT_SOURCE_DIR}/../lib/pugixml/build/libpugixml.a ${Boost_LIBRARIES})
 
 set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)
@@ -73,14 +73,14 @@ endif( CMAKE_BUILD_TYPE STREQUAL "Debug" )
 ENABLE_TESTING()
 INCLUDE(Dart)
 
-add_test(PoseidonRuns Poseidon -h)
-set_tests_properties(PoseidonRuns PROPERTIES PASS_REGULAR_EXPRESSION "Help menu")
+add_test(poseidonRuns poseidon -h)
+set_tests_properties(poseidonRuns PROPERTIES PASS_REGULAR_EXPRESSION "Help menu")
 
-add_test(PoseidonBitorus Poseidon -p ../data/bitorus3x3.xml -m GREEDY)
-set_tests_properties(PoseidonBitorus PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
+add_test(poseidonBitorus poseidon -p ../data/bitorus3x3.xml -m GREEDY)
+set_tests_properties(poseidonBitorus PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
 
-add_test(PoseidonMesh Poseidon -p ../data/mesh3x3.xml -m GREEDY)
-set_tests_properties(PoseidonMesh PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
+add_test(poseidonMesh poseidon -p ../data/mesh3x3.xml -m GREEDY)
+set_tests_properties(poseidonMesh PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
 
-add_test(PoseidonCustom Poseidon -d -p ../data/ugly.xml -m GREEDY)
-set_tests_properties(PoseidonCustom PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")
+add_test(poseidonCustom poseidon -d -p ../data/ugly.xml -m GREEDY)
+set_tests_properties(poseidonCustom PROPERTIES PASS_REGULAR_EXPRESSION "Schedule verified.")

@@ -1,17 +1,17 @@
-About Poseidon
+About poseidon
 ==============
 
-Poseidon is a very generic scheduler for time division multiplexing (TDM) network on chip.
-Poseidon uses Metaheuristics to optimize the schedule.
+poseidon is a very generic scheduler for time division multiplexing (TDM) network on chip.
+poseidon uses Metaheuristics to optimize the schedule.
 
-Poseidon generates a schedule from a specification of the platform and a specification of the communication requirements.
+poseidon generates a schedule from a specification of the platform and a specification of the communication requirements.
 
 
 Getting Started
 ===============
-Poseidon is integrated with the T-CREST project and is checked out by the Patmos configuration.
-Because Poseidon is very generic it can be used by other platforms as well.
-Checking out and building Poseidon can be done as follows:
+poseidon is integrated with the T-CREST project and is checked out by the Patmos configuration.
+Because poseidon is very generic it can be used by other platforms as well.
+Checking out and building poseidon can be done as follows:
 
     git clone https://github.com/t-crest/poseidon.git poseidon
     make

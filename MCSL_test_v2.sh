@@ -12,15 +12,15 @@ for t in torus ; do
 		for APPLICATIONS in RS-32_28_8_dec; do
 			# Single shot solutions
 #			for m in GREEDY rGREEDY; do
-#				PoseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
+#				poseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ${m}" &
 #			done 	
 
 #			for b in 0.01 0.02 0.1 0.2 ; do
-#				PoseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
+#				poseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m GRASP -t $RUNFOR -b ${b}" &
 #			done 
 
 			for i in GREEDY rGREEDY ; do
-				PoseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
+				poseidonRun "-f ${DATA_DIR}/${t}/${t}_${s}x${s}/${APPLICATIONS}_${t}_${s}x${s}.stp.xml -m ALNS -t $RUNFOR -i ${i}" &
 			done 
 		done
 	done 

@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/rasmus/Poseidon # Make sure $PWD is what I expect it to be
+cd /home/rasmus/poseidon # Make sure $PWD is what I expect it to be
 #cd metanoc &&
 set -v
 ( "/usr/bin/make" --quiet -f nbproject/Makefile-Gramme.mk QMAKE= SUBPROJECTS= .build-conf) || exit
