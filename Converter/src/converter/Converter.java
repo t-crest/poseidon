@@ -62,6 +62,7 @@ public class Converter {
 				"\t1: Outputfile\n" +
 				"\t2: Printer name\n" +
 				"\t\tSource-Phase-text\n" +
+				"\t\tSource-Phase-ASIC-text\n" +
 				"\t\tSource-text\n" +
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
@@ -80,6 +81,9 @@ public class Converter {
 		if ("Source-Phase-text".equals(args[2])){
 			printer = new SourcePhaseTextPrinter();
 			parser = new SourceParser(routerDepth);
+		} else if ("Source-Phase-ASIC-text".equals(args[2])){
+			printer = new SourcePhaseTextPrinter();
+			parser = new ASICSourceParser(routerDepth);
 		} else if ("Source-text".equals(args[2])){
 			printer = new SourceTextPrinter();
 			parser = new SourceParser(routerDepth);
