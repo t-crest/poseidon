@@ -66,6 +66,7 @@ public class Converter {
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
 				"\t\tAegean-phase-c\n" +
+				"\t\tAegean-ASIC-phase-c\n" +
 				"\t\tDist-c\n"+
 				"\t3: Router depth\n");
 			return;
@@ -91,6 +92,9 @@ public class Converter {
 		} else if ("Aegean-phase-c".equals(args[2])){
 			printer = new AegeanAsyncPrinter();
 			parser = new SourceParser(routerDepth);
+		} else if ("Aegean-ASIC-phase-c".equals(args[2])){
+			printer = new AegeanAsyncPrinter();
+			parser = new ASICSourceParser(routerDepth);
 		} else if ("Dist-c".equals(args[2])) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
 		} else {
