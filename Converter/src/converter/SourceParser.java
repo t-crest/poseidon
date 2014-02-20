@@ -49,7 +49,7 @@ public class SourceParser extends Parser {
 	private static List<List<List<Integer> > > initArray;
 	private static final int SLOT_TABLE = 0;
 	private static final int ROUTE_TABLE = 1;
-	private int routerDepth;
+	protected int routerDepth;
 
 	public SourceParser(int routerDepth){
 		this.routerDepth = routerDepth;
@@ -95,7 +95,7 @@ public class SourceParser extends Parser {
 		}
 	}
 
-	private int find_route(TileCoord destCoord, TileCoord tileCoord, int slotIdx) throws NumberFormatException {
+	int find_route(TileCoord destCoord, TileCoord tileCoord, int slotIdx) throws NumberFormatException {
 		/* For each transmission slot write an entry in the route table */
 		String binRoute = "";
 		if (destCoord.getTileId() != tileCoord.getTileId()){
@@ -128,7 +128,7 @@ public class SourceParser extends Parser {
 		return tileE.getElementsByTagName("timeslot");
 	}
 
-	private void nextTile(TileCoord tileCoord, char outPort){
+	protected void nextTile(TileCoord tileCoord, char outPort){
 		if(outPort == 'N'){tileCoord.moveNorth();}
 		else if(outPort == 'E'){tileCoord.moveEast();}
 		else if(outPort == 'S'){tileCoord.moveSouth();}
@@ -136,7 +136,7 @@ public class SourceParser extends Parser {
 		// If local port do nothing
 	}
 
-	private String port2bin(char p){
+	protected String port2bin(char p){
 		String bin;
 		if(p == 'N'){bin = "00";}
 		else if(p == 'E'){bin = "01";}

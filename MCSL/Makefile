@@ -27,7 +27,7 @@ create_xml: MCSL
 
 MCSL:
 	@-mkdir -p build 2>&1
-	cd build &&	$(COMPILER_FLAGS) cmake ../src && make && echo "MCSL_PATH=$$(pwd)" >> ../../scripts/paths.sh
+	cd build &&	$(COMPILER_FLAGS) cmake ../src && $(MAKE) && echo "MCSL_PATH=$$(pwd)" >> ../../scripts/paths.sh
 
 clean:
 	@rm -rf build

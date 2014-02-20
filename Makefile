@@ -60,10 +60,10 @@ all: .check_tools pugixml Converter MCSL GRAPH_GEN poseidon
 
 poseidon: lib/pugixml/build/libpugixml.a
 	@-mkdir -p build 2>&1
-	cd build && $(COMPILER_FLAGS) cmake ../src && make -s && echo "POSEIDON_PATH=$$(pwd)" >> ../scripts/paths.sh
+	cd build && $(COMPILER_FLAGS) cmake ../src && $(MAKE) -s && echo "POSEIDON_PATH=$$(pwd)" >> ../scripts/paths.sh
 
 Converter:
-	@cd ./Converter/src/converter && make -s
+	@cd ./Converter/src/converter && $(MAKE) -s
 
 .pugixml:
 	@-mkdir -p lib 2>&1
@@ -72,13 +72,13 @@ Converter:
 
 lib/pugixml/build/libpugixml.a: .pugixml
 	@-mkdir -p lib/pugixml/build 2>&1
-	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake ../scripts && make -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
+	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake ../scripts && $(MAKE) -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
 
 MCSL: lib/pugixml/build/libpugixml.a
-	@cd MCSL && $(COMPILER_FLAGS) make -s
+	@cd MCSL && $(COMPILER_FLAGS) $(MAKE) -s
 
 GRAPH_GEN: lib/pugixml/build/libpugixml.a
-	@cd Graph_generator && $(COMPILER_FLAGS) make -s
+	@cd Graph_generator && $(COMPILER_FLAGS) $(MAKE) -s
 
 #	DEGEN is not compiling at the moment
 #DEGEN:
@@ -114,9 +114,9 @@ help:
 
 
 clean:
-	cd Converter/src/converter && make -s clean
-	cd MCSL && make -s clean
-	cd Graph_generator && make -s clean
+	cd Converter/src/converter && $(MAKE) -s clean
+	cd MCSL && $(MAKE) -s clean
+	cd Graph_generator && $(MAKE) -s clean
 	-rm -r build
 	-rm ./scripts/paths.sh
 
