@@ -267,8 +267,11 @@ channel parser::parse_channel(xml_node& chan) {
 
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
-	const int bw = get_opt_attr<int>(chan, "bandwidth",1);
+	int bw = get_opt_attr<int>(chan, "bandwidth",1);
 	const int phits = get_opt_attr<int>(chan, "phits",1);
+
+	warn_if(bw != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
+	if (bw != 1) { bw = 1;	}
 
 	c.from = r1;
 	c.to = r2;
