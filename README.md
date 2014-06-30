@@ -14,7 +14,7 @@ Because poseidon is very generic it can be used by other platforms as well.
 Checking out and building poseidon can be done as follows:
 
     git clone https://github.com/t-crest/poseidon.git poseidon
-    make
+    cd poseidon && make
 
 
 Platform Specification
