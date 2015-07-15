@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.8)
-project (GRAPH_GEN)
+project (graph_gen)
 
 # Find boost library
 include(FindBoost)
@@ -29,9 +29,9 @@ ADD_DEFINITIONS(
     -std=c++0x
     # Other flags
 )
-add_executable(GRAPH_GEN ${SOURCES} ${HEADERS})
+add_executable(graph_gen ${SOURCES} ${HEADERS})
 
-target_link_libraries(GRAPH_GEN ${PROJECT_SOURCE_DIR}/../../lib/pugixml/build/libpugixml.a)
+target_link_libraries(graph_gen ${PROJECT_SOURCE_DIR}/../../lib/pugixml/build/libpugixml.a)
 
 set(CMAKE_BUILD_TYPE Release)
 #set(CMAKE_BUILD_TYPE Debug)

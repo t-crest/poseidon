@@ -43,9 +43,27 @@ options::options(int argc, char *argv[])
 {
 	bool output = false;
 	/* Set options as specified by user */
-	for (int c; (c = getopt(argc, argv, "o:")) != -1;) {
+	static struct option long_options[] =
+	{
+		{"min-bw",	  required_argument, 0, 'i'},
+		{"max-bw",	  required_argument, 0, 'a'},
+		{"topology",  required_argument, 0, 't'},
+		{"size",	  required_argument, 0, 's'},
+		{"channel-probability",	  required_argument, 0, 'p'},
+		{"help",	  optional_argument, 0, 'h'},
+		{0,0,0,0}
+	};
+	int option_index = 0;
+
+	for (int c; (c = getopt_long(argc, argv, "o:s:hi:a:t:p:", long_options, &option_index)) != -1;) {
 		switch (c) {
-			case 'o':   output_dir = optarg; output = true;				break; // o for specifying the output directory
+			case 'o':   output_dir = optarg; output = true;				break;
+			case 's':   size = ::lex_cast<int>(string(optarg));			break;
+			case 'i':   min_bw = ::lex_cast<int>(string(optarg));		break;
+			case 'a':   max_bw = ::lex_cast<int>(string(optarg));		break;
+			case 't':   topology_type = string(optarg);					break;
+			case 'p':   chan_prob = ::lex_cast<float>(string(optarg));	break;
+			case 'h':   print_help();									break;
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
 	}
@@ -62,9 +80,15 @@ options::options(int argc, char *argv[])
 
 void options::print_help()
 {
-	cout << endl << "Help menu for SNTs" << endl;
+	cout << endl << "Help menu for graph_gen" << endl;
 	cout << "\tMandatory options:" << endl; 
 	print_option('o',"Specify the output directory for the use cases.");
+	print_option('s',"size","Specify the side length of the platform.");
+	print_option('i',"min-bw","The minimum bandwidth of a scheduled communication channel.");
+	print_option('a',"max-bw","The maximum bandwidth of a scheduled communication channel.");
+	print_option('t',"topology","The topology of the platform.");
+	print_option('p',"channel-probability","The probability of adding a each channel to the schedule.");
+	print_option('h',"help","Print this help menu.");
 	cout << endl;
 	
 	delete this;
@@ -75,6 +99,14 @@ void options::print_option(char opt, string text){
 	cout << "\t-" << opt << "\t" << text << endl;
 }
 
+void options::print_option(char opt, string long_opt, string text){
+	if(long_opt.length() > 10) {
+		cout << "\t-" << opt << " --" << long_opt << endl;
+		cout << "\t\t\t" << text << endl;
+	} else {
+		cout << "\t-" << opt << " --" << long_opt << "\t" << text << endl << endl;
+	}
+}
 options::~options()
 {
 	

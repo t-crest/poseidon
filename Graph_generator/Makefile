@@ -1,9 +1,9 @@
-.PHONY: GRAPH_GEN down_traffic create_xml clean all
+.PHONY: graph_gen down_traffic create_xml clean all
 SHELL := /bin/bash
 
-all: GRAPH_GEN
+all: graph_gen
 
-GRAPH_GEN:
+graph_gen:
 	@-mkdir -p build 2>&1
 	cd build && $(COMPILER_FLAGS) cmake ../src && $(MAKE) && echo "GRAPH_GEN_PATH=$$(pwd)" >> ../../scripts/paths.sh
 

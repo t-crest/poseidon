@@ -44,6 +44,7 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <getopt.h>
 #include "lex_cast.h"
 using namespace std;
 
@@ -53,9 +54,16 @@ public:
 	~options();
     
     string output_dir;
+    string topology_type;
+    int size;
+    int min_bw;
+    int max_bw;
+    float chan_prob;
+
 private:
         void print_help();
         void print_option(char opt, string text);
+        void print_option(char opt, string long_opt, string text);
 };
 
 namespace global {

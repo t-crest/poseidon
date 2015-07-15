@@ -50,7 +50,7 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	assert(channel_factor >= 0.0 && channel_factor <= 1.0);
 	assert(bw_min > 0);
 	assert(bw_max >= bw_min);
-	assert((type.compare("b") != 0) || (type.compare("m") != 0));
+	assert((type.compare("bitorus") != 0) || (type.compare("mesh") != 0));
 
 //	cout << "assertions done" << endl;
 	// Initialize
@@ -61,37 +61,31 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	platform.append_attribute("height").set_value(n);
 	
 	pugi::xml_node topology = platform.append_child("topology");
-	if (type == "b") { // b = "bitorus"
-		topology.append_attribute("type").set_value("bitorus");
-	}
-	else if (type == "m") { // m = "mesh"
-		topology.append_attribute("type").set_value("mesh");
-	}
+	topology.append_attribute("type").set_value(type.c_str());
 
 	srand(time(NULL));
 
 //	cout << "init done" << endl;
 	// Channels
-	pugi::xml_node channels = doc.append_child("channels");
-	channels.append_attribute("type").set_value("custom");
+	pugi::xml_node comm = doc.append_child("communication");
+	comm.append_attribute("type").set_value("custom");
 	
 	for (int i = 0; i < n; i++) { // first coordinate from
 		for (int j = 0; j < n; j++) { // second coordinate from
 			for (int k = 0; k < n; k++) { // first coordinate to
 				for (int l = 0; l < n; l++) { // second coordinate to
-					if(i == k && j == l) // Don't schedule channels to same node
+					if(i == k && j == l) // Don't schedule channel to same node
 						continue;
 					
 					if ((rand() % 100) <= channel_factor*100) {
 						char* from_node = new char[9];
 						char* to_node = new char[9];
-						pugi::xml_node channel = channels.append_child("channel");
+						pugi::xml_node channel = comm.append_child("channel");
 						sprintf(from_node,"(%i,%i)",i,j);
 						channel.append_attribute("from").set_value(from_node);
 						sprintf(to_node,"(%i,%i)",k,l);
 						channel.append_attribute("to").set_value(to_node);
-						channel.append_attribute("bandwidth").set_value((rand() % bw_max) + bw_min);
-						channel.append_attribute("repsonse").set_value("false");
+						channel.append_attribute("bandwidth").set_value((rand() % (bw_max-bw_min)) + bw_min);
 					}
 				}
 			}
