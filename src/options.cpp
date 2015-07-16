@@ -71,13 +71,14 @@ options::options(int argc, char *argv[])
 :	input_platform(""),
 	input_com(""),
 	output_file(""),
-	metaheuristic(ERR),
+	metaheuristic(GREEDY),
 	draw(false),
 	meta_inital(ERR),
 	save_best(true), // normally, we want to remember the best globally solution
 	cal_stats(false),
 	run_for(0),
-	beta_percent(-1.0)
+	beta_percent(-1.0),
+	argo_version(1.0)
 //	stat_file()
 //	stat_file(get_stat_name(argc, argv).c_str(), fstream::out)
 {
@@ -95,13 +96,14 @@ options::options(int argc, char *argv[])
 		{"draw",          no_argument,       0, 'd'},
 		{"quick",         no_argument,       0, 'q'},
 		{"beta",          required_argument, 0, 'b'},
+		{"argo-version",  optional_argument, 0, 'v'},
 		{"help",          no_argument,       0, 'h'},
 		{0,0,0,0}
 	};
 	int option_index = 0;
 
 	/* Set options as specified by user */
-	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:adqb:h", long_options, &option_index)) != -1;) {
+	for (int c; (c = getopt_long(argc, argv, "m:i:p:c:s:t:adqb:v:h", long_options, &option_index)) != -1;) {
 		switch (c) {
 			case  0 :	/* The option sets a flag */					break;
 			case 'm':	metaheuristic = parse_meta_t(string(optarg));	break; // m for chosen metaheuristic
@@ -115,6 +117,7 @@ options::options(int argc, char *argv[])
 			case 'd':	draw = true;									break; // d for draw
 			case 'q':	save_best = false;								break; // q for quick
 			case 'b':	beta_percent = ::lex_cast<float>(string(optarg)); break; // b for beta_percent
+			case 'v':	argo_version = ::lex_cast<float>(string(optarg)); break; // b for beta_percent
 			case 'h':   print_help();									break; // h for the help menu
 			default:	ensure(false, "Unknown flag " << c << ".");
 		}
@@ -199,6 +202,7 @@ void options::print_help()
 	print_option('q',"quick","If specified the scheduler will make a dry run, does not save the result.");
 	print_option('b',"beta","Specify the beta value, only applicable when using the GRASP metaheuristic.");
 	print_option('s',"schedule","Specify the output directory for the generated XML schedule.");
+	print_option('v',"argo-version","Specify the version of the argo network. (Default: 1.0)");
 	print_option('h',"help","Shows the help menu, I guess you know that.");
 	cout << endl;
 

@@ -39,7 +39,7 @@
 
 options::options(int argc, char *argv[])
 // Option defaults:
-:	output_dir("")
+:	output_dir(""), size(-1), min_bw(1), max_bw(1), topology_type(""), chan_prob(0.5)
 {
 	bool output = false;
 	/* Set options as specified by user */
@@ -73,8 +73,15 @@ options::options(int argc, char *argv[])
 	}
 
 	/* Some input validation */
-	if (output)
+	if (output) {
 		ensure(output_dir.size() > 0, "Empty output directory given.");
+	}
+	ensure( size > 0, "Size parameter not specified.");
+	ensure(min_bw >= 1, "The minimum bandwidth must not be negative or zero.");
+	ensure(max_bw >= min_bw, "The maximum bandwidth must be greater or equal to the minimum bandwidth.");
+	ensure(topology_type.size() > 0, "Empty topology given.");
+	ensure(chan_prob >= 0, "The channel probability must not be less than zero.");
+	ensure(chan_prob <= 1, "The channel probability must not be greater than one.");
 }
 
 

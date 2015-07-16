@@ -234,7 +234,6 @@ int main(int argc, char** argv) {
 				sprintf(to_node,"(%i,%i)",nodes[i].second[j].first.first,nodes[i].second[j].first.second);
 				channel.append_attribute("to").set_value(to_node);
 				channel.append_attribute("bandwidth").set_value(bw);
-				channel.append_attribute("repsonse").set_value("false");
 			}
 		}
 	}

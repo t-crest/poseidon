@@ -38,6 +38,7 @@
 #ifndef GRAPH_GENERATOR_H
 #define	GRAPH_GENERATOR_H
 
+#include "util.hpp"
 #include <cassert>
 #include <string>
 #include <vector>

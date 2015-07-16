@@ -6,6 +6,7 @@
 #include <cmath>
 #include <set>
 #include <random>
+#include <stdlib.h> // For random(), RAND_MAX
 
 #define ensure(pred, x)		{if (!(pred))	{std::cerr << "Error:  \t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl; abort();}}
 #define warn_if(pred, x)	{if ((pred))	{std::cerr << "Warning:\t " << x << " [" <<  __FILE__ << ":" << __LINE__ << "]" << std::endl;}}
@@ -38,6 +39,7 @@ namespace util {
 	int rand(void);
 	void srand(unsigned seed);
 	void srand();
+	long random_at_most(long max);
 }
 
 #endif	/* _UTIL_HPP */

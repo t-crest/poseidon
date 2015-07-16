@@ -67,6 +67,7 @@ public:
 	time_t run_for;
 	std::ofstream stat_file;
 	float beta_percent;
+	float argo_version;
 	
 private:
 	meta_t parse_meta_t(std::string str);

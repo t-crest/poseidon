@@ -270,8 +270,11 @@ channel parser::parse_channel(xml_node& chan) {
 	int bw = get_opt_attr<int>(chan, "bandwidth",1);
 	const int phits = get_opt_attr<int>(chan, "phits",1);
 
-	warn_if(bw != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
-	if (bw != 1) { bw = 1;	}
+	if (global::opts->argo_version < 2.0) {
+		warn_if(bw != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
+		if (bw != 1) { bw = 1;	}
+	}
+	
 
 	c.from = r1;
 	c.to = r2;

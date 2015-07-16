@@ -48,7 +48,7 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	
 	assert(n > 0);
 	assert(channel_factor >= 0.0 && channel_factor <= 1.0);
-	assert(bw_min > 0);
+	assert(bw_min >= 1);
 	assert(bw_max >= bw_min);
 	assert((type.compare("bitorus") != 0) || (type.compare("mesh") != 0));
 
@@ -77,7 +77,7 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 					if(i == k && j == l) // Don't schedule channel to same node
 						continue;
 					
-					if ((rand() % 100) <= channel_factor*100) {
+					if (util::random_at_most(100) <= channel_factor*100) {
 						char* from_node = new char[9];
 						char* to_node = new char[9];
 						pugi::xml_node channel = comm.append_child("channel");
@@ -85,7 +85,12 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 						channel.append_attribute("from").set_value(from_node);
 						sprintf(to_node,"(%i,%i)",k,l);
 						channel.append_attribute("to").set_value(to_node);
-						channel.append_attribute("bandwidth").set_value((rand() % (bw_max-bw_min)) + bw_min);
+						if (bw_max-bw_min == 0) {
+							channel.append_attribute("bandwidth").set_value(bw_min);
+						} else {
+							channel.append_attribute("bandwidth").set_value((int)util::random_at_most(bw_max-bw_min) + bw_min);
+						}
+						
 					}
 				}
 			}
@@ -99,6 +104,8 @@ graph_generator::graph_generator(int _n, float channel_factor, int bw_min, int b
 	
 //	cout << "file done" << endl;
 }
+
+
 
 graph_generator::~graph_generator() {
 	
