@@ -6,13 +6,17 @@ all: MCSL
 #############################################################
 #	Download the MCSL benchmark suite
 #	Close to half a GB
+#
+#	aria2c -c --max-connection-per-server=16 --min-split-size=1M -j 16 \
+#	http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
+#	gzip -d MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
+#	tar -xf MCSL_NoC_Benchmark_Suite_v1.5.tar
 #############################################################
 down_traffic:
-	-rm -rf ./MCSL_NoC_Benchmark_Suite_v1.5
-	wget http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
-	gzip -d MCSL_NoC_Benchmark_Suite_v1.5.tar.gz
-	tar -xf MCSL_NoC_Benchmark_Suite_v1.5.tar
-	rm -f MCSL_NoC_Benchmark_Suite_v1.5.tar
+	aria2c -c --max-connection-per-server=16 --min-split-size=1M -j 16 \
+	http://www.ece.ust.hk/~eexu/release/MCSL_NoC_Traffic_Pattern_Suite_v1.6.tar.gz
+	gzip -d MCSL_NoC_Traffic_Pattern_Suite_v1.6.tar.gz
+	tar -xf MCSL_NoC_Traffic_Pattern_Suite_v1.6.tar
 	@echo "----------------------"
 	@echo "-- Traffic downloaded"
 	@echo "----------------------"

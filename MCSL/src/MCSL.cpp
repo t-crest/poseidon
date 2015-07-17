@@ -84,11 +84,52 @@ int main(int argc, char** argv) {
 	int edges = 0;
 	int trash_count = 0;
 
-	for(int i = 0; i < 14; i++){
-		cin.ignore(200,'\n');
+	//for(int i = 0; i < 14; i++){
+	//	cin.ignore(200,'\n');
+	//}
+	char c;
+	enum state_t {IDLE,STAR,SLASH};
+	state_t state = IDLE;
+	bool done = false;
+
+	// Ignore header
+	while(cin.get(c)) {
+		switch (state){
+			case IDLE:
+				if (c == '*') {
+					state = STAR;
+				} else {
+					state = IDLE;
+				}
+				continue;
+			case STAR:
+				if (c == '*') {
+					state = STAR;
+				} else if (c == '/') {
+					state = SLASH;
+				} else {
+					state = IDLE;
+				}
+				continue;
+			case SLASH:
+				if (c == '\n' || c == '\r') {
+					done = true;
+					break;
+				} else {
+					state = IDLE;
+				}
+				continue;
+		}
+		if (done)
+			break;
 	}
+
 	cin >> trace;
 	debugf(trace);
+	if (trace != 0) {
+		printf("Only use statistical trace files.\n");
+		exit(1);
+	}
 	cin >> topo >> pbs >> rows >> cols;
 	debugf(topo);
 	debugf(pbs);
