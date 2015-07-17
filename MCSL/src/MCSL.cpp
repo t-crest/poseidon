@@ -164,6 +164,7 @@ int main(int argc, char** argv) {
 		cout << "Wrong topology found." << std::endl;
 		return 0;
 	}
+	topology.append_attribute("routerDepth").set_value("3");
 
 
 	vector<pair<coord,int> > task_list;
@@ -191,6 +192,7 @@ int main(int argc, char** argv) {
 	// Channels
 	pugi::xml_node communication = doc.append_child("communication");
 	communication.append_attribute("type").set_value("custom");
+	communication.append_attribute("phits").set_value("3");
 
 
 	vector<pair<coord,vector<pair<coord,double> > > > nodes(pbs) ;

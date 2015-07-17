@@ -112,16 +112,17 @@ parser::parser(string platform_file, string com_file) {
 	xml_node channels = com_doc.child("communication");
 	ensure(!channels.empty(), "File " << com_file << " has no communication channels");
 
+	const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
+
 	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
 	if (channel_type == "NOT FOUND"){
 		channel_type = get_attr<string>(channels,"comType");
 	}
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
-			channel c = this->parse_channel(node_itr);
+			channel c = this->parse_channel(node_itr,phits);
 		}
-	} else if (channel_type == "all2all") {
-		const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
+	} else if (channel_type == "all2all") {	
 		this->create_all2all(phits);
 	} else {
 		ensure(false, "Channel type not recognized");
@@ -264,13 +265,13 @@ void parser::create_bitorus(const int link_depth) {
 	}
 }
 
-channel parser::parse_channel(xml_node& chan) {
+channel parser::parse_channel(xml_node& chan, const int phits) {
 	channel c;
 
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
 	int bw = get_opt_attr<int>(chan, "bandwidth",1);
-	const int phits = get_opt_attr<int>(chan, "phits",1);
+	const int phits_local = get_opt_attr<int>(chan, "phits",phits);
 
 	if (global::opts->argo_version < 2.0) {
 		warn_if(bw != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
@@ -296,7 +297,7 @@ channel parser::parse_channel(xml_node& chan) {
 	return c;
 }
 
-void parser::create_all2all(int phits){
+void parser::create_all2all(const int phits){
 	for_each(this->n->routers(),[&](router_t *r1){
 		for_each(this->n->routers(),[&](router_t *r2){
 			if(r1 != r2){

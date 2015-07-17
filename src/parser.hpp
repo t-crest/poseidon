@@ -85,8 +85,8 @@ private:
     void parse_custom(pugi::xml_node& graph, const int link_depth);
     void create_mesh(const int link_depth);
     void create_bitorus(const int link_depth);
-    channel parse_channel(pugi::xml_node& chan);
-    void create_all2all(int phits);
+    channel parse_channel(pugi::xml_node& chan, const int phits);
+    void create_all2all(const int phits);
 };
 
 #endif	/* PARSER_HPP */
