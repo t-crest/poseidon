@@ -65,6 +65,7 @@ public:
     parser(std::string platform_file, std::string com_file);
 
 private:
+    static unsigned int channel_count;
 
     template<typename T>
     T get_attr(pugi::xml_node& xn, const std::string& attr_name) {

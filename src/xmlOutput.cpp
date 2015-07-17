@@ -101,6 +101,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 			route = n.get_route(dest_chan);
 			if(route.length() > 0){
 				na.append_attribute("route") = route.c_str();
+				na.append_attribute("chan-id").set_value(dest_chan->channel_id);
 			}
 
 			// Write row in Router table
@@ -161,12 +162,18 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 	xml_node latency = (*tile).append_child("latency");
 	char co[2*max(n.rows(),n.cols())+3];
 	char *buf = co; // clang does not allow references to flexible arrays in lambda expressions
+	std::vector<bool> printed_chans(n.channels().size(),false);
+
 	// The following for loop is slow and unnecessary, can be changed to improve runtime.
 	// What is needed is all the channels with the current router as the source.
 	for_each(n.channels(), [&](const channel & c) {
 		if(c.from != r->address){
 			return; // Channel not from router
 		}
+		if (printed_chans[c.channel_id]) {
+			return;
+		}
+		printed_chans[c.channel_id] = true;
 		// For each channel from router
 		int slotswaittime = 0;
 		int channellatency = 0;
@@ -205,6 +212,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		destination.append_attribute("id") = buf;
 		destination.append_attribute("slotwaittime") = slotswaittime;
 		destination.append_attribute("channellatency") = channellatency;
+		destination.append_attribute("chan-id") = c.channel_id;
 		destination.append_attribute("rate") = rate;
 	});
 }

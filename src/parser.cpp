@@ -42,6 +42,8 @@ using namespace std;
 using namespace pugi;
 using namespace snts;
 
+unsigned int parser::channel_count = 0;
+
 parser::parser(string platform_file, string com_file) {
 	// First the platform specification is parsed, later we parse the communication specification.
 	xml_document platform_doc;
@@ -286,8 +288,9 @@ channel parser::parse_channel(xml_node& chan) {
 
 	bool pathexist = !this->n->router(c.from)->next[c.to].empty();
 	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
+	c.channel_id = this->channel_count++;
 	for(int i = 0; i < bw; i++){
-		c.channel_id = i;
+		
 		this->n->specification.push_back(c);
 	}
 	return c;
@@ -301,7 +304,7 @@ void parser::create_all2all(int phits){
 				c.from = r1->address;
 				c.to = r2->address;
 				c.phits = phits;
-				c.channel_id = 0;
+				c.channel_id = this->channel_count++;
 				this->n->specification.push_back(c);
 			}
 		});
