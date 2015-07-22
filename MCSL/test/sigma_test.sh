@@ -1,11 +1,11 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-TRAFFIC_DIR="${DIR}/../MCSL_NoC_Benchmark_Suite_v1.5/traffic"
+TRAFFIC_DIR="${DIR}/../MCSL_NoC_Traffic_Pattern_Suite_v1.6/traffic"
 OUTPUT_DIR="${DIR}/xml_in"
 source ${DIR}/../../scripts/define.sh
 MCSL="${MCSL_PATH}/MCSL"
 
-APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec"
+APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec H264-1080p_dec"
 NETWORK_SIZE=16
 
 
