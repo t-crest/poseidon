@@ -100,7 +100,7 @@ parser::parser(string platform_file, string com_file) {
 			com_doc.reset(platform_doc);
 		} else {
 			std::cout << "No communication specification: Creating all-to-all communication pattern." << std::endl;
-			this->create_all2all(1); // Default one phit
+			this->create_all2all(1,1); // Default one phit and bandwidth one
 			return;
 		}
 	} else {
@@ -113,6 +113,7 @@ parser::parser(string platform_file, string com_file) {
 	ensure(!channels.empty(), "File " << com_file << " has no communication channels");
 
 	const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
+	const int bw = get_opt_attr<int>(channels, "bandwidth",1); // The default bandwidth is set to 1.
 
 	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
 	if (channel_type == "NOT FOUND"){
@@ -120,10 +121,10 @@ parser::parser(string platform_file, string com_file) {
 	}
 	if (channel_type == "custom") {
 		for (EACH_TAG(node_itr, "channel", channels)) {
-			channel c = this->parse_channel(node_itr,phits);
+			channel c = this->parse_channel(node_itr,phits,bw);
 		}
 	} else if (channel_type == "all2all") {	
-		this->create_all2all(phits);
+		this->create_all2all(phits,bw);
 	} else {
 		ensure(false, "Channel type not recognized");
 	}
@@ -265,17 +266,17 @@ void parser::create_bitorus(const int link_depth) {
 	}
 }
 
-channel parser::parse_channel(xml_node& chan, const int phits) {
+channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	channel c;
 
 	const router_id r1 = get_attr<router_id > (chan, "from");
 	const router_id r2 = get_attr<router_id > (chan, "to");
-	int bw = get_opt_attr<int>(chan, "bandwidth",1);
+	int bw_local = get_opt_attr<int>(chan, "bandwidth",bw);
 	const int phits_local = get_opt_attr<int>(chan, "phits",phits);
 
 	if (global::opts->argo_version < 2.0) {
-		warn_if(bw != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
-		if (bw != 1) { bw = 1;	}
+		warn_if(bw_local != 1,"Bandwidth different from 1 is not supported by Argo, Bandwidth set to 1.");
+		if (bw_local != 1) { bw_local = 1;	}
 	}
 	
 
@@ -290,14 +291,13 @@ channel parser::parse_channel(xml_node& chan, const int phits) {
 	bool pathexist = !this->n->router(c.from)->next[c.to].empty();
 	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
 	c.channel_id = this->channel_count++;
-	for(int i = 0; i < bw; i++){
-		
+	for(int i = 0; i < bw_local; i++){
 		this->n->specification.push_back(c);
 	}
 	return c;
 }
 
-void parser::create_all2all(const int phits){
+void parser::create_all2all(const int phits, const int bw){
 	for_each(this->n->routers(),[&](router_t *r1){
 		for_each(this->n->routers(),[&](router_t *r2){
 			if(r1 != r2){
@@ -306,7 +306,9 @@ void parser::create_all2all(const int phits){
 				c.to = r2->address;
 				c.phits = phits;
 				c.channel_id = this->channel_count++;
-				this->n->specification.push_back(c);
+				for(int i = 0; i < bw; i++){
+					this->n->specification.push_back(c);
+				}
 			}
 		});
 	});
