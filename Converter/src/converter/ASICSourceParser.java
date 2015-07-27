@@ -126,7 +126,7 @@ public class ASICSourceParser extends SourceParser {
 	    
 	    if (!corner) {
 	    	if (do_flip) {
-	    		mapped = oppositPort(requested);
+	    		mapped = oppositePort(requested);
 	    	} else {
 	    		mapped = requested;
 	    	}
@@ -198,7 +198,7 @@ public class ASICSourceParser extends SourceParser {
 				NodeList ports = getPorts(tempTileCoord,slotIdx+(i*routerDepth));
 				char outPort = findOutputPort(ports,inPort);
 				binRoute = port2bin(swap_ports(tempTileCoord, outPort)) + binRoute; // Must not be changed to binRoute += port2bin(outport), this is string concatenation
-				inPort = oppositPort(outPort);
+				inPort = oppositePort(outPort);
 				nextTile(tempTileCoord,outPort);
 				if (i >= destCoord.getNumOfNodes()) {
 					System.out.println("Binroute: " +binRoute);

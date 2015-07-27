@@ -41,7 +41,7 @@ package converter;
  * @author Rasmus
  */
 public class TileCoord {
-	public int x, y;
+	public final int x, y;
 	private static int width, height;
 	public TileCoord(int x, int y, int width, int height){
 		if((x >= width || y >= height) || (x < 0 || y < 0)){
@@ -63,33 +63,33 @@ public class TileCoord {
 		return x+y*width;
 	}
 
-	public void moveNorth(){
-		if(this.y == 0){
-			this.y = this.height-1;
+	public TileCoord moveNorth() {
+		if(y == 0){
+			return new TileCoord(x, height-1);
 		} else {
-			this.y--;
+			return new TileCoord(x, y-1);
 		}
 	}
 
-	public void moveSouth(){
-		if(this.y == height-1){
-			this.y = 0;
+	public TileCoord moveSouth(){
+		if(y == height-1){
+			return new TileCoord(x, 0);
 		} else {
-			this.y++;
+			return new TileCoord(x, y+1);
 		}
 	}
-	public void moveEast(){
-		if(this.x == width-1){
-			this.x = 0;
+	public TileCoord moveEast(){
+		if(x == width-1){
+			return new TileCoord(0, y);
 		} else {
-			this.x++;
+			return new TileCoord(x+1, y);
 		}
 	}
-	public void moveWest(){
-		if(this.x == 0){
-			this.x = width-1;
+	public TileCoord moveWest(){
+		if(x == 0){
+			return new TileCoord(width-1, y);
 		} else {
-			this.x--;
+			return new TileCoord(x-1, y);
 		}
 	}
 

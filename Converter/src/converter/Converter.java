@@ -69,6 +69,7 @@ public class Converter {
 				"\t\tAegean-phase-c\n" +
 				"\t\tAegean-ASIC-phase-c\n" +
 				"\t\tDist-c\n"+
+				"\t\tNetworkCalculus-constraints\n"+
 				"\t3: Router depth\n");
 			return;
 		}
@@ -101,6 +102,9 @@ public class Converter {
 			parser = new ASICSourceParser(routerDepth);
 		} else if ("Dist-c".equals(args[2])) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
+		} else if ("NetworkCalculus-constraints".equals(args[2])){
+			printer = null;
+			parser = new NCParser();
 		} else {
 			System.out.println("No printer specified...");
 			return;
