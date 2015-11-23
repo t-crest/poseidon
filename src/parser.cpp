@@ -279,10 +279,10 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 		if (bw_local != 1) { bw_local = 1;	}
 	}
 	
-
 	c.from = r1;
 	c.to = r2;
 	c.phits = phits;
+	c.ch_bw = bw_local;
 
 	ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");
 	ensure(this->n->has(c.from), "Network does not have router " << c.from << " used in channel.");
@@ -292,6 +292,7 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
 	c.channel_id = this->channel_count++;
 	for(int i = 0; i < bw_local; i++){
+		c.pkt_id = i;
 		this->n->specification.push_back(c);
 	}
 	return c;
@@ -305,8 +306,10 @@ void parser::create_all2all(const int phits, const int bw){
 				c.from = r1->address;
 				c.to = r2->address;
 				c.phits = phits;
+				c.ch_bw = bw;
 				c.channel_id = this->channel_count++;
 				for(int i = 0; i < bw; i++){
+					c.pkt_id = i;
 					this->n->specification.push_back(c);
 				}
 			}

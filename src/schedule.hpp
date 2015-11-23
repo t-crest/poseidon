@@ -87,7 +87,9 @@ struct channel {
 	router_id to;
 	// Add Response delay
 	uint channel_id;
-	uint phits;
+    unsigned char ch_bw;
+    unsigned char pkt_id;
+	unsigned char phits;
 
 	timeslot t_start;
 	timeslot t_best_start;
