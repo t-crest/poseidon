@@ -64,7 +64,7 @@ public abstract class Parser {
 
 	protected abstract void parse();
 
-	private static void parseXml(String inputFile){
+	protected static void parseXml(String inputFile){
 		try{
 			File fXmlFile = new File(inputFile);
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -126,6 +126,17 @@ public abstract class Parser {
 		return tList.getLength();
 	}
 
+	protected TileCoord nextTile(TileCoord tileCoord, char outPort){
+		switch (outPort) {
+		case 'N': return tileCoord.moveNorth();
+		case 'E': return tileCoord.moveEast();
+		case 'S': return tileCoord.moveSouth();
+		case 'W': return tileCoord.moveWest();
+		}
+		// If local port do nothing
+		return tileCoord;
+	}
+
 	protected static char findOutputPort(NodeList ports, char inPort){
 		char outPort = ' ';
 		for(int nodeIdx = 0; nodeIdx < ports.getLength(); nodeIdx++){
@@ -136,12 +147,13 @@ public abstract class Parser {
 		return outPort;
 	}
 
-	protected static char oppositPort(char p){
-		if(p == 'N'){p = 'S';}
-		else if(p == 'E'){p = 'W';}
-		else if(p == 'S'){p = 'N';}
-		else if(p == 'W'){p = 'E';}
-		else{p = 'L';}
-		return p;
+	protected static char oppositePort(char p){
+		switch (p) {
+		case 'N': return 'S';
+		case 'E': return 'W';
+		case 'S': return 'N';
+		case 'W': return 'E';
+		default: return 'L';
+		}
 	}
 }

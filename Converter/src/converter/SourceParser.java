@@ -105,8 +105,8 @@ public class SourceParser extends Parser {
 				NodeList ports = getPorts(tempTileCoord,slotIdx+(i*routerDepth));
 				char outPort = findOutputPort(ports,inPort);
 				binRoute = port2bin(outPort) + binRoute; // Must not be changed to binRoute += port2bin(outport), this is string concatenation
-				inPort = oppositPort(outPort);
-				nextTile(tempTileCoord,outPort);
+				inPort = oppositePort(outPort);
+				tempTileCoord = nextTile(tempTileCoord,outPort);
 				if (i >= destCoord.getNumOfNodes()) {
 					System.out.println("Binroute: " +binRoute);
 					System.out.print("find_route() missed destination coordinate:\n\ti = " + i + " destCoord.getNumOfNodes() :"+destCoord.getNumOfNodes());
@@ -126,14 +126,6 @@ public class SourceParser extends Parser {
 		TileCoord tileCoord = getTileCoord(tile);
 
 		return tileE.getElementsByTagName("timeslot");
-	}
-
-	protected void nextTile(TileCoord tileCoord, char outPort){
-		if(outPort == 'N'){tileCoord.moveNorth();}
-		else if(outPort == 'E'){tileCoord.moveEast();}
-		else if(outPort == 'S'){tileCoord.moveSouth();}
-		else if(outPort == 'W'){tileCoord.moveWest();}
-		// If local port do nothing
 	}
 
 	protected String port2bin(char p){
