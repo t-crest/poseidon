@@ -6,7 +6,7 @@ SCHED_DIR="${DIR}/sched"
 source ${DIR}/../scripts/define.sh
 MCSL="${MCSL_PATH}/MCSL"
 
-APPLICATIONS="RS-32_28_8_dec RS-32_28_8_enc FFT-1024_complex Sparse Robot Fpppp H264-720p_dec H264-1080p_dec"
+APPLICATIONS="FFT-1024_complex Fpppp H264-1080p_dec H264-720p_dec Robot RS-32_28_8_dec RS-32_28_8_enc Sparse"
 SIGMAS="1 1.5 2 3 5 10 20 25 30 40 50 75 100 200 250 300 500"
 #APPLICATIONS="Sparse"
 #SIGMAS="1"
@@ -42,13 +42,13 @@ for si in ${SIGMAS} ; do
 done
 
 CORES=1
-#loadBalance
+loadBalance
 
 printf "\n[Script: ${BASH_SOURCE[0]}] All schedules generated\n"
 
 for a in ${APPLICATIONS} ; do
 	printf "Application ${a}\n"
-	printf "sigma\tlength\tmax_rate\taverage_rate\tmin_rate\tmax_WCTT\taverage_WCTT\tmin_WCTT\n"
+	printf "sigma\tlength\tflows\tmin_WCTT\taverage_WCTT\tmax_WCTT\tmin_rate\taverage_rate\tmax_rate\n"
 	for si in ${SIGMAS} ; do
 		printf "${si}\t"
 		./extract_latency.py "${SCHED_DIR}/${topo}_${size}x${size}/${a}_s_${si}.xml"

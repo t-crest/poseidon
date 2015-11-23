@@ -27,10 +27,11 @@ def extract_from_sched(filename):
 
 	tiles = list(schedule)
 	for i in range(0,len(tiles)):
-		tags = list(tiles[i])
-		for j in range(0,len(tags)):
-			if tags[j].tag == "latency":
-				dest = list(tags[j])
+		timeslot = list(tiles[i])
+		out_rate = 0
+		for j in range(0,len(timeslot)):
+			if timeslot[j].tag == "latency":
+				dest = list(timeslot[j])
 				count += len(dest)
 				for k in range(0,len(dest)):
 					chan_id = dest[k].get("chan-id")
@@ -38,6 +39,7 @@ def extract_from_sched(filename):
 					chan_lat = dest[k].get("channellatency")
 					WCTT = int(slt_wait) + int(chan_lat)
 					rate = float(dest[k].get("rate"))
+					out_rate += rate
 					#print(str(chan_id) + " " + str(WCTT) + " " +  str(rate))
 					if WCTT < min_WCTT:
 						min_WCTT = WCTT
@@ -49,11 +51,13 @@ def extract_from_sched(filename):
 					if rate > max_rate:
 						max_rate = rate
 					average_rate += rate
+		if out_rate > 1:
+			raise SystemExit(__file__ +': Error: rate out of node is higher than one.')
 					
 	average_WCTT = average_WCTT/count
 	average_rate = average_rate/count
 	#print("length\tmax_rate\tmax_WCTT\taverage_WCTT\tmin_WCTT")
-	print(tdm_lenght+"\t"+str(round(max_rate,4))+"\t\t"+str(round(average_rate,4))+"\t\t"+str(round(min_rate,4))+"\t\t"+str(max_WCTT)+"\t\t"+str(round(average_WCTT,1))+"\t\t"+str(min_WCTT))
+	print(tdm_lenght+"\t"+str(count)+"\t"+str(min_WCTT)+"\t\t"+str(round(average_WCTT,1))+"\t\t"+str(max_WCTT)+"\t\t"+str(round(min_rate,4))+"\t\t"+str(round(average_rate,4))+"\t\t"+str(round(max_rate,4)))
 
 def poseidon(infile,outfile):
 	Poseidon = ['poseidon']
