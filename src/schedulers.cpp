@@ -122,7 +122,7 @@ void s_greedy::run() {
 	// Add all channels to a priority queue, sorting by their length
 	for_each(n.channels(), [&](const channel & c) {
 		int hops = n.router(c.from)->hops[c.to];
-		pq.push(make_pair(hops, &c));
+		pq.push(make_pair(hops-c.pkt_id, &c));
 	});
 	
 	auto next_mutator = this->random ? get_next_mutator() : [](vector<port_out_t*>& arg) {};
