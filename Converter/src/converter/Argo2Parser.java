@@ -1,0 +1,213 @@
+/*******************************************************************************
+ * Copyright 2012 Rasmus Bo Soerensen <rasmus@rbscloud.dk>
+ * Copyright 2013 Technical University of Denmark, DTU Compute.
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted (subject to the limitations in the
+ * disclaimer below) provided that the following conditions are met:
+ *
+ *  * Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ *  * Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE
+ * GRANTED BY THIS LICENSE.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ * BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+ * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * The views and conclusions contained in the software and documentation
+ * are those of the authors and should not be interpreted as representing
+ * official policies, either expressed or implied, of the copyright holder.
+ ******************************************************************************/
+
+package converter;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.w3c.dom.*;
+import java.lang.System;
+
+/**
+* A converter from xml format to Setup of DMA tables
+* @author Rasmus Bo Sorensen
+*/
+public class Argo2Parser extends Parser {
+  private static List<List<List<Integer> > > initArray;
+  private static final int SCHED_TBL = 0;
+  private static final int CH_ID_TBL = 1;
+
+  private static final int TIME2NEXT_WIDTH = 5;
+  private static final int PKTLEN_WIDTH = 3;
+  private static final int DMANUM_WIDTH = 8;
+  private static final int ROUTE_WIDTH = 16;
+
+  public Argo2Parser(){
+  }
+
+  @Override
+  public void parse() {
+    try {
+      int numOfNodes = getNumOfNodes();
+      initializeArray(numOfNodes);
+      for_each_tile_timeslot();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    printer.printData(initArray);
+  }
+
+  private void for_each_tile_timeslot(){
+    for (int tileIdx = 0; tileIdx < getNumOfNodes(); tileIdx++) {
+      System.out.println("Core: " + tileIdx);
+      Node tile = getTile(tileIdx);
+      NodeList slotList = getTimeslots(tile);
+      TileCoord tileCoord = getTileCoord(tile);
+      int schedIdx = -1;
+      int prevChIdx = -1;
+      int pktLen = 0;
+      int time2Next = 0;
+      boolean pktEnded = true;
+      String prevRouteStr = "";
+      /* For each time slot, schedule table and channel index table is written. */
+      for (int slotIdx = 0; slotIdx < slotList.getLength(); slotIdx++) {
+        Node slot = slotList.item(slotIdx);
+        if (slot.getNodeType() != Node.ELEMENT_NODE) { continue; }
+        Element slotE = (Element) slot;
+        int chIdx = getChanId(slotE);
+        TileCoord destCoord = getDestCoord(slotE);
+        List<Integer> schedTbl = initArray.get(tileCoord.getTileId()).get(SCHED_TBL);
+        int slotVal = 0;
+        String routeStr = getRoute(slotE);
+        //System.out.println("CONDITION: chIdx: " + chIdx + " prevChIdx: " + prevChIdx + " routeStr: " + routeStr + " prevRouteStr: " + prevRouteStr + " pktEnded: " + pktEnded);
+        if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || !routeStr.equals(prevRouteStr)))) {          
+          // First time slot of a new channel
+          // Set Route, DMA number, Packet length, and time to next
+          // Set the DMA num in the channel id table
+          pktEnded = false;
+          schedIdx++;
+          int route = route2bin(routeStr);
+          int dmaNum = destCoord.getTileId();
+          pktLen = 0;
+          time2Next = 0;
+          slotVal = route << (TIME2NEXT_WIDTH + PKTLEN_WIDTH + DMANUM_WIDTH) |
+                    dmaNum << (TIME2NEXT_WIDTH + PKTLEN_WIDTH) |
+                    pktLen << TIME2NEXT_WIDTH |
+                    time2Next;
+          schedTbl.add(schedIdx,slotVal);
+          System.out.println("Start of packet: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " route: " + route);
+          time2Next++;
+        } else if (chIdx != -1 && chIdx == prevChIdx && !pktEnded) {
+          // A later time slot of the current channel
+          // Update Packet length and time to next
+          pktLen++;
+          slotVal = schedTbl.get(schedIdx);
+          slotVal &= ~255; // set the lower 8 bits to 0
+          slotVal = slotVal | ((pktLen >> 1) << TIME2NEXT_WIDTH) | time2Next;
+          schedTbl.set(schedIdx,slotVal);
+          System.out.println("\t\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          time2Next++;
+        } else if (chIdx == -1 && prevChIdx != -1) {
+          // An in between channels time slot
+          // Update time to next of previous channel
+          pktEnded = true;
+          slotVal = schedTbl.get(schedIdx);
+          slotVal &= ~31; // set the lower 5 bits to 0
+          slotVal = slotVal | time2Next;
+          schedTbl.set(schedIdx,slotVal);
+          System.out.println("Between packets: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          time2Next++;
+        } else if (chIdx == -1 && prevChIdx == -1) {
+          // No previous channel
+          // Insert entry with DMA number equal all '1's
+          // and update its time to next
+          if (time2Next == 0) {
+            int dmaNum = (1 << DMANUM_WIDTH) - 1;
+            schedIdx++;
+            pktLen = 0;
+            slotVal = dmaNum << (TIME2NEXT_WIDTH + PKTLEN_WIDTH) |
+                      pktLen << TIME2NEXT_WIDTH |
+                      time2Next;
+            schedTbl.add(schedIdx,slotVal);
+          } else {
+            int dmaNum = (1 << DMANUM_WIDTH) - 1;
+            pktLen = 0;
+            slotVal = dmaNum << (TIME2NEXT_WIDTH + PKTLEN_WIDTH) |
+                      pktLen << TIME2NEXT_WIDTH |
+                      time2Next;
+            schedTbl.set(schedIdx,slotVal);
+          }
+          System.out.println("No packet:\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          time2Next++;
+          pktEnded = true;
+        }
+        if (chIdx != -1) {
+          prevChIdx = chIdx; 
+        }
+        if (time2Next == 32) {
+          time2Next = 0;
+          prevChIdx = -1;
+        }
+        prevRouteStr = routeStr;
+        //initArray.get(tileCoord.getTileId()).get(CH_ID_TBL).set(destCoord.getTileId(), route);
+      }
+    }
+  }
+
+  int route2bin(String route) {
+    /* For each transmission slot write an entry in the route table */
+    String binRoute = "";
+    char prevTurn = 'L';
+    for(int i = 0; i < route.length(); i++) {
+      char c = route.charAt(i);
+      if (c != 'L') {
+        binRoute = port2bin(c) + binRoute;  
+      } else {
+        char lastTurn = oppositePort(prevTurn);
+        binRoute = port2bin(lastTurn) + binRoute;
+      }
+      prevTurn = c;
+    }
+    return Integer.parseInt("0" + binRoute, 2);
+  }
+
+  protected String port2bin(char p){
+    String bin;
+    if(p == 'N'){bin = "00";}
+    else if(p == 'E'){bin = "01";}
+    else if(p == 'S'){bin = "10";}
+    else if(p == 'W'){bin = "11";}
+    else{bin = "00";}
+    return bin;
+  }
+
+  private void initializeArray(int nrCpu){
+    initArray = new ArrayList<List<List<Integer> > >(nrCpu);
+    for (int i = 0; i < nrCpu; i++) {
+      initArray.add(new ArrayList<List<Integer> >(2));
+      initArray.get(i).add(new ArrayList<Integer>());
+      initArray.get(i).add(new ArrayList<Integer>());
+//      for(int j = 0; j < nrCpu; j++){
+//        initArray.get(i).get(ROUTE_TABLE).add(0);
+//      }
+    }
+  }
+}
+
+
+
+
+

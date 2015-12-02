@@ -120,14 +120,6 @@ public class SourceParser extends Parser {
 		return Integer.parseInt("0" + binRoute, 2);
 	}
 
-	private  NodeList getTimeslots(Node tile) {
-		if (tile.getNodeType() != Node.ELEMENT_NODE) {throw new Error("Tile is not element node");}
-		Element tileE = (Element) tile;
-		TileCoord tileCoord = getTileCoord(tile);
-
-		return tileE.getElementsByTagName("timeslot");
-	}
-
 	protected String port2bin(char p){
 		String bin;
 		if(p == 'N'){bin = "00";}

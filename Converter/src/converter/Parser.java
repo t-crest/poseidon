@@ -116,10 +116,39 @@ public abstract class Parser {
 		return tileId;
 	}
 
+	protected static NodeList getTimeslots(Node tile) {
+		if (tile.getNodeType() != Node.ELEMENT_NODE) {throw new Error("Tile is not element node");}
+		Element tileE = (Element) tile;
+		TileCoord tileCoord = getTileCoord(tile);
+
+		return tileE.getElementsByTagName("timeslot");
+	}
+
 	protected static TileCoord getDestCoord(Element slotE) {
 		String[] coord = slotE.getElementsByTagName("na").item(0).getAttributes().getNamedItem("tx").getNodeValue().split("\\D");
 		TileCoord destCoord = new TileCoord(Integer.parseInt(coord[1]), Integer.parseInt(coord[2]));
 		return destCoord;
+	}
+
+	protected static int getChanId(Element slotE) {
+		int chanId = -1;
+		try {
+			String id = slotE.getElementsByTagName("na").item(0).getAttributes().getNamedItem("chan-id").getNodeValue();
+			chanId = Integer.parseInt(id);
+		} catch (Exception e){
+			chanId = -1;
+		}
+		return chanId;
+	}
+
+	protected static String getRoute(Element slotE) {
+		String route = "";
+		try {
+			route = slotE.getElementsByTagName("na").item(0).getAttributes().getNamedItem("route").getNodeValue();
+		} catch (Exception e) {
+			route = "";
+		}
+		return route;
 	}
 
 	protected static int getNumOfNodes(){

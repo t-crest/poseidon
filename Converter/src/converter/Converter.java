@@ -67,6 +67,7 @@ public class Converter {
 				"\t\tSource-java\n" +
 				"\t\tAegean-c\n" +
 				"\t\tAegean-phase-c\n" +
+				"\t\tArgo2-c\n" +
 				"\t\tAegean-ASIC-phase-c\n" +
 				"\t\tDist-c\n"+
 				"\t\tNetworkCalculus-constraints\n"+
@@ -100,6 +101,9 @@ public class Converter {
 		} else if ("Aegean-ASIC-phase-c".equals(args[2])){
 			printer = new AegeanAsyncPrinter();
 			parser = new ASICSourceParser(routerDepth);
+		} else if ("Argo2-c".equals(args[2])){
+			printer = new Argo2Printer();
+			parser = new Argo2Parser();
 		} else if ("Dist-c".equals(args[2])) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
 		} else if ("NetworkCalculus-constraints".equals(args[2])){
