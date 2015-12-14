@@ -2,7 +2,7 @@ all: compile
 
 compile:
 	@-mkdir -p ../../build
-	javac *.java -d ../../build
+	javac -cp ../../../commons-cli-1.3.1-src/src/main/java/ *.java -d ../../build
 	jar cfe ../../converter.jar converter.Converter -C ../../build .
 #	cd ../../build/converter && jar cf converter.jar *.class
 

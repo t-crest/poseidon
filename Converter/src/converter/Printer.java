@@ -49,6 +49,7 @@ import java.util.logging.Logger;
  */
 public abstract class Printer {
 	protected static FileWriter ofile;
+	protected static int indent = 0;
 	/**
 	 *
 	 * @param outFile The name of the output file for the converter
@@ -75,6 +76,39 @@ public abstract class Printer {
 		} catch (IOException ex) {
 			Logger.getLogger(Printer.class.getName()).log(Level.SEVERE, null, ex);
 		}
+	}
+
+
+	protected String ind(){
+		String str = "\n";
+		if (indent < 0) {
+			return "";
+		}
+		for (int i = 0; i < indent; i++) {
+			str += "\t";
+		}
+		return str;
+	}
+
+	protected String openBrac(){
+		indent++;
+		return "{";
+	}
+
+	protected String closeBrac(int b){
+		String str = "";
+		for (int i = 0 ; i < b; i++) {
+			str += closeBrac();
+		}
+		return str;
+	}
+
+	protected String closeBrac(){
+		if (indent > 0) {
+			indent--;
+		}
+		String str = ind();
+		return str + "}";
 	}
 	
 }
