@@ -127,12 +127,12 @@ public class Argo2Printer extends Printer {
 		str = str.substring(0, str.length()-1);
 
 
-		head =    "\nconst int NOC_MODES = " + numModes + ";"
+		head =    "\nconst int NOC_CONFS = " + numModes + ";"
 				+ "\nconst int NOC_CORES = " + numNodes + ";"
 				+ "\nconst int NOC_TABLES = " + tables + ";"
 				+ "\nconst int NOC_SCHEDULE_ENTRIES = " + (maxSchedEnts+1) + ";"
 				+ "\n"
-				+ "\nconst int noc_init_array[NOC_MODES][NOC_CORES][NOC_TABLES][NOC_SCHEDULE_ENTRIES] = ";
+				+ "\nconst int noc_init_array[NOC_CONFS][NOC_CORES][NOC_TABLES][NOC_SCHEDULE_ENTRIES] = ";
 
 		str = head + str;
 		try{
