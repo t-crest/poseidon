@@ -141,6 +141,7 @@ UpgradeLog*.XML
 /scripts/paths.sh
 /.check_tools
 /.pugixml
+/.common-cli
 Converter/converter.jar
 
 # Stat files produced by the scheduler
