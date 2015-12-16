@@ -62,7 +62,14 @@ poseidon: lib/pugixml/build/libpugixml.a
 	@-mkdir -p build 2>&1
 	cd build && $(COMPILER_FLAGS) cmake ../src && $(MAKE) -s && echo "POSEIDON_PATH=$$(pwd)" >> ../scripts/paths.sh
 
-Converter:
+.common-cli:
+	@-mkdir -p lib 2>&1
+	@cd lib && wget http://mirrors.dotsrc.org/apache//commons/cli/source/commons-cli-1.3.1-src.tar.gz
+	@cd lib && tar -xvf commons-cli-1.3.1-src.tar.gz
+	@cd lib && rm commons-cli-1.3.1-src.tar.gz
+	@echo "Commons CLI downloaded" > .common-cli
+
+Converter: .common-cli
 	@cd ./Converter/src/converter && $(MAKE) -s
 
 .pugixml:
