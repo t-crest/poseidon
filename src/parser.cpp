@@ -125,6 +125,8 @@ parser::parser(string platform_file, string com_file) {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr,phits,bw);
 		}
+		// If the reconfiguration master is specified, i.e., different from (-1,-1),
+		// we add channel from the master to all the slaves, if there is not already a channel.
 		if (reconfig != make_pair(-1,-1) ) {
 			this->add_reconfig_channel(phits,bw,reconfig);
 		}

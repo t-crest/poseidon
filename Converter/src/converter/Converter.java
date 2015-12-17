@@ -53,6 +53,8 @@ public class Converter {
 	public static void main(String[] args) {
 		int routerDepth = 1;
 		String printerName = "Argo2-c";
+		boolean showStats = false;
+		boolean verbose = false;
 		String outFile = "";
 		String[] inFiles = {""};
 		int numModes = 0;
@@ -82,26 +84,45 @@ public class Converter {
 													"- Dist-c\n"+
 													"- NetworkCalculus-constraints\n")
 								.hasArg().build() );
-		
+		options.addOption( Option.builder("s").required(false).longOpt("stats")
+								.desc("Show stats of the converted schedule.")
+								.hasArg(false).build());
+		options.addOption( Option.builder("v").required(false).longOpt("verbose")
+								.desc("Make converter output verbose.")
+								.hasArg(false).build());
 
 		try {
 			// parse the command line arguments
 			CommandLine line = cmdParser.parse( options, args );
+			if( line.hasOption( "v" ) ) {
+				verbose = true;
+			}
 			if( line.hasOption( "r" ) ) {
 				routerDepth = Integer.parseInt(line.getOptionValue( "r" ));
-				System.out.println( "routerDepth: " + routerDepth );
+				if (verbose) {
+					System.out.println( "routerDepth: " + routerDepth );
+				}
 			}
 			if( line.hasOption( "p" ) ) {
 				printerName = line.getOptionValue( "p" );
-				System.out.println( "printerName: " + printerName );
+				if (verbose) {
+					System.out.println( "printerName: " + printerName );
+				}
 			}
+			if( line.hasOption( "s" ) ) {
+				showStats = true;
+			}
+			
 			outFile = line.getOptionValue( "o" );
-			System.out.println( "outFile: " + outFile );
 			inFiles = line.getArgs();
-			System.out.println("inFiles:");
-			for(String i : inFiles){
-				System.out.println("\t"+i);
+			if (verbose) {
+				System.out.println("inFiles:");
+				for(String i : inFiles){
+					System.out.println("\t"+i);
+				}
+				System.out.println( "outFile: " + outFile );
 			}
+			
 			numModes = inFiles.length;
 
 		} catch( ParseException exp ) {
@@ -141,9 +162,13 @@ public class Converter {
 			printer = new AegeanAsyncPrinter();
 			parser = new ASICSourceParser(routerDepth);
 		} else if ("Argo2-c".equals(printerName)){
-			System.out.print("Printing configuration file...");
-			parser = new Argo2Parser(inFiles,outFile,new Argo2Printer());
-			System.out.println("Done");
+			if (verbose) {
+				System.out.print("Printing configuration files...");
+			}
+			parser = new Argo2Parser(inFiles,outFile,new Argo2Printer(),showStats);
+			if (verbose) {
+				System.out.println("Done");
+			}
 			return;
 		} else if ("Dist-c".equals(printerName)) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
@@ -154,8 +179,15 @@ public class Converter {
 			System.out.println("No printer specified...");
 			return;
 		}
-		System.out.print("Printing configuration file...");
+
+		if (verbose) {
+			System.out.print("Printing configuration files...");
+		}
+
 		parser.start(inFiles[0],outFile,printer);
-		System.out.println("Done");
+
+		if (verbose) {
+			System.out.println("Done");
+		}
 	}
 }
