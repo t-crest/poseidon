@@ -76,6 +76,9 @@ timeslot network_t::p() const {
 	for_each(this->links(), [&](link_t *l){
 		ret = util::max(ret, l->local_schedule.max_time()+1); // +1 because we want the number of time slots not the maximum time
 	});
+	for_each(this->routers(), [&](router_t *t){
+		ret = util::max(ret, t->local_out_schedule.max_time()+1);
+	});
 	return ret;
 }
  /**
@@ -88,9 +91,9 @@ timeslot network_t::p_best() const {
 		ret = util::max(ret, l->best_schedule.max_time()+1); // +1 because we want the number of time slots not the maximum time
 	});
 	//
-//	for_each(this->routers(), [&](router_t *t){
-//		ret = util::max(ret, t->local_out_best_schedule.max_time()+1);
-//	});
+	for_each(this->routers(), [&](router_t *t){
+		ret = util::max(ret, t->local_out_best_schedule.max_time()+1);
+	});
 	return ret;
 }
 
@@ -148,6 +151,29 @@ const vector<channel>& network_t::channels() const {
 const timeslot network_t::get_router_depth() const {
 	return this->router_depth;
 }
+
+const timeslot network_t::get_schedule_overlap() const {
+	timeslot ret = ::numeric_limits<uint>::max();
+	for_each(this->routers(), [&](router_t * r) {
+		uint shortest = ::numeric_limits<uint>::max();
+		for (auto it = r->hops.begin(); it != r->hops.end(); it++) {
+			if ((*it).first != r->address) {
+				if ((*it).second < shortest) {
+					shortest = (*it).second;
+				}
+			}
+		}
+		if(shortest < ret){
+			ret = shortest;
+		}
+	});
+	return ret;
+}
+
+
+
+
+
 
 /**
  * Traverse the topology graph backwards from destination via BFS.

@@ -59,7 +59,7 @@ void stats::print_stats(){
 }
 
 int stats::print_schedule_overlap(){
-	int schedule_overlap = 2*n.get_router_depth();
+	int schedule_overlap = n.get_schedule_overlap();
 	std::cout << "The schedule overlap: " << schedule_overlap << std::endl;
 	global::opts->stat_file << "# Schedule-overlap\t" << schedule_overlap << std::endl;
 	return schedule_overlap;

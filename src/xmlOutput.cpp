@@ -46,11 +46,13 @@ namespace snts {
 bool xmlOutput::output_schedule(const network_t& n)
 {
 	int numOfNodes = n.routers().size();
-	int countWidth = ceil(log2(n.best));
+
+	int schedule_overlap = n.get_schedule_overlap();
+	int schedule_length = n.p_best()-schedule_overlap;
 
 	xml_document doc;
 	xml_node schedule = doc.append_child("schedule");
-	schedule.append_attribute("length").set_value(n.best);
+	schedule.append_attribute("length").set_value(schedule_length);
 	schedule.append_attribute("width").set_value(n.cols());
 	schedule.append_attribute("height").set_value(n.rows());
 
@@ -65,7 +67,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 		vector<router_id> destinations(n.best,(*r)->address);
 		debugs("Tile: " << (*r)->address);
 		int router_depth = n.get_router_depth();
-		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
+		for(timeslot t = 0; t < schedule_length; t++){ // Write table row for each timeslot
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
 			ts.append_attribute("value") = t;
@@ -165,6 +167,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 	char *buf = co; // clang does not allow references to flexible arrays in lambda expressions
 	std::vector<bool> printed_chans(n.channels().size(),false);
 
+	int schedule_length = n.p_best()-n.get_schedule_overlap();
 	// The following for loop is slow and unnecessary, can be changed to improve runtime.
 	// What is needed is all the channels with the current router as the source.
 	for_each(n.channels(), [&](const channel & c) {
@@ -183,7 +186,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		int late = 0;
 		int inlate = 0;
 		bool init = true;
-		for(int i = 0; i < n.best; i++){
+		for(int i = 0; i < schedule_length; i++){
 			if(c.to != (*destinations)[i]){
 				// Increment latency
 				late++;
@@ -206,7 +209,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		}
 		slotswaittime += c.phits; // Only in the beginning of a timeslot can a packet be transmitted
 		channellatency = r->hops[c.to];
-		rate = ((double)num_phits)/n.p_best();
+		rate = ((double)num_phits)/schedule_length;
 		// Analyze the latency
 		xml_node destination = latency.append_child("destination");
 		print_coord(c.to, buf, max(n.rows(),n.cols()));
