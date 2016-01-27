@@ -9,17 +9,20 @@ APPLICATIONS="Sparse FFT-1024_complex Fpppp Robot RS-32_28_8_dec RS-32_28_8_enc 
 
 for t in torus ; do # torus mesh
 	rm -rf ${XML_DIR}/${t} 2>/dev/null
-	rm -rf ${XML_DIR}/${t} 2>/dev/null
+	rm -rf ${XML_DIR}/${t}_v 2>/dev/null
 	mkdir -p ${XML_DIR}/${t} 2>/dev/null
-	mkdir -p ${XML_DIR}/${t} 2>/dev/null
+	mkdir -p ${XML_DIR}/${t}_v 2>/dev/null
 	for i in 4 ; do # 3 4 5 6 7 8 9 10 11 12 13 14 15 16
 		echo "------------" ;
 		echo ${i}x${i}_${t} ;
 		echo "------------" ;
 		mkdir -p ${XML_DIR}/${t}/${t}_${i}x${i} ;
+		mkdir -p ${XML_DIR}/${t}_v/${t}_${i}x${i} ;
 		for a in ${APPLICATIONS} ; do
 			${EXE} -f "${TRAFFIC_DIR}/${t}/${t}_${i}x${i}/${a}_${t}_${i}x${i}.stp" \
 			-o "${XML_DIR}/${t}/${t}_${i}x${i}/${a}_${t}_${i}x${i}_max_rate.stp.xml"
+			${EXE} -v -f "${TRAFFIC_DIR}/${t}/${t}_${i}x${i}/${a}_${t}_${i}x${i}.stp" \
+			-o "${XML_DIR}/${t}_v/${t}_${i}x${i}/${a}_${t}_${i}x${i}_max_rate.stp.xml"
 			#${EXE} -f "${TRAFFIC_DIR}/${t}/${t}_${i}x${i}/${a}_${t}_${i}x${i}.stp" \
 			#-m -o "${XML_DIR}/${t}/${t}_${i}x${i}/${a}_${t}_${i}x${i}_mean.stp.xml"
 		done

@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.*;
 import java.lang.System;
+import java.nio.file.*;
 
 /**
 * A converter from xml format to Setup of DMA tables
@@ -61,8 +62,8 @@ public class Argo2Parser extends Parser {
   private static int numOfNodes;
   private static List<NodeList> tListArray;
   private static boolean showStats;
+  private static boolean showMinStats;
 
-  //private static final int TIME2NEXT_WIDTH = 5;
   private static final int TIME2NEXT_WIDTH = 5;
   private static final int PKTLEN_WIDTH = 3;
   private static final int DMANUM_WIDTH = 8;
@@ -74,9 +75,10 @@ public class Argo2Parser extends Parser {
     return;
   }
 
-  public Argo2Parser(String[] inFiles, String outFile, Argo2Printer printer, boolean showStats){
+  public Argo2Parser(String[] inFiles, String outFile, Argo2Printer printer, boolean showStats, boolean showMinStats){
     numOfModes = inFiles.length;
     this.showStats = showStats;
+    this.showMinStats = showMinStats;
     tListArray = new ArrayList<NodeList> (numOfModes);
     int width = 0;
     int firstWidth = 0;
@@ -117,9 +119,12 @@ public class Argo2Parser extends Parser {
       }
     }
     initializeArray(numOfModes,numOfNodes);
+    if (showMinStats) {
+      System.out.println("Filename\t\tEntries\tBits\tComp Entries\tComp Bits\tGain\tMax Entries");
+    }
     int modeId = 0;
     for (NodeList tList : tListArray) {
-      for_each_tile_timeslot(tList,modeId); 
+      for_each_tile_timeslot(tList,modeId,inFiles[modeId]); 
       modeId++;
     }
     printer.open(outFile);
@@ -127,7 +132,7 @@ public class Argo2Parser extends Parser {
     printer.close();
   }
 
-  private void for_each_tile_timeslot(NodeList tList, int modeId){
+  private void for_each_tile_timeslot(NodeList tList, int modeId, String inFile){
     int nodes = tList.getLength();
     int timeslots = 0;
     int schedTblEntries = 0;
@@ -143,6 +148,7 @@ public class Argo2Parser extends Parser {
       TileCoord tileCoord = getTileCoord(tile);
       int schedIdx = -1;
       int prevChIdx = -1;
+      int prevPktIdx = -1;
       int pktLen = 0;
       int time2Next = 0;
       boolean pktEnded = true;
@@ -155,12 +161,15 @@ public class Argo2Parser extends Parser {
         if (slot.getNodeType() != Node.ELEMENT_NODE) { continue; }
         Element slotE = (Element) slot;
         int chIdx = getChanId(slotE);
+        int pktIdx = getPktId(slotE);
         TileCoord destCoord = getDestCoord(slotE);
         List<Integer> schedTbl = initArray.get(modeId).get(tileCoord.getTileId()).get(SCHED_TBL);
         int slotVal = 0;
         String routeStr = getRoute(slotE);
-        //System.out.println("CONDITION: chIdx: " + chIdx + " prevChIdx: " + prevChIdx + " routeStr: " + routeStr + " prevRouteStr: " + prevRouteStr + " pktEnded: " + pktEnded);
-        if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || !routeStr.equals(prevRouteStr)))) {          
+        //System.out.print("CONDITION: chIdx: " + chIdx + " prevChIdx: " + prevChIdx + " \tpktIdx: " + pktIdx + " prevPktIdx: " + prevPktIdx + " \tpktEnded: " + pktEnded);
+        //if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || !routeStr.equals(prevRouteStr)))) {
+        if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || pktIdx != prevPktIdx))) {
+          //System.out.println(" Entered");
           // First time slot of a new channel
           // Set Route, DMA number, Packet length, and time to next
           // Set the DMA num in the channel id table
@@ -177,7 +186,7 @@ public class Argo2Parser extends Parser {
           schedTbl.add(schedIdx,slotVal);
           //System.out.println("Start of packet: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " route: " + route);
           time2Next++;
-        } else if (chIdx != -1 && chIdx == prevChIdx && !pktEnded) {
+        } else if (chIdx != -1 && chIdx == prevChIdx && pktIdx == prevPktIdx && !pktEnded) {
           // A later time slot of the current channel
           // Update Packet length and time to next
           pktLen++;
@@ -187,6 +196,7 @@ public class Argo2Parser extends Parser {
           schedTbl.set(schedIdx,slotVal);
           //System.out.println("\t\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
+          //System.out.println("");
         } else if (chIdx == -1 && prevChIdx != -1) {
           // An in between channels time slot
           // Update time to next of previous channel
@@ -197,6 +207,7 @@ public class Argo2Parser extends Parser {
           schedTbl.set(schedIdx,slotVal);
           //System.out.println("Between packets: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
+          //System.out.println("");
         } else if (chIdx == -1 && prevChIdx == -1) {
           // No previous channel
           // Insert entry with DMA number equal all '1's
@@ -204,6 +215,7 @@ public class Argo2Parser extends Parser {
           if (time2Next == 0) {
             int dmaNum = (1 << DMANUM_WIDTH) - 1;
             schedIdx++;
+            //System.out.println(" Empty");
             blindCompressedSchedTblEntries++;
             pktLen = 0;
             slotVal = dmaNum << (TIME2NEXT_WIDTH + PKTLEN_WIDTH) |
@@ -217,6 +229,7 @@ public class Argo2Parser extends Parser {
                       pktLen << TIME2NEXT_WIDTH |
                       time2Next;
             schedTbl.set(schedIdx,slotVal);
+            //System.out.println("");
           }
           //System.out.println("No packet:\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
@@ -225,10 +238,14 @@ public class Argo2Parser extends Parser {
         if (chIdx != -1) {
           prevChIdx = chIdx; 
         }
+        if (pktIdx != -1) {
+          prevPktIdx = pktIdx; 
+        }
         //if (time2Next == 32) {
         if (time2Next == (int)Math.pow(2,TIME2NEXT_WIDTH)) {
           time2Next = 0;
           prevChIdx = -1;
+          prevPktIdx = -1;
         }
         prevRouteStr = routeStr;
         //initArray.get(tileCoord.getTileId()).get(CH_ID_TBL).set(destCoord.getTileId(), route);
@@ -243,7 +260,7 @@ public class Argo2Parser extends Parser {
         minCompTblEntries = numEntries;
       }
     }
-    if (showStats) {
+    if (showStats || showMinStats) {
       int tableWidth = DMANUM_WIDTH+ROUTE_WIDTH;
       int phaseTableWidth = 2+tableWidth;
       int compressedTableWidth = TIME2NEXT_WIDTH+PKTLEN_WIDTH+tableWidth;
@@ -254,26 +271,37 @@ public class Argo2Parser extends Parser {
       double roundedNaiveGain = Math.round(naiveGain*100.0)/100.0;
       double phaseGain = ((phaseTblBits-compressedTblBits)*100.0)/phaseTblBits;
       double roundedPhaseGain = Math.round(phaseGain*100.0)/100.0;
-      System.out.println("Mode " + modeId + " contains:\n"
-                        +"\tnodes:\t\t\t" + nodes + "\n"
-                        +"\ttimeslots:\t\t" + timeslots + "\n"
-                        +"\tSchedule table:\n"
-                        +"\t\tentries:\t" + schedTblEntries + "\n"
-                        +"\t\twidth:\t\t" + tableWidth + "\n"
-                        +"\t\tbits:\t\t" + schedTblBits + "\n"
-                        +"\tPhase schedule table:\n"
-                        +"\t\tentries:\t" + (schedTblEntries/3) + "\n"
-                        +"\t\twidth:\t\t" + phaseTableWidth + "\n"
-                        +"\t\tbits:\t\t" + phaseTblBits + "\n"
-                        +"\tCompressed schedule table:\n"
-                        +"\t\tentries:\t" + compressedSchedTblEntries + "\n"
-                        +"\t\tnull entries:\t" + blindCompressedSchedTblEntries + "\n"
-                        +"\t\tmin entries:\t" + minCompTblEntries + "\n"
-                        +"\t\tmax entries:\t" + maxCompTblEntries + "\n"
-                        +"\t\twidth:\t\t" + compressedTableWidth + "\n"
-                        +"\t\tbits:\t\t" + compressedTblBits + "\n"
-                        +"\tTotal gain of compression over naive:\t" + roundedNaiveGain + "%\n"
-                        +"\tTotal gain of compression over phase:\t" + roundedPhaseGain + "%\n");
+      if (showStats) {
+        System.out.println("Mode " + modeId + " contains:\n"
+                          +"\tnodes:\t\t\t" + nodes + "\n"
+                          +"\ttimeslots:\t\t" + timeslots + "\n"
+                          +"\tSchedule table:\n"
+                          +"\t\tentries:\t" + schedTblEntries + "\n"
+                          +"\t\twidth:\t\t" + tableWidth + "\n"
+                          +"\t\tbits:\t\t" + schedTblBits + "\n"
+                          +"\tPhase schedule table:\n"
+                          +"\t\tentries:\t" + (schedTblEntries/3) + "\n"
+                          +"\t\twidth:\t\t" + phaseTableWidth + "\n"
+                          +"\t\tbits:\t\t" + phaseTblBits + "\n"
+                          +"\tCompressed schedule table:\n"
+                          +"\t\tentries:\t" + compressedSchedTblEntries + "\n"
+                          +"\t\tnull entries:\t" + blindCompressedSchedTblEntries + "\n"
+                          +"\t\tmin entries:\t" + minCompTblEntries + "\n"
+                          +"\t\tmax entries:\t" + maxCompTblEntries + "\n"
+                          +"\t\twidth:\t\t" + compressedTableWidth + "\n"
+                          +"\t\tbits:\t\t" + compressedTblBits + "\n"
+                          +"\tTotal gain of compression over naive:\t" + roundedNaiveGain + "%\n"
+                          +"\tTotal gain of compression over phase:\t" + roundedPhaseGain + "%\n");
+      } else if (showMinStats) {
+        Path p = Paths.get(inFile);
+        String fileName = p.getFileName().toString();
+        String name = String.format("%-24s", fileName);
+        int len = name.length();
+        //System.out.println("Filename: "+fileName+" length: "+len+" name: "+name.replace(' ', '*')+" length name: "+name.length());
+        System.out.print(name.substring(len-23,len)+"\t");
+        System.out.println((schedTblEntries/3)+"\t"+phaseTblBits+"\t"+compressedSchedTblEntries
+                            +"\t\t"+compressedTblBits+"\t\t"+roundedPhaseGain+"%\t" + maxCompTblEntries);
+      }
     }
   }
 

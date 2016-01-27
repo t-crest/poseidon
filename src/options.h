@@ -68,6 +68,8 @@ public:
 	std::ofstream stat_file;
 	float beta_percent;
 	float argo_version;
+	std::pair<int,int> config_master;
+
 	
 private:
 	meta_t parse_meta_t(std::string str);

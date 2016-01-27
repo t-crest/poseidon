@@ -54,6 +54,7 @@ public class Converter {
 		int routerDepth = 1;
 		String printerName = "Argo2-c";
 		boolean showStats = false;
+		boolean showMinStats = false;
 		boolean verbose = false;
 		String outFile = "";
 		String[] inFiles = {""};
@@ -87,6 +88,9 @@ public class Converter {
 		options.addOption( Option.builder("s").required(false).longOpt("stats")
 								.desc("Show stats of the converted schedule.")
 								.hasArg(false).build());
+		options.addOption( Option.builder("m").required(false).longOpt("min-stats")
+								.desc("Show a minimal number of stats for the converted schedule.")
+								.hasArg(false).build());
 		options.addOption( Option.builder("v").required(false).longOpt("verbose")
 								.desc("Make converter output verbose.")
 								.hasArg(false).build());
@@ -111,6 +115,9 @@ public class Converter {
 			}
 			if( line.hasOption( "s" ) ) {
 				showStats = true;
+			}
+			if( line.hasOption( "m" ) ) {
+				showMinStats = true;
 			}
 			
 			outFile = line.getOptionValue( "o" );
@@ -165,7 +172,7 @@ public class Converter {
 			if (verbose) {
 				System.out.print("Printing configuration files...");
 			}
-			parser = new Argo2Parser(inFiles,outFile,new Argo2Printer(),showStats);
+			parser = new Argo2Parser(inFiles,outFile,new Argo2Printer(),showStats,showMinStats);
 			if (verbose) {
 				System.out.println("Done");
 			}

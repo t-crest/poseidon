@@ -102,6 +102,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 			if(route.length() > 0){
 				na.append_attribute("route") = route.c_str();
 				na.append_attribute("chan-id").set_value(dest_chan->channel_id);
+				na.append_attribute("pkt-id").set_value(dest_chan->pkt_id);
 			}
 
 			// Write row in Router table

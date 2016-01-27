@@ -115,7 +115,7 @@ parser::parser(string platform_file, string com_file) {
 	const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
 	const int bw = get_opt_attr<int>(channels, "bandwidth",1); // The default bandwidth is set to 1.
 	// By default the is not added reconfiguration channels from the master to all the slaves.
-	const router_id reconfig = get_opt_attr<router_id>(channels, "reconfig",make_pair(-1,-1));
+	const router_id reconfig = get_opt_attr<router_id>(channels, "reconfig",global::opts->config_master);
 
 	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
 	if (channel_type == "NOT FOUND"){
@@ -288,7 +288,7 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	
 	c.from = r1;
 	c.to = r2;
-	c.phits = phits;
+	c.phits = phits_local;
 	c.ch_bw = bw_local;
 
 	ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");

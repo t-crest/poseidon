@@ -65,7 +65,6 @@ int main(int argc, char** argv) {
 	global::opts = new options(argc, argv);
 	cout << global::opts->input_file << endl;
 
-	//std::ifstream in("../traffic_data/mesh/mesh_3x3/Sparse_mesh_3x3.stp");
 	std::ifstream in(global::opts->input_file.c_str());
 
 	if(in.fail()){
@@ -84,9 +83,6 @@ int main(int argc, char** argv) {
 	int edges = 0;
 	int trash_count = 0;
 
-	//for(int i = 0; i < 14; i++){
-	//	cin.ignore(200,'\n');
-	//}
 	char c;
 	enum state_t {IDLE,STAR,SLASH};
 	state_t state = IDLE;
@@ -276,7 +272,23 @@ int main(int argc, char** argv) {
 				//sprintf(to_node,"(%i,%i)",dest_x,dest_y);
 				sprintf(to_node,"(%i,%i)",nodes[i].second[j].first.first,nodes[i].second[j].first.second);
 				channel.append_attribute("to").set_value(to_node);
-				channel.append_attribute("bandwidth").set_value(bw);
+				// Set the bandwidth to the default
+				channel.append_attribute("bandwidth").set_value(bw);	
+				// If the packet length is variable merge packets
+				if (global::opts->var_len_pkt) {
+					// Maximum 7 double words of payload per packet
+					// Default number is one plus a header equal 3 phits
+					// Don't merge packets with a bandwidth of one or two
+					for (int i = 7; i > 2; --i) {
+						if ((bw % i) == 0) {
+							channel.attribute("bandwidth").set_value(bw/i);
+							channel.append_attribute("phits").set_value(i*2+1);		
+							break;
+						}
+					}
+					
+					
+				}
 			}
 		}
 	}

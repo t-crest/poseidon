@@ -141,6 +141,17 @@ public abstract class Parser {
 		return chanId;
 	}
 
+	protected static int getPktId(Element slotE) {
+		int pktId = -1;
+		try {
+			String id = slotE.getElementsByTagName("na").item(0).getAttributes().getNamedItem("pkt-id").getNodeValue();
+			pktId = Integer.parseInt(id);
+		} catch (Exception e){
+			pktId = -1;
+		}
+		return pktId;
+	}
+
 	protected static String getRoute(Element slotE) {
 		String route = "";
 		try {
