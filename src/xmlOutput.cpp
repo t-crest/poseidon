@@ -64,7 +64,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 		tile.append_attribute("id") = co;
 		// Vector for saving data to calculate Worst-Case Latencies
 
-		vector<router_id> destinations(n.best,(*r)->address);
+		vector<uint> destinations(schedule_length,::numeric_limits<uint>::max());
 		debugs("Tile: " << (*r)->address);
 		int router_depth = n.get_router_depth();
 		for(timeslot t = 0; t < schedule_length; t++){ // Write table row for each timeslot
@@ -75,10 +75,6 @@ bool xmlOutput::output_schedule(const network_t& n)
 			int t_in = t;
 			int t_out = (t+router_depth)%(n.best+router_depth);
 			debugs("t_in: " << t_in << " t_out: " << t_out);
-//			if(t == 0){
-//				t_in = n.best-1;
-//				t_out = n.best;
-//			}
 			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
@@ -87,12 +83,13 @@ bool xmlOutput::output_schedule(const network_t& n)
 				debugs( "Timeslot: " << t << " = " << (*r)->local_in_best_schedule.get(t)->to );
 				dest_chan = (*r)->local_in_best_schedule.get((t)%n.best);
 				dest_id = dest_chan->to;
+				destinations[t] = dest_chan->channel_id;
 			} else {
 				debugs("Timeslot: " << t);
 			}
 			if ((*r)->local_out_best_schedule.has(t))
 				src_id = (*r)->local_out_best_schedule.get(t)->from;
-			destinations[t] = dest_id;
+
 			// New na
 			xml_node na = ts.append_child("na");
 			print_coord(src_id,co,max(n.rows(),n.cols()));
@@ -161,7 +158,7 @@ void xmlOutput::print_coord(const pair<int, int> r,char* co, const int max_dimen
 	snprintf(co,buffer_size,"(%i,%i)",r.first,r.second);
 }
 
-void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<router_id>* destinations, router_t* r){
+void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<uint>* destinations, router_t* r){
 	xml_node latency = (*tile).append_child("latency");
 	char co[2*max(n.rows(),n.cols())+3];
 	char *buf = co; // clang does not allow references to flexible arrays in lambda expressions
@@ -187,7 +184,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		int inlate = 0;
 		bool init = true;
 		for(int i = 0; i < schedule_length; i++){
-			if(c.to != (*destinations)[i]){
+			if(c.channel_id != (*destinations)[i]){
 				// Increment latency
 				late++;
 				continue;
@@ -217,6 +214,8 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		destination.append_attribute("slotwaittime") = slotswaittime;
 		destination.append_attribute("channellatency") = channellatency;
 		destination.append_attribute("chan-id") = c.channel_id;
+		destination.append_attribute("chan-bw") = c.ch_bw;
+		destination.append_attribute("pkt-len") = c.phits;
 		destination.append_attribute("rate") = rate;
 	});
 }
