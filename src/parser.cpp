@@ -125,15 +125,15 @@ parser::parser(string platform_file, string com_file) {
 		for (EACH_TAG(node_itr, "channel", channels)) {
 			channel c = this->parse_channel(node_itr,phits,bw);
 		}
-		// If the reconfiguration master is specified, i.e., different from (-1,-1),
-		// we add channel from the master to all the slaves, if there is not already a channel.
-		if (reconfig != make_pair(-1,-1) ) {
-			this->add_reconfig_channel(phits,bw,reconfig);
-		}
 	} else if (channel_type == "all2all") {	
 		this->create_all2all(phits,bw);
 	} else {
 		ensure(false, "Channel type not recognized");
+	}
+	// If the reconfiguration master is specified, i.e., different from (-1,-1),
+	// we add channel from the master to all the slaves, if there is not already a channel.
+	if (reconfig != make_pair(-1,-1) ) {
+		this->add_reconfig_channel(phits,bw,reconfig);
 	}
 
 }
@@ -298,6 +298,7 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	bool pathexist = !this->n->router(c.from)->next[c.to].empty();
 	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
 	c.channel_id = this->channel_count++;
+	c.config_ch = false;
 	for(int i = 0; i < bw_local; i++){
 		c.pkt_id = i;
 		this->n->specification.push_back(c);
@@ -315,6 +316,7 @@ void parser::create_all2all(const int phits, const int bw){
 				c.phits = phits;
 				c.ch_bw = bw;
 				c.channel_id = this->channel_count++;
+				c.config_ch = false;
 				for(int i = 0; i < bw; i++){
 					c.pkt_id = i;
 					this->n->specification.push_back(c);
@@ -330,12 +332,13 @@ void parser::add_reconfig_channel(const int phits, const int bw, const pair<int,
 	for_each(this->n->routers(),[&](router_t *r1){
 		if(r1->address != master){
 			bool add_channel = true;
-			for(int j = 0 ; j < this->n->specification.size(); j++){
-				channel c = this->n->specification[j];
-				if (c.from == master && c.to == r1->address){
-					add_channel = false;
-				}
-			}
+			// Only add channels that are not already there
+			//for(int j = 0 ; j < this->n->specification.size(); j++){
+			//	channel c = this->n->specification[j];
+			//	if (c.from == master && c.to == r1->address){
+			//		add_channel = false;
+			//	}
+			//}
 			if (add_channel){
 				cout << "Adding channel from: " << master << " to : " << r1->address << endl;
 				channel c;
@@ -344,6 +347,7 @@ void parser::add_reconfig_channel(const int phits, const int bw, const pair<int,
 				c.phits = phits;
 				c.ch_bw = bw;
 				c.channel_id = this->channel_count++;
+				c.config_ch = true;
 				for(int i = 0; i < bw; i++){
 					c.pkt_id = i;
 					this->n->specification.push_back(c);

@@ -101,6 +101,7 @@ bool xmlOutput::output_schedule(const network_t& n)
 			if(route.length() > 0){
 				na.append_attribute("route") = route.c_str();
 				na.append_attribute("chan-id").set_value(dest_chan->channel_id);
+				na.append_attribute("config-ch").set_value(dest_chan->config_ch);
 				na.append_attribute("pkt-id").set_value(dest_chan->pkt_id);
 			}
 
@@ -215,6 +216,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<uin
 		destination.append_attribute("channellatency") = channellatency;
 		destination.append_attribute("chan-id") = c.channel_id;
 		destination.append_attribute("chan-bw") = c.ch_bw;
+		destination.append_attribute("config-ch") = c.config_ch;
 		destination.append_attribute("pkt-len") = c.phits;
 		destination.append_attribute("rate") = rate;
 	});

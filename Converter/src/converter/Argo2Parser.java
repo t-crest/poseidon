@@ -113,7 +113,8 @@ public class Argo2Parser extends Parser {
         doc.getDocumentElement().normalize();
         NodeList nList = doc.getElementsByTagName("tile");
         tListArray.add(nList);
-        numOfNodes = nList.getLength();
+        //numOfNodes = nList.getLength();
+        numOfNodes = width * height;
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -262,15 +263,15 @@ public class Argo2Parser extends Parser {
     }
     if (showStats || showMinStats) {
       int tableWidth = DMANUM_WIDTH+ROUTE_WIDTH;
-      int phaseTableWidth = 2+tableWidth;
+      int baseTableWidth = tableWidth;
       int compressedTableWidth = TIME2NEXT_WIDTH+PKTLEN_WIDTH+tableWidth;
       int schedTblBits = tableWidth*schedTblEntries;
-      int phaseTblBits = phaseTableWidth*(schedTblEntries/3);
+      int baseTblBits = baseTableWidth*(schedTblEntries/3);
       int compressedTblBits = compressedTableWidth*compressedSchedTblEntries;
       double naiveGain = ((schedTblBits-compressedTblBits)*100.0)/schedTblBits;
       double roundedNaiveGain = Math.round(naiveGain*100.0)/100.0;
-      double phaseGain = ((phaseTblBits-compressedTblBits)*100.0)/phaseTblBits;
-      double roundedPhaseGain = Math.round(phaseGain*100.0)/100.0;
+      double baseGain = ((baseTblBits-compressedTblBits)*100.0)/baseTblBits;
+      double roundedBaseGain = Math.round(baseGain*100.0)/100.0;
       if (showStats) {
         System.out.println("Mode " + modeId + " contains:\n"
                           +"\tnodes:\t\t\t" + nodes + "\n"
@@ -279,10 +280,10 @@ public class Argo2Parser extends Parser {
                           +"\t\tentries:\t" + schedTblEntries + "\n"
                           +"\t\twidth:\t\t" + tableWidth + "\n"
                           +"\t\tbits:\t\t" + schedTblBits + "\n"
-                          +"\tPhase schedule table:\n"
+                          +"\tBase schedule table:\n"
                           +"\t\tentries:\t" + (schedTblEntries/3) + "\n"
-                          +"\t\twidth:\t\t" + phaseTableWidth + "\n"
-                          +"\t\tbits:\t\t" + phaseTblBits + "\n"
+                          +"\t\twidth:\t\t" + baseTableWidth + "\n"
+                          +"\t\tbits:\t\t" + baseTblBits + "\n"
                           +"\tCompressed schedule table:\n"
                           +"\t\tentries:\t" + compressedSchedTblEntries + "\n"
                           +"\t\tnull entries:\t" + blindCompressedSchedTblEntries + "\n"
@@ -291,7 +292,7 @@ public class Argo2Parser extends Parser {
                           +"\t\twidth:\t\t" + compressedTableWidth + "\n"
                           +"\t\tbits:\t\t" + compressedTblBits + "\n"
                           +"\tTotal gain of compression over naive:\t" + roundedNaiveGain + "%\n"
-                          +"\tTotal gain of compression over phase:\t" + roundedPhaseGain + "%\n");
+                          +"\tTotal gain of compression over base:\t" + roundedBaseGain + "%\n");
       } else if (showMinStats) {
         Path p = Paths.get(inFile);
         String fileName = p.getFileName().toString();
@@ -299,8 +300,10 @@ public class Argo2Parser extends Parser {
         int len = name.length();
         //System.out.println("Filename: "+fileName+" length: "+len+" name: "+name.replace(' ', '*')+" length name: "+name.length());
         System.out.print(name.substring(len-23,len)+"\t");
-        System.out.println((schedTblEntries/3)+"\t"+phaseTblBits+"\t"+compressedSchedTblEntries
-                            +"\t\t"+compressedTblBits+"\t\t"+roundedPhaseGain+"%\t" + maxCompTblEntries);
+        //System.out.println((schedTblEntries/3)+"\t"+baseTblBits+"\t"+compressedSchedTblEntries
+        //                    +"\t\t"+compressedTblBits+"\t\t"+roundedBaseGain+"%\t" + maxCompTblEntries);
+        System.out.println((schedTblEntries/3)+"\t"+baseTblBits+"\t"+compressedSchedTblEntries
+                            +"\t\t"+compressedTblBits+"\t\t"+roundedBaseGain+"%\t" + maxCompTblEntries);
       }
     }
   }

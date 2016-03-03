@@ -91,6 +91,8 @@ struct channel {
     unsigned char pkt_id;
 	unsigned char phits;
 
+    bool config_ch;
+
 	timeslot t_start;
 	timeslot t_best_start;
 };
