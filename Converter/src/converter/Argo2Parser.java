@@ -193,7 +193,7 @@ public class Argo2Parser extends Parser {
           pktLen++;
           slotVal = schedTbl.get(schedIdx);
           slotVal &= ~((int)Math.pow(2,TIME2NEXT_WIDTH + PKTLEN_WIDTH)-1); // set the lower 8 bits to 0
-          slotVal = slotVal | ((pktLen >> 1) << TIME2NEXT_WIDTH) | time2Next;
+          slotVal = slotVal | (pktLen << TIME2NEXT_WIDTH) | time2Next;
           schedTbl.set(schedIdx,slotVal);
           //System.out.println("\t\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;

@@ -2,6 +2,6 @@
   <platform width="3" height="3">
     <topology type="bitorus"></topology>
   </platform>
-   <communication type="all2all">
+   <communication type="all2all" phits="3" >
   </communication>
 
