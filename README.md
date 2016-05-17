@@ -47,7 +47,6 @@ The number of phits can also be specified on individual channels, as shown on th
 
 TODO
 ----
-- Because of pipelining the emptying in the end of a schedule can be folded to the beginning of the schedule.
 - Calculation of the bisection bound for arbitrary communication patterns.
 - Check local source and destination links before other links.
 - Predecessor structure with constant lookup time for next free time slot.
