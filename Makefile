@@ -73,8 +73,10 @@ Converter: .common-cli
 	@cd ./Converter/src/converter && $(MAKE) -s
 
 .pugixml:
-	@-mkdir -p lib 2>&1
-	@cd lib && svn checkout http://pugixml.googlecode.com/svn/tags/release-1.2 pugixml
+	#@-mkdir -p lib 2>&1
+	#@cd lib && svn checkout http://pugixml.googlecode.com/svn/tags/release-1.2 pugixml
+	git submodule init
+	git submodule update
 	@echo "Pugixml downloaded" > .pugixml
 
 lib/pugixml/build/libpugixml.a: .pugixml
