@@ -131,9 +131,10 @@ parser::parser(string platform_file, string com_file) {
 		ensure(false, "Channel type not recognized");
 	}
 	// If the reconfiguration master is specified, i.e., different from (-1,-1),
-	// we add channel from the master to all the slaves, if there is not already a channel.
+	// we add channel from the master to all the slaves, configuration packets are only 2 phits
+	// and the default bandwidth is 1.
 	if (reconfig != make_pair(-1,-1) ) {
-		this->add_reconfig_channel(phits,bw,reconfig);
+		this->add_reconfig_channel(2,1,reconfig);
 	}
 
 }
@@ -332,13 +333,6 @@ void parser::add_reconfig_channel(const int phits, const int bw, const pair<int,
 	for_each(this->n->routers(),[&](router_t *r1){
 		if(r1->address != master){
 			bool add_channel = true;
-			// Only add channels that are not already there
-			//for(int j = 0 ; j < this->n->specification.size(); j++){
-			//	channel c = this->n->specification[j];
-			//	if (c.from == master && c.to == r1->address){
-			//		add_channel = false;
-			//	}
-			//}
 			if (add_channel){
 				cout << "Adding channel from: " << master << " to : " << r1->address << endl;
 				channel c;

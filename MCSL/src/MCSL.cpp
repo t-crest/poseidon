@@ -273,16 +273,16 @@ int main(int argc, char** argv) {
 				sprintf(to_node,"(%i,%i)",nodes[i].second[j].first.first,nodes[i].second[j].first.second);
 				channel.append_attribute("to").set_value(to_node);
 				// Set the bandwidth to the default
-				channel.append_attribute("bandwidth").set_value(bw);	
+				channel.append_attribute("bandwidth").set_value(bw);
 				// If the packet length is variable merge packets
 				if (global::opts->var_len_pkt) {
-					// Maximum 7 double words of payload per packet
-					// Default number is one plus a header equal 3 phits
+					// Maximum 15 words of payload per packet
+					// Default number is two plus a header equal 3 phits
 					// Don't merge packets with a bandwidth of one or two
-					for (int i = 7; i > 2; --i) {
+					for (int i = 7; i > 1; --i) {
 						if ((bw % i) == 0) {
 							channel.attribute("bandwidth").set_value(bw/i);
-							channel.append_attribute("phits").set_value(i*2+1);		
+							channel.append_attribute("phits").set_value((i*2)+1);		
 							break;
 						}
 					}
