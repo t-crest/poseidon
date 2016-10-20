@@ -87,6 +87,7 @@ private:
     void create_bitorus(const int link_depth);
     channel parse_channel(pugi::xml_node& chan, const int phits, const int bw);
     void create_all2all(const int phits, const int bw);
+    void add_reconfig_channel(const int phits, const int bw, const std::pair<int,int> master);
 };
 
 #endif	/* PARSER_HPP */

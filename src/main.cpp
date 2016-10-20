@@ -59,9 +59,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <memory>
+#include <signal.h>
 
 
 using namespace std;
+
+void exit_handler(int s){
+	global::opts->run_for = 0;
+	printf("\nScheduler is halting.\n");
+}
 
 int main(int argc, char* argv[]) 
 {
@@ -75,16 +81,18 @@ int main(int argc, char* argv[])
 	// Initializing the stat
 	snts::stats* b = new snts::stats(n);
 	if (global::opts->draw) snts::draw_network(n); // draw network before scheduling anything
+
+	// Setup handler to catch ctrl-C
+	struct sigaction sigIntHandler;
+	sigIntHandler.sa_handler = exit_handler;
+	sigemptyset(&sigIntHandler.sa_mask);
+	sigIntHandler.sa_flags = 0;
+	sigaction(SIGINT, &sigIntHandler, NULL);
 	
+
 	snts::singleshot_scheduler *s = snts::get_heuristic(global::opts->metaheuristic, n, b);
 	s->main_run();
-	//--------- Remove --------------
-//	if (global::opts->draw) {
-//		cout << "Drawing shedule...";
-//		snts::draw_schedule(n); // finally draw the schedule itself 
-//		cout << "Done." << endl;
-//	} 
-	//-------------------------------
+
 	s->verify( global::opts->save_best );
 	cout << "Schedule verified." << endl;
 	cout << "Best schedule period: " << n.best << endl;

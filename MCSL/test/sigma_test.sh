@@ -16,6 +16,9 @@ for a in ${APPLICATIONS} ; do
 				mkdir -p ${OUTPUT_DIR}/${a}/${topo}/${topo}_${size}x${size} 2>/dev/null
 				${MCSL} -f "${TRAFFIC_DIR}/${topo}/${topo}_${size}x${size}/${a}_${topo}_${size}x${size}.stp" \
 				-o "${OUTPUT_DIR}/${a}/${topo}/${topo}_${size}x${size}/${a}_s_${si}.xml" -s "${si}"
+				mkdir -p ${OUTPUT_DIR}/${a}/${topo}_v/${topo}_${size}x${size} 2>/dev/null
+				${MCSL} -v -f "${TRAFFIC_DIR}/${topo}/${topo}_${size}x${size}/${a}_${topo}_${size}x${size}.stp" \
+				-o "${OUTPUT_DIR}/${a}/${topo}_v/${topo}_${size}x${size}/${a}_s_${si}.xml" -s "${si}"
 			done
 		done
 	done

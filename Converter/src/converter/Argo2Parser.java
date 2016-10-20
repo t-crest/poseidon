@@ -36,69 +36,152 @@
 
 package converter;
 
+import java.io.File;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.w3c.dom.*;
 import java.lang.System;
+import java.nio.file.*;
 
 /**
 * A converter from xml format to Setup of DMA tables
 * @author Rasmus Bo Sorensen
 */
 public class Argo2Parser extends Parser {
-  private static List<List<List<Integer> > > initArray;
+  private static List<List<List<List<Integer> > > > initArray;
   private static final int SCHED_TBL = 0;
   private static final int CH_ID_TBL = 1;
 
-  private static final int TIME2NEXT_WIDTH = 5;
-  private static final int PKTLEN_WIDTH = 3;
+  private static int numOfModes;
+  private static int numOfNodes;
+  private static List<NodeList> tListArray;
+  private static boolean showStats;
+  private static boolean showMinStats;
+
+  private static final int TIME2NEXT_WIDTH = 4;
+  private static final int PKTLEN_WIDTH = 4;
   private static final int DMANUM_WIDTH = 8;
   private static final int ROUTE_WIDTH = 16;
 
-  public Argo2Parser(){
-  }
 
   @Override
-  public void parse() {
-    try {
-      int numOfNodes = getNumOfNodes();
-      initializeArray(numOfNodes);
-      for_each_tile_timeslot();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    printer.printData(initArray);
+  public void parse(){
+    return;
   }
 
-  private void for_each_tile_timeslot(){
-    for (int tileIdx = 0; tileIdx < getNumOfNodes(); tileIdx++) {
-      System.out.println("Core: " + tileIdx);
-      Node tile = getTile(tileIdx);
+  public Argo2Parser(String[] inFiles, String outFile, Argo2Printer printer, boolean showStats, boolean showMinStats){
+    numOfModes = inFiles.length;
+    this.showStats = showStats;
+    this.showMinStats = showMinStats;
+    tListArray = new ArrayList<NodeList> (numOfModes);
+    int width = 0;
+    int firstWidth = 0;
+    int height = 0;
+    int firstHeight = 0;
+    for (String file : inFiles) {
+      try{
+        File fXmlFile = new File(file);
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        doc = dBuilder.parse(fXmlFile);
+        width = Integer.parseInt(doc.getDocumentElement().getAttribute("width"));
+        height = Integer.parseInt(doc.getDocumentElement().getAttribute("height"));
+        //Check that the width and height is the same for all the modes.
+        if (firstWidth != 0) {
+          if (firstWidth != width) {
+            System.out.println("Error: Modes belong to different platforms. The widths of the platforms do not match.");
+            return;
+          }
+        } else {
+          firstWidth = width;
+        }
+        if (firstHeight != 0) {
+          if (firstHeight != height) {
+            System.out.println("Error: Modes belong to different platforms. The heights of the platforms do not match.");
+            return;
+          }
+        } else {
+          firstHeight = height;
+        }
+        new TileCoord(0,0,width,height); // Initializing the static size variables in TileCoord
+        doc.getDocumentElement().normalize();
+        NodeList nList = doc.getElementsByTagName("tile");
+        tListArray.add(nList);
+        //numOfNodes = nList.getLength();
+        numOfNodes = width * height;
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+    initializeArray(numOfModes,numOfNodes);
+    if (showMinStats) {
+      System.out.println("Filename\t\tEntries\tBits\tComp Entries\tComp Bits\tGain\tMax Entries");
+    }
+    int modeId = 0;
+    for (NodeList tList : tListArray) {
+      for_each_tile_timeslot(tList,modeId,inFiles[modeId]); 
+      modeId++;
+    }
+    printer.open(outFile);
+    printer.printMCData(initArray);
+    printer.close();
+  }
+
+  private void for_each_tile_timeslot(NodeList tList, int modeId, String inFile){
+    int nodes = tList.getLength();
+    int timeslots = 0;
+    int schedTblEntries = 0;
+    int compressedSchedTblEntries = 0;
+    int blindCompressedSchedTblEntries = 0;
+    int minCompTblEntries = Integer.MAX_VALUE;
+    int maxCompTblEntries = 0;
+    int minDMATblEntries = Integer.MAX_VALUE;
+    int maxDMATblEntries = 0;
+    for (int tileIdx = 0; tileIdx < tList.getLength(); tileIdx++) {
+      
+      //System.out.println("Core: " + tileIdx);
+      Node tile = tList.item(tileIdx);
       NodeList slotList = getTimeslots(tile);
       TileCoord tileCoord = getTileCoord(tile);
       int schedIdx = -1;
       int prevChIdx = -1;
+      int prevPktIdx = -1;
       int pktLen = 0;
       int time2Next = 0;
       boolean pktEnded = true;
       String prevRouteStr = "";
+      Set<Integer> uniqVCs = new TreeSet<Integer>();
       /* For each time slot, schedule table and channel index table is written. */
       for (int slotIdx = 0; slotIdx < slotList.getLength(); slotIdx++) {
+        timeslots = slotList.getLength();
+        schedTblEntries++;
         Node slot = slotList.item(slotIdx);
         if (slot.getNodeType() != Node.ELEMENT_NODE) { continue; }
         Element slotE = (Element) slot;
         int chIdx = getChanId(slotE);
+        int pktIdx = getPktId(slotE);
         TileCoord destCoord = getDestCoord(slotE);
-        List<Integer> schedTbl = initArray.get(tileCoord.getTileId()).get(SCHED_TBL);
+        List<Integer> schedTbl = initArray.get(modeId).get(tileCoord.getTileId()).get(SCHED_TBL);
         int slotVal = 0;
         String routeStr = getRoute(slotE);
-        //System.out.println("CONDITION: chIdx: " + chIdx + " prevChIdx: " + prevChIdx + " routeStr: " + routeStr + " prevRouteStr: " + prevRouteStr + " pktEnded: " + pktEnded);
-        if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || !routeStr.equals(prevRouteStr)))) {          
+        //System.out.print("CONDITION: chIdx: " + chIdx + " prevChIdx: " + prevChIdx + " \tpktIdx: " + pktIdx + " prevPktIdx: " + prevPktIdx + " \tpktEnded: " + pktEnded);
+        //if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || !routeStr.equals(prevRouteStr)))) {
+        if (chIdx != -1 && (pktEnded || (chIdx != prevChIdx || pktIdx != prevPktIdx))) {
+          //System.out.println(" Entered");
           // First time slot of a new channel
           // Set Route, DMA number, Packet length, and time to next
           // Set the DMA num in the channel id table
           pktEnded = false;
           schedIdx++;
+          uniqVCs.add(chIdx);
           int route = route2bin(routeStr);
           int dmaNum = destCoord.getTileId();
           pktLen = 0;
@@ -108,27 +191,28 @@ public class Argo2Parser extends Parser {
                     pktLen << TIME2NEXT_WIDTH |
                     time2Next;
           schedTbl.add(schedIdx,slotVal);
-          System.out.println("Start of packet: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " route: " + route);
+          //System.out.println("Start of packet: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " route: " + route);
           time2Next++;
-        } else if (chIdx != -1 && chIdx == prevChIdx && !pktEnded) {
+        } else if (chIdx != -1 && chIdx == prevChIdx && pktIdx == prevPktIdx && !pktEnded) {
           // A later time slot of the current channel
           // Update Packet length and time to next
           pktLen++;
           slotVal = schedTbl.get(schedIdx);
-          slotVal &= ~255; // set the lower 8 bits to 0
-          slotVal = slotVal | ((pktLen >> 1) << TIME2NEXT_WIDTH) | time2Next;
+          slotVal &= ~((int)Math.pow(2,TIME2NEXT_WIDTH + PKTLEN_WIDTH)-1); // set the lower 8 bits to 0
+          slotVal = slotVal | (pktLen << TIME2NEXT_WIDTH) | time2Next;
           schedTbl.set(schedIdx,slotVal);
-          System.out.println("\t\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          //System.out.println("\t\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
+          //System.out.println("");
         } else if (chIdx == -1 && prevChIdx != -1) {
           // An in between channels time slot
           // Update time to next of previous channel
           pktEnded = true;
           slotVal = schedTbl.get(schedIdx);
-          slotVal &= ~31; // set the lower 5 bits to 0
+          slotVal &= ~((int)Math.pow(2,TIME2NEXT_WIDTH)-1); // set the lower 5 bits to 0
           slotVal = slotVal | time2Next;
           schedTbl.set(schedIdx,slotVal);
-          System.out.println("Between packets: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          //System.out.println("Between packets: slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
         } else if (chIdx == -1 && prevChIdx == -1) {
           // No previous channel
@@ -137,6 +221,8 @@ public class Argo2Parser extends Parser {
           if (time2Next == 0) {
             int dmaNum = (1 << DMANUM_WIDTH) - 1;
             schedIdx++;
+            //System.out.println(" Empty");
+            blindCompressedSchedTblEntries++;
             pktLen = 0;
             slotVal = dmaNum << (TIME2NEXT_WIDTH + PKTLEN_WIDTH) |
                       pktLen << TIME2NEXT_WIDTH |
@@ -149,20 +235,69 @@ public class Argo2Parser extends Parser {
                       pktLen << TIME2NEXT_WIDTH |
                       time2Next;
             schedTbl.set(schedIdx,slotVal);
+            //System.out.println("");
           }
-          System.out.println("No packet:\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
+          //System.out.println("No packet:\t slotIdx: " + slotIdx + " schedIdx: " + schedIdx + " pktLen: " + pktLen + " time2Next: " + time2Next);
           time2Next++;
           pktEnded = true;
         }
         if (chIdx != -1) {
           prevChIdx = chIdx; 
         }
-        if (time2Next == 32) {
+        if (pktIdx != -1) {
+          prevPktIdx = pktIdx; 
+        }
+        //if (time2Next == 32) {
+        if (time2Next == (int)Math.pow(2,TIME2NEXT_WIDTH)) {
           time2Next = 0;
           prevChIdx = -1;
+          prevPktIdx = -1;
         }
         prevRouteStr = routeStr;
         //initArray.get(tileCoord.getTileId()).get(CH_ID_TBL).set(destCoord.getTileId(), route);
+      }
+      // Add the index plus one, because we want to count the number and not the index.
+      int numEntries = (schedIdx+1);
+      int numDMAEntries = uniqVCs.size();
+      compressedSchedTblEntries+=numEntries;
+      if (numEntries > maxCompTblEntries) {
+        maxCompTblEntries = numEntries;
+      }
+      if (numEntries < minCompTblEntries) {
+        minCompTblEntries = numEntries;
+      }
+      if (numDMAEntries > maxDMATblEntries) {
+        maxDMATblEntries = numDMAEntries;
+      }
+      if (numDMAEntries < minDMATblEntries) {
+        minDMATblEntries = numDMAEntries;
+      }
+    }
+    if (showStats || showMinStats) {
+      int tableWidth = DMANUM_WIDTH+ROUTE_WIDTH;
+      int compressedTableWidth = TIME2NEXT_WIDTH+PKTLEN_WIDTH+tableWidth;
+      int compressedTblBits = compressedTableWidth*compressedSchedTblEntries;
+      if (showStats) {
+        System.out.println("Mode " + modeId + " contains:\n"
+                          +"\tnodes:\t\t\t" + nodes + "\n"
+                          +"\ttimeslots:\t\t" + timeslots + "\n"
+                          +"\tSchedule table:\n"
+                          +"\t\tentries:\t" + compressedSchedTblEntries + "\n"
+                          +"\t\tnull entries:\t" + blindCompressedSchedTblEntries + "\n"
+                          +"\t\tmin entries:\t" + minCompTblEntries + "\n"
+                          +"\t\tmax entries:\t" + maxCompTblEntries + "\n"
+                          +"\t\twidth:\t\t" + compressedTableWidth + "\n"
+                          +"\t\tbits:\t\t" + compressedTblBits + "\n");
+      } else if (showMinStats) {
+        Path p = Paths.get(inFile);
+        String fileName = p.getFileName().toString();
+        String name = String.format("%-24s", fileName);
+        int len = name.length();
+        //System.out.println("Filename: "+fileName+" length: "+len+" name: "+name.replace(' ', '*')+" length name: "+name.length());
+        System.out.print(name.substring(len-23,len)+"\t");
+        //System.out.println((schedTblEntries/3)+"\t"+baseTblBits+"\t"+compressedSchedTblEntries
+        //                    +"\t\t"+compressedTblBits+"\t\t"+roundedBaseGain+"%\t" + maxCompTblEntries);
+        System.out.println((compressedTblBits/8)+"\t"+(maxCompTblEntries*compressedTableWidth/8)+"\t"+ (minCompTblEntries*compressedTableWidth/8)+"\t"+maxDMATblEntries+"\t"+ minDMATblEntries+"\t"+(compressedSchedTblEntries/nodes));
       }
     }
   }
@@ -194,15 +329,18 @@ public class Argo2Parser extends Parser {
     return bin;
   }
 
-  private void initializeArray(int nrCpu){
-    initArray = new ArrayList<List<List<Integer> > >(nrCpu);
-    for (int i = 0; i < nrCpu; i++) {
-      initArray.add(new ArrayList<List<Integer> >(2));
-      initArray.get(i).add(new ArrayList<Integer>());
-      initArray.get(i).add(new ArrayList<Integer>());
-//      for(int j = 0; j < nrCpu; j++){
-//        initArray.get(i).get(ROUTE_TABLE).add(0);
-//      }
+  private void initializeArray(int nrModes,int nrCpu){
+    initArray = new ArrayList<List<List<List<Integer> > > > (nrModes);
+    for (int j = 0; j < nrModes; j++) {
+      initArray.add(new ArrayList<List<List<Integer> > > (nrCpu));
+      for (int i = 0; i < nrCpu; i++) {
+        initArray.get(j).add(new ArrayList<List<Integer> >(2));
+        initArray.get(j).get(i).add(new ArrayList<Integer>());
+        initArray.get(j).get(i).add(new ArrayList<Integer>());
+  //      for(int j = 0; j < nrCpu; j++){
+  //        initArray.get(i).get(ROUTE_TABLE).add(0);
+  //      }
+      }  
     }
   }
 }

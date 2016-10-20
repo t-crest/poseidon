@@ -46,11 +46,13 @@ namespace snts {
 bool xmlOutput::output_schedule(const network_t& n)
 {
 	int numOfNodes = n.routers().size();
-	int countWidth = ceil(log2(n.best));
+
+	int schedule_overlap = n.get_schedule_overlap();
+	int schedule_length = n.p_best()-schedule_overlap;
 
 	xml_document doc;
 	xml_node schedule = doc.append_child("schedule");
-	schedule.append_attribute("length").set_value(n.best);
+	schedule.append_attribute("length").set_value(schedule_length);
 	schedule.append_attribute("width").set_value(n.cols());
 	schedule.append_attribute("height").set_value(n.rows());
 
@@ -62,10 +64,10 @@ bool xmlOutput::output_schedule(const network_t& n)
 		tile.append_attribute("id") = co;
 		// Vector for saving data to calculate Worst-Case Latencies
 
-		vector<router_id> destinations(n.best,(*r)->address);
+		vector<uint> destinations(schedule_length,::numeric_limits<uint>::max());
 		debugs("Tile: " << (*r)->address);
 		int router_depth = n.get_router_depth();
-		for(timeslot t = 0; t < n.best; t++){ // Write table row for each timeslot
+		for(timeslot t = 0; t < schedule_length; t++){ // Write table row for each timeslot
 			// New timeslot
 			xml_node ts = tile.append_child("timeslot");
 			ts.append_attribute("value") = t;
@@ -73,10 +75,6 @@ bool xmlOutput::output_schedule(const network_t& n)
 			int t_in = t;
 			int t_out = (t+router_depth)%(n.best+router_depth);
 			debugs("t_in: " << t_in << " t_out: " << t_out);
-//			if(t == 0){
-//				t_in = n.best-1;
-//				t_out = n.best;
-//			}
 			// Write row in Network Adapter table
 			router_id dest_id = (*r)->address;
 			router_id src_id = (*r)->address;
@@ -85,12 +83,13 @@ bool xmlOutput::output_schedule(const network_t& n)
 				debugs( "Timeslot: " << t << " = " << (*r)->local_in_best_schedule.get(t)->to );
 				dest_chan = (*r)->local_in_best_schedule.get((t)%n.best);
 				dest_id = dest_chan->to;
+				destinations[t] = dest_chan->channel_id;
 			} else {
 				debugs("Timeslot: " << t);
 			}
 			if ((*r)->local_out_best_schedule.has(t))
 				src_id = (*r)->local_out_best_schedule.get(t)->from;
-			destinations[t] = dest_id;
+
 			// New na
 			xml_node na = ts.append_child("na");
 			print_coord(src_id,co,max(n.rows(),n.cols()));
@@ -102,6 +101,8 @@ bool xmlOutput::output_schedule(const network_t& n)
 			if(route.length() > 0){
 				na.append_attribute("route") = route.c_str();
 				na.append_attribute("chan-id").set_value(dest_chan->channel_id);
+				na.append_attribute("config-ch").set_value(dest_chan->config_ch);
+				na.append_attribute("pkt-id").set_value(dest_chan->pkt_id);
 			}
 
 			// Write row in Router table
@@ -158,12 +159,13 @@ void xmlOutput::print_coord(const pair<int, int> r,char* co, const int max_dimen
 	snprintf(co,buffer_size,"(%i,%i)",r.first,r.second);
 }
 
-void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<router_id>* destinations, router_t* r){
+void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<uint>* destinations, router_t* r){
 	xml_node latency = (*tile).append_child("latency");
 	char co[2*max(n.rows(),n.cols())+3];
 	char *buf = co; // clang does not allow references to flexible arrays in lambda expressions
 	std::vector<bool> printed_chans(n.channels().size(),false);
 
+	int schedule_length = n.p_best()-n.get_schedule_overlap();
 	// The following for loop is slow and unnecessary, can be changed to improve runtime.
 	// What is needed is all the channels with the current router as the source.
 	for_each(n.channels(), [&](const channel & c) {
@@ -182,8 +184,8 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		int late = 0;
 		int inlate = 0;
 		bool init = true;
-		for(int i = 0; i < n.best; i++){
-			if(c.to != (*destinations)[i]){
+		for(int i = 0; i < schedule_length; i++){
+			if(c.channel_id != (*destinations)[i]){
 				// Increment latency
 				late++;
 				continue;
@@ -205,7 +207,7 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		}
 		slotswaittime += c.phits; // Only in the beginning of a timeslot can a packet be transmitted
 		channellatency = r->hops[c.to];
-		rate = ((double)num_phits)/n.p_best();
+		rate = ((double)num_phits)/schedule_length;
 		// Analyze the latency
 		xml_node destination = latency.append_child("destination");
 		print_coord(c.to, buf, max(n.rows(),n.cols()));
@@ -213,6 +215,9 @@ void xmlOutput::add_latency(const network_t& n, xml_node* tile, const vector<rou
 		destination.append_attribute("slotwaittime") = slotswaittime;
 		destination.append_attribute("channellatency") = channellatency;
 		destination.append_attribute("chan-id") = c.channel_id;
+		destination.append_attribute("chan-bw") = c.ch_bw;
+		destination.append_attribute("config-ch") = c.config_ch;
+		destination.append_attribute("pkt-len") = c.phits;
 		destination.append_attribute("rate") = rate;
 	});
 }

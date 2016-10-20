@@ -19,6 +19,7 @@ public:
 
 	string input_file;
 	string output_file;
+	bool var_len_pkt;
 	double sigma;
 	bool mean;
 	

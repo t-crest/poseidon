@@ -58,7 +58,7 @@ private:
     std::string output_dir;
 
 	void print_coord(const std::pair<int, int> r, char* co, const int max_dimension);
-    void add_latency(const network_t& n, pugi::xml_node* tile, const std::vector<router_id>* destinations, router_t* r);
+    void add_latency(const network_t& n, pugi::xml_node* tile, const std::vector<uint>* destinations, router_t* r);
     port_id find_in_port(router_t* r, const channel* out_c, timeslot t);
 
 public:

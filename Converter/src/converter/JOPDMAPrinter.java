@@ -40,7 +40,6 @@ import java.util.List;
 
 public class JOPDMAPrinter extends Printer {
 	
-	private static int indent = 0;
 	private static final int SLOT_TABLE = 0;
 	private static final int ROUTE_TABLE = 1;
 
@@ -132,38 +131,5 @@ public class JOPDMAPrinter extends Printer {
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-	}
-
-
-	private String ind(){
-		String str = "\n";
-		if (indent < 0) {
-			return "";
-		}
-		for (int i = 0; i < indent; i++) {
-			str += "\t";
-		}
-		return str;
-	}
-
-	private String openBrac(){
-		indent++;
-		return "{";
-	}
-
-	private String closeBrac(int b){
-		String str = "";
-		for (int i = 0 ; i < b; i++) {
-			str += closeBrac();
-		}
-		return str;
-	}
-
-	private String closeBrac(){
-		if (indent > 0) {
-			indent--;
-		}
-		String str = ind();
-		return str + "}";
 	}
 }

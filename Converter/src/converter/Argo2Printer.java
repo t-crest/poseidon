@@ -40,9 +40,12 @@ import java.util.List;
 
 public class Argo2Printer extends Printer {
 
-	private static int indent = 0;
 	private static final int SCHED_TBL = 0;
 	private static final int CH_ID_TBL = 1;
+
+	public Argo2Printer() {
+		
+	}
 
 	@Override
 	protected void printHeader(){
@@ -68,52 +71,68 @@ public class Argo2Printer extends Printer {
 		}
 	}
 
-
+	@Override
 	public void printData(List<List<List<Integer> > > initArray){
+	}
+
+	public void printMCData(List<List<List<List<Integer> > > > initArray) {
 		String str = openBrac();
 		String head = "";
 		int tables = 2;
-		int numNodes = initArray.size();
+		int numModes = initArray.size();
+		int numNodes = initArray.get(0).size();
 
 		int maxSchedEnts = 0;
-		for(List<List<Integer> > initCpu: initArray){
-			int schedEnts = initCpu.get(SCHED_TBL).size();
-			if (schedEnts > maxSchedEnts) {
-				maxSchedEnts = schedEnts;
-			}
-		}		
+//		for (List<List<List<Integer> > > initMode : initArray) {
+//			for(List<List<Integer> > initCpu: initMode){
+//				int schedEnts = initCpu.get(SCHED_TBL).size();
+//				if (schedEnts > maxSchedEnts) {
+//					maxSchedEnts = schedEnts;
+//				}
+//			}			
+//		}
 
-		for (int i = 0; i < initArray.size(); i++) {
-			List<List<Integer> > initCpu = initArray.get(i);
-			List<Integer> schedTbl = initCpu.get(SCHED_TBL);
-			int schedEnts = schedTbl.size();
-			str += ind() + openBrac()
-				 + ind() + "{";
-			str += schedEnts + ",";
-			for(int j = 0; j < schedEnts; j++){
-				str += schedTbl.get(j) + ",";
+		for (int i = 0; i < initArray.size(); i++) { // For each mode
+			List<List<List<Integer> > > initMode = initArray.get(i);
+			str += ind() + openBrac();
+			for (int j = 0; j < initMode.size(); j++) { // For each core
+				List<List<Integer> > initCpu = initMode.get(j);
+				List<Integer> schedTbl = initCpu.get(SCHED_TBL);
+				int schedEnts = schedTbl.size();
+				if (schedEnts > maxSchedEnts) {
+					maxSchedEnts = schedEnts;
+				}
+				str += ind() + openBrac()
+					 + ind() + "{";
+				str += schedEnts + ",";
+				for(int k = 0; k < schedEnts; k++){
+					str += schedTbl.get(k) + ",";
+				}
+				str = str.substring(0, str.length()-1);
+				str += "}," + ind() + "{";
+				str += schedEnts + ",";
+				for(int k = 0; k < schedEnts; k++) {
+					//int route: initCpu.get(CH_ID_TBL)){
+					//str += route + ",";
+					str += 0 + ",";
+				}
+				str = str.substring(0, str.length()-1);
+				str += "}" + closeBrac() + ",";
+
+			//	str += "\n";
 			}
 			str = str.substring(0, str.length()-1);
-			str += "}," + ind() + "{";
-			str += schedEnts + ",";
-			for(int j = 0; j < schedEnts; j++) {
-				//int route: initCpu.get(CH_ID_TBL)){
-				//str += route + ",";
-				str += 0 + ",";
-			}
-			str = str.substring(0, str.length()-1);
-			str += "}" + closeBrac() + ",";
-
-			str += "\n";
+			str += closeBrac() + ",";
 		}
 		str = str.substring(0, str.length()-1);
 
 
-		head =    "\nconst int NOC_CORES = " + numNodes + ";"
+		head =    "\nconst int NOC_CONFS = " + numModes + ";"
+				+ "\nconst int NOC_CORES = " + numNodes + ";"
 				+ "\nconst int NOC_TABLES = " + tables + ";"
 				+ "\nconst int NOC_SCHEDULE_ENTRIES = " + (maxSchedEnts+1) + ";"
 				+ "\n"
-				+ "\nconst int noc_init_array[NOC_CORES][NOC_TABLES][NOC_SCHEDULE_ENTRIES] = ";
+				+ "\nconst int noc_init_array[NOC_CONFS][NOC_CORES][NOC_TABLES][NOC_SCHEDULE_ENTRIES] = ";
 
 		str = head + str;
 		try{
@@ -121,38 +140,5 @@ public class Argo2Printer extends Printer {
 		} catch(Exception e){
 			e.printStackTrace();
 		}
-	}
-
-
-	private String ind(){
-		String str = "\n";
-		if (indent < 0) {
-			return "";
-		}
-		for (int i = 0; i < indent; i++) {
-			str += "\t";
-		}
-		return str;
-	}
-
-	private String openBrac(){
-		indent++;
-		return "{";
-	}
-
-	private String closeBrac(int b){
-		String str = "";
-		for (int i = 0 ; i < b; i++) {
-			str += closeBrac();
-		}
-		return str;
-	}
-
-	private String closeBrac(){
-		if (indent > 0) {
-			indent--;
-		}
-		String str = ind();
-		return str + "}";
 	}
 }

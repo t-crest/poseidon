@@ -114,6 +114,8 @@ parser::parser(string platform_file, string com_file) {
 
 	const int phits = get_opt_attr<int>(channels, "phits",1); // The default number of phits is set to 1.
 	const int bw = get_opt_attr<int>(channels, "bandwidth",1); // The default bandwidth is set to 1.
+	// By default the is not added reconfiguration channels from the master to all the slaves.
+	const router_id reconfig = get_opt_attr<router_id>(channels, "reconfig",global::opts->config_master);
 
 	string channel_type = get_opt_attr<string>(channels,"type","NOT FOUND");
 	if (channel_type == "NOT FOUND"){
@@ -127,6 +129,12 @@ parser::parser(string platform_file, string com_file) {
 		this->create_all2all(phits,bw);
 	} else {
 		ensure(false, "Channel type not recognized");
+	}
+	// If the reconfiguration master is specified, i.e., different from (-1,-1),
+	// we add channel from the master to all the slaves, configuration packets are only 2 phits
+	// and the default bandwidth is 1.
+	if (reconfig != make_pair(-1,-1) ) {
+		this->add_reconfig_channel(2,1,reconfig);
 	}
 
 }
@@ -281,7 +289,7 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	
 	c.from = r1;
 	c.to = r2;
-	c.phits = phits;
+	c.phits = phits_local;
 	c.ch_bw = bw_local;
 
 	ensure(r1 != r2, "Channel from " << r1 << " to " << r2 << " has same source and destination.");
@@ -291,6 +299,7 @@ channel parser::parse_channel(xml_node& chan, const int phits, const int bw) {
 	bool pathexist = !this->n->router(c.from)->next[c.to].empty();
 	ensure(pathexist, "The path from " << c.from << " to " << c.to << " is not present in the network.");
 	c.channel_id = this->channel_count++;
+	c.config_ch = false;
 	for(int i = 0; i < bw_local; i++){
 		c.pkt_id = i;
 		this->n->specification.push_back(c);
@@ -308,6 +317,7 @@ void parser::create_all2all(const int phits, const int bw){
 				c.phits = phits;
 				c.ch_bw = bw;
 				c.channel_id = this->channel_count++;
+				c.config_ch = false;
 				for(int i = 0; i < bw; i++){
 					c.pkt_id = i;
 					this->n->specification.push_back(c);
@@ -316,5 +326,29 @@ void parser::create_all2all(const int phits, const int bw){
 		});
 	});
 
+}
+
+void parser::add_reconfig_channel(const int phits, const int bw, const pair<int,int> master){
+	//router_id master = make_pair(0,0);
+	for_each(this->n->routers(),[&](router_t *r1){
+		if(r1->address != master){
+			bool add_channel = true;
+			if (add_channel){
+				cout << "Adding channel from: " << master << " to : " << r1->address << endl;
+				channel c;
+				c.from = master;
+				c.to = r1->address;
+				c.phits = phits;
+				c.ch_bw = bw;
+				c.channel_id = this->channel_count++;
+				c.config_ch = true;
+				for(int i = 0; i < bw; i++){
+					c.pkt_id = i;
+					this->n->specification.push_back(c);
+				}
+			}
+			
+		}
+	});	
 }
 

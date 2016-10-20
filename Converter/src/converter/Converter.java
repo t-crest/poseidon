@@ -36,6 +36,9 @@
 
 package converter;
 
+import org.apache.commons.cli.*;
+import java.lang.reflect.*;
+
 /**
  *
  * @author Rasmus Bo Sorensen
@@ -43,78 +46,155 @@ package converter;
 public class Converter {
 	public static Printer printer;
 	public static Parser parser;
+	public static String[] inputSchedules;
 	/**
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-		/**
-		 * Commandline options:
-		 * 0: String inputFile
-		 * 1: String outputFile
-		 * 2: String printerName
-		 */
-		// TODO code application logic here
-		if(args.length <= 2){
-			System.out.println(
-			"Input arguments missing\n" +
-			"Required:\n" +
-				"\t0: Inputfile\n" +
-				"\t1: Outputfile\n" +
-				"\t2: Printer name\n" +
-				"\t\tSource-Phase-text\n" +
-				"\t\tSource-Phase-ASIC-text\n" +
-				"\t\tSource-text\n" +
-				"\t\tSource-java\n" +
-				"\t\tAegean-c\n" +
-				"\t\tAegean-phase-c\n" +
-				"\t\tArgo2-c\n" +
-				"\t\tAegean-ASIC-phase-c\n" +
-				"\t\tDist-c\n"+
-				"\t\tNetworkCalculus-constraints\n"+
-				"\t3: Router depth\n");
+		int routerDepth = 1;
+		String printerName = "Argo2-c";
+		boolean showStats = false;
+		boolean showMinStats = false;
+		boolean verbose = false;
+		String outFile = "";
+		String[] inFiles = {""};
+		int numModes = 0;
+
+		// create the command line parser
+		CommandLineParser cmdParser = new DefaultParser();
+
+		// create the Options
+		Options options = new Options();
+		
+		options.addOption( Option.builder("o").argName("FILE").required(true)
+								.longOpt("output-file").desc("the name of the output file.")
+								.hasArg().build() );
+		options.addOption( Option.builder("r").argName("NUM").required(false)
+								.longOpt("router-depth").desc("the number of pipeline stages in a router.")
+								.hasArg(true).type(Integer.class).build());
+		options.addOption( Option.builder("p").argName("NAME").required(false).longOpt("printer-name")
+								.desc("the name of the printer. Choose between the following:\n" +
+													"- Source-Phase-text\n" +
+													"- Source-Phase-ASIC-text\n" +
+													"- Source-text\n" +
+													"- Source-java\n" +
+													"- Aegean-c\n" +
+													"- Aegean-phase-c\n" +
+													"- Argo2-c\n" +
+													"- Aegean-ASIC-phase-c\n" +
+													"- Dist-c\n"+
+													"- NetworkCalculus-constraints\n")
+								.hasArg().build() );
+		options.addOption( Option.builder("s").required(false).longOpt("stats")
+								.desc("Show stats of the converted schedule.")
+								.hasArg(false).build());
+		options.addOption( Option.builder("m").required(false).longOpt("min-stats")
+								.desc("Show a minimal number of stats for the converted schedule.")
+								.hasArg(false).build());
+		options.addOption( Option.builder("v").required(false).longOpt("verbose")
+								.desc("Make converter output verbose.")
+								.hasArg(false).build());
+
+		try {
+			// parse the command line arguments
+			CommandLine line = cmdParser.parse( options, args );
+			if( line.hasOption( "v" ) ) {
+				verbose = true;
+			}
+			if( line.hasOption( "r" ) ) {
+				routerDepth = Integer.parseInt(line.getOptionValue( "r" ));
+				if (verbose) {
+					System.out.println( "routerDepth: " + routerDepth );
+				}
+			}
+			if( line.hasOption( "p" ) ) {
+				printerName = line.getOptionValue( "p" );
+				if (verbose) {
+					System.out.println( "printerName: " + printerName );
+				}
+			}
+			if( line.hasOption( "s" ) ) {
+				showStats = true;
+			}
+			if( line.hasOption( "m" ) ) {
+				showMinStats = true;
+			}
+			
+			outFile = line.getOptionValue( "o" );
+			inFiles = line.getArgs();
+			if (verbose) {
+				System.out.println("inFiles:");
+				for(String i : inFiles){
+					System.out.println("\t"+i);
+				}
+				System.out.println( "outFile: " + outFile );
+			}
+			
+			numModes = inFiles.length;
+
+		} catch( ParseException exp ) {
+			System.out.println( exp.getMessage() );
+			String header = "";
+			String footer = "\nPlease report issues to rasmus@rbscloud.dk";
+
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.setArgName("schedules");
+			formatter.printHelp("poseidon-conv", header, options, footer, true);
 			return;
 		}
-		int routerDepth;
-		if (args.length > 3) {
-			routerDepth = Integer.parseInt(args[3]);
-		} else {
-			routerDepth = 1;
+		if (numModes != 1 && !"Argo2-c".equals(printerName)) {
+			System.out.println(printerName + " does not support multiple modes.");
+			return;
 		}
-		if ("Source-Phase-text".equals(args[2])){
+
+		if ("Source-Phase-text".equals(printerName)){
 			printer = new SourcePhaseTextPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Source-Phase-ASIC-text".equals(args[2])){
+		} else if ("Source-Phase-ASIC-text".equals(printerName)){
 			printer = new SourcePhaseTextPrinter();
 			parser = new ASICSourceParser(routerDepth);
-		} else if ("Source-text".equals(args[2])){
+		} else if ("Source-text".equals(printerName)){
 			printer = new SourceTextPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Source-java".equals(args[2])){
+		} else if ("Source-java".equals(printerName)){
 			printer = new JOPDMAPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Aegean-c".equals(args[2])){
+		} else if ("Aegean-c".equals(printerName)){
 			printer = new AegeanPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Aegean-phase-c".equals(args[2])){
+		} else if ("Aegean-phase-c".equals(printerName)){
 			printer = new AegeanAsyncPrinter();
 			parser = new SourceParser(routerDepth);
-		} else if ("Aegean-ASIC-phase-c".equals(args[2])){
+		} else if ("Aegean-ASIC-phase-c".equals(printerName)){
 			printer = new AegeanAsyncPrinter();
 			parser = new ASICSourceParser(routerDepth);
-		} else if ("Argo2-c".equals(args[2])){
-			printer = new Argo2Printer();
-			parser = new Argo2Parser();
-		} else if ("Dist-c".equals(args[2])) {
+		} else if ("Argo2-c".equals(printerName)){
+			if (verbose) {
+				System.out.print("Printing configuration files...");
+			}
+			parser = new Argo2Parser(inFiles,outFile,new Argo2Printer(),showStats,showMinStats);
+			if (verbose) {
+				System.out.println("Done");
+			}
+			return;
+		} else if ("Dist-c".equals(printerName)) {
 			throw new UnsupportedOperationException("Dist-c: Not supported yet.");
-		} else if ("NetworkCalculus-constraints".equals(args[2])){
+		} else if ("NetworkCalculus-constraints".equals(printerName)){
 			printer = null;
 			parser = new NCParser();
 		} else {
 			System.out.println("No printer specified...");
 			return;
 		}
-		System.out.print("Printing configuration file...");
-		parser.start(args[0],args[1],printer);
-		System.out.println("Done");
+
+		if (verbose) {
+			System.out.print("Printing configuration files...");
+		}
+
+		parser.start(inFiles[0],outFile,printer);
+
+		if (verbose) {
+			System.out.println("Done");
+		}
 	}
 }
