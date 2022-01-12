@@ -64,7 +64,7 @@ poseidon: lib/pugixml/build/libpugixml.a
 
 .common-cli:
 	@-mkdir -p lib 2>&1
-	@cd lib && wget http://mirrors.dotsrc.org/apache//commons/cli/source/commons-cli-1.4-src.tar.gz
+	@cd lib && wget https://archive.apache.org/dist/commons/cli/source/commons-cli-1.4-src.tar.gz 
 	@cd lib && tar -xvf commons-cli-1.4-src.tar.gz
 	@cd lib && rm commons-cli-1.4-src.tar.gz
 	@echo "Commons CLI downloaded" > .common-cli
