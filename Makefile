@@ -81,7 +81,7 @@ Converter: .common-cli
 
 lib/pugixml/build/libpugixml.a: .pugixml
 	@-mkdir -p lib/pugixml/build 2>&1
-	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake ../scripts && $(MAKE) -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
+	@cd lib/pugixml/build && $(COMPILER_FLAGS) cmake -DCMAKE_POLICY_VERSION_MINIMUM=3.5 ../scripts && $(MAKE) -s && echo "PUGI_PATH=$$(pwd)" >> ../../../scripts/paths.sh
 
 MCSL: lib/pugixml/build/libpugixml.a
 	@cd MCSL && $(COMPILER_FLAGS) $(MAKE) -s
